@@ -1,0 +1,23 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 23, 2012
+ *  time    :   2:26:00 PM
+ * */
+
+
+/**
+ * Implementation of hook_trigger_info().
+ */
+function archive_trigger_info ()
+{
+    return array(
+        'node' => array(
+            'archive_nodes' => array(
+                'label' => t ('Archive old nodes') ,
+            )
+        )
+    );
+}

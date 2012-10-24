@@ -1,0 +1,55 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 24, 2012
+ *  time    :   4:22:49 PM
+ * */
+/**
+ * @file
+ * Use this module to learn about Drupal's menu system.
+ */
+
+/**
+ * Implementation of hook_permission()
+ */
+function menufun_permission ()
+{
+    return array(
+        'receive greeting' => array(
+            'title' => t ('Receive a greeting') ,
+            'description' => t ('Allow users receive a greeting message') ,
+        ) ,
+    );
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function menufun_menu ()
+{
+    $items[ 'menufun/%/%' ] = array(
+        'title' => 'Hi' ,
+        'page callback' => 'menufun_hello' ,
+        'page arguments' => array( 2 ) ,
+        'access callback' => TRUE ,
+    );
+    return $items;
+}
+
+/**
+ * Title callback.
+ */
+function menufun_title ( $title )
+{
+    drupal_set_title (t ('The page title'));
+    $now = format_date (time ());
+    return t ('It is now @time' , array( '@time' => $now ));
+}
+
+function menufun_hello ( $name = NULL )
+{
+    return t ('Hello. $name is @name' , array( '@name' => $name ));
+}
+
