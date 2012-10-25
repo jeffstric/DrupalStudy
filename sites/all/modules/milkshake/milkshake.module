@@ -1,0 +1,83 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 25, 2012
+ *  time    :   12:02:01 PM
+ * */
+/**
+ * @file
+ * Use this module to learn about Drupal's menu system,
+ * specifically how local tasks work.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function milkshake_menu ()
+{
+    $items[ 'milkshake' ] = array(
+        'title' => 'Milkshake flavors' ,
+        'access callback' => TRUE ,
+        'page callback' => 'milkshake_overview' ,
+        'type' => MENU_NORMAL_ITEM ,
+    );
+    $items[ 'milkshake/list' ] = array(
+        'title' => 'List flavors' ,
+        'access callback' => TRUE ,
+        'type' => MENU_DEFAULT_LOCAL_TASK ,
+        'weight' => 0 ,
+    );
+    $items[ 'milkshake/add' ] = array(
+        'title' => 'Add flavor' ,
+        'access callback' => TRUE ,
+        'page callback' => 'milkshake_add' ,
+        'type' => MENU_LOCAL_TASK ,
+        'weight' => 1 ,
+    );
+    $items[ 'milkshake/list/fruity' ] = array(
+        'title' => 'Fruity flavors' ,
+        'access callback' => TRUE ,
+        'page callback' => 'milkshake_list' ,
+        'page arguments' => array( 2 ) , // Pass 'fruity'.
+        'type' => MENU_LOCAL_TASK ,
+    );
+    $items[ 'milkshake/list/candy' ] = array(
+        'title' => 'Candy flavors' ,
+        'access callback' => TRUE ,
+        'page callback' => 'milkshake_list' ,
+        'page arguments' => array( 2 ) , // Pass 'candy'.
+        'type' => MENU_LOCAL_TASK ,
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_menu_link_alter().
+ */
+function milkshake_menu_link_alter ( &$item )
+{
+// Hide the Create content link.
+    if ( $item[ 'link_path' ] == 'node/add' ) {
+        $item[ 'hidden' ] = 1;
+    }
+}
+
+function milkshake_overview ()
+{
+    $output = t ('The following flavors are available...');
+// ... more code here
+    return $output;
+}
+
+function milkshake_add ()
+{
+    return t ('A handy form to add flavors might go here...');
+}
+
+function milkshake_list ( $type )
+{
+    return t ('List @type flavors' , array( '@type' => $type ));
+}
+

@@ -1,0 +1,38 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 24, 2012
+ *  time    :   4:22:49 PM
+ * */
+/**
+ * @file
+ * Use this module to learn about Drupal's menu system.
+ */
+
+/**
+ * Implementation of hook_menu().
+ */
+function menufun2_menu ()
+{
+    $items[ 'jeff/%user_uid_only_optional' ] = array(
+        'title' => 'My account' ,
+        'page callback' => 'user_view_page_jf' ,
+        'page arguments' => array( 1 ) ,
+        'access callback' => TRUE,
+        'weight' => -10 ,
+        'menu_name' => 'user-menu' ,
+    );
+    return $items;
+}
+
+function user_uid_only_optional_load ($parm){
+    return $parm;
+}
+
+function user_view_page_jf ( $name = NULL )
+{
+    return t ('Hello. $name is @name' , array( '@name' => $name ));
+}
+

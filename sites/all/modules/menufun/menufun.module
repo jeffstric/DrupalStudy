@@ -39,6 +39,19 @@ function menufun_menu ()
 }
 
 /**
+ * Implements hook_menu_link_alter().
+ *
+ * @param $item
+ * Associative array defining a menu link as passed into menu_link_save()
+ */
+function menufun_menu_link_alter ( &$item )
+{
+    if ( $item[ 'link_path' ] == 'user/logout' ) {
+        $item[ 'link_title' ] = 'Sign off';
+    }
+}
+
+/**
  * Title callback.
  */
 function menufun_title ( $title )

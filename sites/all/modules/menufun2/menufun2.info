@@ -1,0 +1,5 @@
+name = Menu Fun Two
+description = Learning about the menu system.
+package = Pro Drupal Development
+core = 7.x
+files[] = menufun.module
