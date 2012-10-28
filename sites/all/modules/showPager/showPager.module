@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * author:jeffstric
+ * email:jeffstricg@gmail.com
+ * blog:jeffsc.info
+ * datetime:2012-10-28, 21:38:13
+ * */
+function showPager_menu() {
+    $items['showPager'] = array(
+        'title' => 'showPager',
+        'access callback' => TRUE,
+        'page callback' => 'showPager_overview',
+        'type' => MENU_NORMAL_ITEM,
+    );
+    return $items;
+}
+
+function showPager_overview() {
+    $query = db_select('date_formats', 'n')->extend('PagerDefault');
+    $query  ->fields('n', array('format'))
+            ->limit(10);
+    $result = $query->execute();
+    $output = '';
+    foreach ($result as $row) {
+        $output .= $row->format."<br/>";
+    }
+    $output .= theme('pager');
+    return $output;
+}
+
+?>

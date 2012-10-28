@@ -1,0 +1,5 @@
+name = showPager
+description = Demonstrates get info form db and page it.
+package = Pro Drupal Development
+core = 7.x
+files[] = showPager.module

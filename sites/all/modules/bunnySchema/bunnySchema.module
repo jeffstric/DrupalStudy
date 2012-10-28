@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * author:jeffstric
+ * email:jeffstricg@gmail.com
+ * blog:jeffsc.info
+ * datetime:2012-10-28, 21:53:53
+ * */
+
+/**
+ * Implements hook_schema().
+ */
+function bunnySchema_schema() {
+    $schema['bunnies'] = array(
+        'description' => t('Stores information about giant rabbits.'),
+        'fields' => array(
+            'bid' => array(
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'description' => t("Primary key: A unique ID for each bunny."),
+            ),
+            'name' => array(
+                'type' => 'varchar',
+                'length' => 64,
+                'not null' => TRUE,
+                'description' => t("Each bunny gets a name."),
+            ),
+            'tons' => array(
+                'type' => 'int',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+                'description' => t('The weight of the bunny to the nearest ton.'),
+            ),
+        ),
+        'primary key' => array('bid'),
+        'indexes' => array(
+            'tons' => array('tons'),
+        ),
+    );
+    return $schema;
+}
+
+function bunnySchema_menu() {
+    $items['bunnySchema'] = array(
+        'title' => 'bunnySchema',
+        'access callback' => TRUE,
+        'page callback' => 'bunnySchema_overview',
+        'type' => MENU_NORMAL_ITEM,
+    );
+    return $items;
+}
+
+function bunnySchema_overview() {
+    $table = 'bunnies';
+    $record = new stdClass();
+    $record->name = t('Bortha');
+    $record->tons = 2;
+    drupal_write_record($table, $record);
+// The new bunny ID, $record->bid, was set by drupal_write_record()
+// since $record is passed by reference.
+    watchdog('bunny', 'Added bunny with id %id.', array('%id' => $record->bid));
+// Change our mind about the name.
+    $record->name = t('Bertha');
+// Now update the record in the database.
+// For updates we pass in the name of the table's primary key.
+    drupal_write_record($table, $record, 'bid');
+    watchdog('bunny', 'Updated bunny with id %id.', array('%id' => $record->bid));
+}
+
+?>

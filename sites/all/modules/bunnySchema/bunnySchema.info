@@ -1,0 +1,5 @@
+name = bunnySchema
+description = datebase change by scheme.
+package = Pro Drupal Development
+core = 7.x
+files[] = bunnySchema.module
