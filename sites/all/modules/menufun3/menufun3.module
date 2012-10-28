@@ -1,0 +1,53 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 24, 2012
+ *  time    :   4:22:49 PM
+ * */
+/**
+ * @file
+ * Use this module to learn about Drupal's menu system.
+ */
+
+/**
+ * Implementation of hook_menu().
+ */
+function menufun3_menu ()
+{
+    $items[ 'tiny/%a_zoo_animal' ] = array(
+        'title' => 'Hi' ,
+        'page callback' => 'menufun_hello3' ,
+        'page arguments' => array( 1 ) ,
+        'access callback' => TRUE ,
+        'type' => MENU_NORMAL_ITEM ,
+        'weight' => -10
+    );
+    return $items;
+}
+
+function menufun_hello3 ( $animal )
+{
+    return t ("Hello $animal");
+}
+
+/**
+ * Implements hook_menu_link_alter().
+ *
+ * @param $item
+ * Associative array defining a menu link as passed into menu_link_save()
+ */
+function menufun3_link_alter ( &$item )
+{
+    if ( $item[ 'link_path' ] == 'user/logout' ) {
+        $item[ 'link_title' ] = 'Sign off';
+    }
+}
+
+function a_zoo_animal_to_arg ( $arg )
+{
+// $arg is '%' since it is a wildcard
+// Let's replace it with a zoo animal.
+    return 'tiger';
+}
