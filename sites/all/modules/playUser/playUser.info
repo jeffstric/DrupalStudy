@@ -1,0 +1,5 @@
+name = playUser
+description = Learning about the User.
+package = Pro Drupal Development
+core = 7.x
+files[] = playUser.module

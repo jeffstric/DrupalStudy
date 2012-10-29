@@ -1,0 +1,6 @@
+name = book
+description = book system.
+package = Pro Drupal Development
+core = 7.x
+files[] = book.module
+files[] = book.install

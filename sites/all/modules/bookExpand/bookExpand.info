@@ -1,0 +1,6 @@
+name = bookExpand
+description = bookExpand system.
+package = Pro Drupal Development
+core = 7.x
+files[] = bookExpand.module
+files[] = bookExpand.install

@@ -1,0 +1,24 @@
+<?php
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 29, 2012
+ *  time    :   3:52:25 PM
+ **/
+function playUser_menu()
+{
+    $items[ 'playUser' ] = array(
+        'title' => 'Hi' ,
+        'page callback' => 'playUser_overView' ,
+        'access callback' => TRUE ,
+        'type' => MENU_NORMAL_ITEM ,
+    );
+    return $items;
+}
+
+function playUser_overView()
+{
+    global $user;
+    fb($user);
+    return print_r($user);
+}

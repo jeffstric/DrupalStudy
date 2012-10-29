@@ -1,0 +1,26 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 29, 2012
+ *  time    :   1:56:36 PM
+ **/
+
+function book_menu()
+{
+     $items[ 'book' ] = array(
+        'title' => 'book' ,
+        'description' => 'Adjust node book' ,
+        'page callback' => 'book_view' ,
+        'access callback' =>TRUE ,
+    );
+     return $items;
+}
+
+function book_view()
+{
+    $input = array('nid'=>1,'bid'=>1);
+    drupal_write_record('book', $input);
+    return t('OK');
+}

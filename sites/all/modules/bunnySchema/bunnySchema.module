@@ -66,6 +66,7 @@ function bunnySchema_overview() {
 // For updates we pass in the name of the table's primary key.
     drupal_write_record($table, $record, 'bid');
     watchdog('bunny', 'Updated bunny with id %id.', array('%id' => $record->bid));
+    return t('hi');
 }
 
 ?>

@@ -1,0 +1,49 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 29, 2012
+ *  time    :   11:33:22 AM
+ * */
+function book_schema ()
+{
+    $schema[ 'book' ] = array(
+        'description' => 'Stores book outline information. Uniquely connects each node in the outline to a link in {menu_links}' ,
+        'fields' => array(
+            'mlid' => array(
+                'type' => 'serial' ,
+                'unsigned' => TRUE ,
+                'not null' => TRUE ,
+                'description' => "The book page's {menu_links}.mlid." ,
+            ) ,
+            'nid' => array(
+                'type' => 'int' ,
+                'unsigned' => TRUE ,
+                'not null' => TRUE ,
+                'default' => 0 ,
+                'description' => "The book page's {node}.nid." ,
+            ) ,
+            'bid' => array(
+                'type' => 'int' ,
+                'unsigned' => TRUE ,
+                'not null' => TRUE ,
+                'default' => 0 ,
+                'description' => "The book ID is the {book}.nid of the top-level page." ,
+            ) ,
+        ) ,
+        'primary key' => array( 'mlid' ) ,
+        'unique keys' => array(
+            'nid' => array( 'nid' ) ,
+        ) ,
+        'indexes' => array(
+            'bid' => array( 'bid' ) ,
+        ) ,
+    );
+    return $schema;
+}
+
+function book_uninstall() {
+// Clean up our entry in the variables table.
+variable_del('book');
+}

@@ -1,0 +1,40 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 29, 2012
+ *  time    :   11:33:22 AM
+ * */
+
+/**
+ * Implements hook_install().
+ */
+function bookExpand_install ()
+{
+    $field = array(
+        'type' => 'int' ,
+        'unsigned' => TRUE ,
+        'not null' => TRUE ,
+        'default' => 0 ,
+        'initial' => 0 , // Sets initial value for preexisting nodes.
+        'description' => t ('Whether the node has been marked by the markednode module.') ,
+    );
+// Create a regular index called 'marked' on the field named 'marked'.
+    $keys[ 'indexes' ] = array(
+        'marked' => array( 'marked' )
+    );
+    db_add_field ('book' , 'marked' , $field , $keys);
+}
+
+function bookExpand_schema_alter ( &$schema )
+{
+// Add field to existing schema.
+    $schema[ 'book' ][ 'fields' ][ 'marked' ] = array(
+        'type' => 'int' ,
+        'unsigned' => TRUE ,
+        'not null' => TRUE ,
+        'default' => 0 ,
+        'description' => t ('Whether the node has been marked by the markednode module.') ,
+    );
+}
