@@ -1,0 +1,5 @@
+name = nodeTest
+description = Supports configurable user profiles.
+package = Pro Drupal Development
+core = 7.x
+files[] = nodeTest.module

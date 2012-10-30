@@ -1,0 +1,23 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 30, 2012
+ *  time    :   5:22:50 PM
+ **/
+function nodeTest_menu()
+{
+    $items['nodeTest']=array(
+        'title' => 'nodeTest' ,
+        'page callback' => 'nodeTest_overView' ,
+        'access callback' => TRUE,
+    );
+    return $items;
+}
+function nodeTest_overView()
+{
+//    fb(node_type_get_types());
+    fb(field_info_instance('node', 'body', 'article'));
+    return '';
+}

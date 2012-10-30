@@ -1,0 +1,5 @@
+name = userView
+description = Change user view.
+package = Pro Drupal Development
+core = 7.x
+files[] = userView.module

@@ -1,0 +1,5 @@
+name = legalagree
+description = Learning about the user system.
+package = Pro Drupal Development
+core = 7.x
+files[] = legalagree.module
