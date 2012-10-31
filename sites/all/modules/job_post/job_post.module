@@ -1,0 +1,169 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 30, 2012
+ *  time    :   5:01:01 PM
+ * */
+/**
+ * @file
+ * This module provides a node type called job post
+ */
+
+/**
+ * Implements hook_node_info() to provide our job_post type.
+ */
+function job_post_node_info ()
+{
+    return array(
+        'job_post' => array(
+            'name' => t ('Job Post') ,
+            'base' => 'job_post' ,
+            'description' => t ('Use this content type to post a job.') ,
+            'has_title' => TRUE ,
+            'title_label' => t ('Job Title') ,
+            'help' => t ('Enter the job title, job description, and the name of the company that posted the job') ,
+        ) ,
+    );
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function job_post_menu_alter ( &$callbacks )
+{
+// If the user does not have 'administer nodes' permission,
+// disable the job_post menu item by setting its access callback to FALSE.
+    if ( !user_access ('administer nodes') ) {
+        $callbacks[ 'node/add/job_post' ][ 'access callback' ] = FALSE;
+// Must unset access arguments or Drupal will use user_access()
+// as a default access callback.
+        unset ($callbacks[ 'node/add/job_post' ][ 'access arguments' ]);
+    }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function job_post_permission ()
+{
+    return array(
+        'create job post' => array(
+            'title' => t ('Create a job post') ,
+            'description' => t ('Create a job post') ,
+        ) ,
+        'edit own job post' => array(
+            'title' => t ('Edit own job post') ,
+            'description' => t ('Edit your own job posting') ,
+        ) ,
+        'edit any job post' => array(
+            'title' => t ('Edit any job post') ,
+            'description' => t ('Edit any job posting') ,
+        ) ,
+        'delete own job post' => array(
+            'title' => t ('Delete own job post') ,
+            'description' => t ('Delete own job posting') ,
+        ) ,
+        'delete any job post' => array(
+            'title' => t ('Delete any job post') ,
+            'description' => t ('Delete any job posting') ,
+        ) ,
+    );
+}
+
+/**
+ * Implements hook_node_access().
+ */
+function job_post_node_access ( $op , $node , $account )
+{
+    fb ($node,'node');
+    fb($account,'account');
+    $is_author = $account->uid == $node->uid;
+    switch ( $op ) {
+        case 'create':
+// Allow if user's role has 'create joke' permission.
+            if ( user_access ('create job' , $account) ) {
+                return NODE_ACCESS_ALLOW;
+            }
+        case 'update':
+// Allow if user's role has 'edit own joke' permission and user is
+// the author; or if the user's role has 'edit any joke' permission.
+            if ( user_access ('edit own job' , $account) && $is_author ||
+                    user_access ('edit any job' , $account) ) {
+                return NODE_ACCESS_ALLOW;
+            }
+        case 'delete':
+// Allow if user's role has 'delete own joke' permission and user is
+// the author; or if the user's role has 'delete any joke' permission.
+            if ( user_access ('delete own job' , $account) && $is_author ||
+                    user_access ('delete any job' , $account) ) {
+                return NODE_ACCESS_ALLOW;
+            }
+    }
+}
+
+/**
+ * Implement hook_form() with the standard default form.
+ */
+function job_post_form ( $node , $form_state )
+{
+    return node_content_form ($node , $form_state);
+}
+
+/**
+ * Implements hook_validate().
+ */
+function job_post_validate ( $node )
+{
+// Enforce a minimum character count of 2 on company names.
+    if ( isset ($node->job_post_company) && strlen ($node->job_post_company[ 'und' ][ 0 ][ 'value' ]) < 2 ) {
+        form_set_error ('job_post_company' , t ('The company name is too short. It must be atleast 2 characters.') , $limit_validation_errors = NULL);
+    }
+}
+
+/**
+ * Implements hook_insert().
+ */
+function job_post_insert ( $node )
+{
+// log details of the job posting to watchdog
+    watchdog ('job post' , 'A new job post titled: ' . $node->title . ' for company: ' .
+            $node->job_post_company[ 'und' ][ 0 ][ 'value' ] .
+            ' was added by UID: ' . $node->uid , $variables = array( ) , WATCHDOG_NOTICE , $link = 'node/' . $node->nid);
+}
+
+/**
+ * Implements hook_update().
+ */
+function job_post_update ( $node )
+{
+// log details of the job posting to watchdog
+    watchdog ('job post' , 'A job post titled: ' . $node->title . ' for company: ' .
+            $node->job_post_company[ 'und' ][ 0 ][ 'value' ] .
+            ' was updated by UID: ' . $node->uid , $variables = array( ) , WATCHDOG_NOTICE , $link = 'node/' . $node->nid);
+}
+
+/**
+ * Implements hook_delete().
+ */
+function job_post_delete ( $node )
+{
+// log details of the job posting to watchdog
+    watchdog ('job post' , 'A job post titled: ' . $node->title . ' for company: ' .
+            $node->job_post_company[ 'und' ][ 0 ][ 'value' ] .
+            ' was deleted by UID: ' . $node->uid , $variables = array( ) , WATCHDOG_NOTICE , $link = 'node/' . $node->nid);
+}
+
+/**
+ * Implements hook_load().
+ */
+function job_post_load ( $nodes )
+{
+// Add a new element to the node at load time for storing the
+// job posting sponsor information
+    foreach ( $nodes as $node ) {
+        $node->sponsor = "ACME Career Services, Your Source for Drupal Jobs";
+    }
+    return $node;
+}
