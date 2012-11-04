@@ -1,0 +1,41 @@
+name = Grayscale
+core = 7.x
+engine = phptemplate
+stylesheets[all][] = css/style.css
+// add a style sheet that deals with colors for all mediums
+stylesheets[all][] = css/colors.css
+// add a style sheet just for printing
+stylesheets[print][] = css/print.css
+// add a style sheet just for projecting
+stylesheets[projector][] = css/showtime.css
+// add a style sheet for screen
+stylesheets[screen][] = css/style.css
+// add a style sheet for screen and projector
+stylesheets[screen, projector] = css/showit.css
+
+
+  regions[sidebar_first]     = Sidebar first
+  regions[sidebar_second]    = Sidebar second
+
+  regions[header]            = Header
+  regions[menu_bar]          = Menu Bar
+  regions[help]              = Help
+
+  regions[highlighted]       = Highlighted
+  regions[content]           = Main content
+  regions[content_aside]     = Content bottom
+
+  regions[secondary_content] = Secondary content
+  regions[tertiary_content]  = Tertiary content
+  regions[footer]            = Footer
+
+  ; Hidden regions (required by Drupal core)
+  regions[page_top]          = Page top
+  regions[page_bottom]       = Page bottom
+
+
+scripts[] = js/jcarousel.js
+
+settings[font_family] = 'ff-sss'
+settings[font_size] = 'fs-12'
+

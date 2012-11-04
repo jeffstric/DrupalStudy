@@ -1,0 +1,17 @@
+/* 
+    Document   : color_example.css
+    Created on : 2012-11-2, 20:42:18
+    Author     : jeff
+    Description:
+        Purpose of the stylesheet follows.
+*/
+/**
+* @file
+* CSS for Color Example.
+*/
+div.form-item table .form-type-textfield,
+div.form-item table .form-type-textfield * {
+display: inline-block;
+}
+
+
