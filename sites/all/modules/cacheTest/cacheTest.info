@@ -1,0 +1,5 @@
+name = cacheTest
+description = Test for cache
+package = Pro Drupal Development
+core = 7.x
+files[] = cacheTest.module
