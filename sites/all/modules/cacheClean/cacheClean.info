@@ -1,0 +1,5 @@
+name = cacheClean
+description = clean cache
+package = Pro Drupal Development
+core = 7.x
+files[] = cacheClean.module

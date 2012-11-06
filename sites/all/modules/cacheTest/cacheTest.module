@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * author:jeffstric
+ * email:jeffstricg@gmail.com
+ * blog:jeffsc.info
+ * datetime:2012-10-28, 21:53:53
+ * */
+function cacheTest_menu()
+{
+    $items[ 'cacheTest/save' ] = array(
+        'title' => 'saveCache' ,
+        'page callback' => 'cacheSaveSth' ,
+        'access callback' => TRUE ,
+        'type' => MENU_NORMAL_ITEM ,
+        'weight' => -10
+    );
+    $items[ 'cacheTest/get' ] = array(
+        'title' => 'getCache' ,
+        'page callback' => 'cacheGetSth' ,
+        'access callback' => TRUE ,
+        'type' => MENU_NORMAL_ITEM ,
+        'weight' => -10
+    );
+    return $items;
+}
+
+function cacheSaveSth()
+{
+    $cid = 'cacheSaveSth';
+    $text = 'jeff love tiny';
+    return cache_set($cid, $text, 'cache_filter', REQUEST_TIME + (60 * 60 * 24));
+}
+
+function cacheGetSth(){
+    $cacheValue =   cache_get('cacheSaveSth','cache_filter') ;
+    return $cacheValue->data;
+}
