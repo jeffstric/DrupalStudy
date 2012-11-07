@@ -17,10 +17,10 @@
 function menufun_permission ()
 {
     return array(
-        'receive greeting' => array(
-            'title' => t ('Receive a greeting') ,
-            'description' => t ('Allow users receive a greeting message') ,
-        ) ,
+	'receive greeting' => array(
+	    'title' => t ('Receive a greeting') ,
+	    'description' => t ('Allow users receive a greeting message') ,
+	) ,
     );
 }
 
@@ -30,10 +30,10 @@ function menufun_permission ()
 function menufun_menu ()
 {
     $items[ 'menufun/%/%' ] = array(
-        'title' => 'Hi' ,
-        'page callback' => 'menufun_hello' ,
-        'page arguments' => array( 2 ) ,
-        'access callback' => TRUE ,
+	'title' => 'Hi' ,
+	'page callback' => 'menufun_hello' ,
+	'page arguments' => array( 2 ) ,
+	'access callback' => TRUE ,
     );
     return $items;
 }
@@ -47,7 +47,7 @@ function menufun_menu ()
 function menufun_menu_link_alter ( &$item )
 {
     if ( $item[ 'link_path' ] == 'user/logout' ) {
-        $item[ 'link_title' ] = 'Sign off';
+	$item[ 'link_title' ] = 'Sign off';
     }
 }
 
@@ -63,6 +63,7 @@ function menufun_title ( $title )
 
 function menufun_hello ( $name = NULL )
 {
+    drupal_add_js ('console.log("hi");' , 'inline');
     return t ('Hello. $name is @name' , array( '@name' => $name ));
 }
 
