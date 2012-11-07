@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * author:jeffstric
+ * email:jeffstricg@gmail.com
+ * blog:jeffsc.info
+ * datetime:2012-10-28, 21:53:53
+ * */
+function cacheClean_menu()
+{
+    $items[ 'cacheClean' ] = array(
+        'title' => 'cacheCleanAll' ,
+        'page callback' => 'removeCache' ,
+        'page arguments' => NULL ,
+        'access callback' => TRUE ,
+        'type' => MENU_NORMAL_ITEM ,
+    );
+    $items[ 'cacheClean/%' ] = array(
+        'title' => 'cacheCleanCache' ,
+        'page callback' => 'removeCache' ,
+        'page arguments' => array( 2 ) ,
+        'access callback' => TRUE ,
+        'type' => MENU_NORMAL_ITEM ,
+    );
+    return $items;
+}
+function removeCache($table = NULL)
+{
+    $tables = array('cache','block','bootstrap','field','filter','form','image','menu','page','path');
+    if($table){
+        if(in_array($table, $tables)){
+            $tables = array($table);
+        }
+    }
+    foreach($tables as $bin){
+        if($bin !== 'cache')
+            $bin = 'cache_'.$bin;
+        cache_clear_all('*',$bin,TRUE);
+    }
+}
+
