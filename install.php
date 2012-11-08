@@ -8,7 +8,6 @@
 /**
  * Root directory of Drupal installation.
  */
-set_time_limit(0);
 define('DRUPAL_ROOT', getcwd());
 
 /**

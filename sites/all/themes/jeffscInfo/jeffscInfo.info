@@ -1,0 +1,4 @@
+name = jeffscInfo
+description = My new sub-theme
+base theme = garland
+core = 7.x

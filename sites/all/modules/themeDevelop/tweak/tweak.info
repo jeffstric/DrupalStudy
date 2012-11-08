@@ -1,0 +1,4 @@
+name = themeDevelop
+description = A module to hold odds and ends for mysite.
+core = 7.x
+package = Theme Develop

@@ -1,0 +1,22 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 8, 2012
+ *  time    :   12:16:02 PM
+ * */
+
+/**
+ * Implements hook_init().
+ */
+function tweak_init()
+{
+// The path to the mysite module.
+    $path = drupal_get_path('module' , 'tweak');
+// Include mysite.css.
+    drupal_add_css($path . '/css/tweak.css');
+// Include mysite-special.css, but do not preprocess and
+// prioritize file via its weight.
+    drupal_add_css($path . '/css/tweak-special.css' , array( 'preprocess' => FALSE , 'weight' => -20 ));
+}
