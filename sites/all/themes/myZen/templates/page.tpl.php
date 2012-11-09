@@ -90,6 +90,9 @@
 		    <h2 id="site-slogan"><?php print $site_slogan; ?></h2>
 		<?php endif; ?>
     	</hgroup><!-- /#name-and-slogan -->
+    	<div id="skip-link">
+    	    <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
+    	</div>
 	<?php endif; ?>
 
 	<?php if ( $secondary_menu ): ?>
