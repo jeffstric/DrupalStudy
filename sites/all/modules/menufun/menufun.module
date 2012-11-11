@@ -63,6 +63,14 @@ function menufun_title ( $title )
 
 function menufun_hello ( $name = NULL )
 {
+    if (module_exists('devel')) {
+    // Add debugging code here.
+	global $user;
+	// Analyze the $user variable.
+	dpm($user);
+    }
+
+    
     drupal_add_js ('console.log("hi");' , 'inline');
     return t ('Hello. $name is @name' , array( '@name' => $name ));
 }

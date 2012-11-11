@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Contains the theme's functions to manipulate Drupal's default markup.
@@ -100,8 +101,6 @@
  *   please visit the Theme Developer's Guide on Drupal.org:
  *   http://drupal.org/node/223440 and http://drupal.org/node/1089656
  */
-
-
 /**
  * Override or insert variables into the maintenance page template.
  *
@@ -111,14 +110,14 @@
  *   The name of the template being rendered ("maintenance_page" in this case.)
  */
 /* -- Delete this line if you want to use this function
-function myZen_preprocess_maintenance_page(&$variables, $hook) {
+  function myZen_preprocess_maintenance_page(&$variables, $hook) {
   // When a variable is manipulated or added in preprocess_html or
   // preprocess_page, that same work is probably needed for the maintenance page
   // as well, so we can just re-use those functions to do that work here.
   myZen_preprocess_html($variables, $hook);
   myZen_preprocess_page($variables, $hook);
-}
-// */
+  }
+  // */
 
 /**
  * Override or insert variables into the html templates.
@@ -129,14 +128,14 @@ function myZen_preprocess_maintenance_page(&$variables, $hook) {
  *   The name of the template being rendered ("html" in this case.)
  */
 /* -- Delete this line if you want to use this function
-function myZen_preprocess_html(&$variables, $hook) {
+  function myZen_preprocess_html(&$variables, $hook) {
   $variables['sample_variable'] = t('Lorem ipsum.');
 
   // The body tag's classes are controlled by the $classes_array variable. To
   // remove a class from $classes_array, use array_diff().
   //$variables['classes_array'] = array_diff($variables['classes_array'], array('class-to-remove'));
-}
-// */
+  }
+  // */
 
 /**
  * Override or insert variables into the page templates.
@@ -147,10 +146,10 @@ function myZen_preprocess_html(&$variables, $hook) {
  *   The name of the template being rendered ("page" in this case.)
  */
 /* -- Delete this line if you want to use this function
-function myZen_preprocess_page(&$variables, $hook) {
+  function myZen_preprocess_page(&$variables, $hook) {
   $variables['sample_variable'] = t('Lorem ipsum.');
-}
-// */
+  }
+  // */
 
 /**
  * Override or insert variables into the node templates.
@@ -160,18 +159,18 @@ function myZen_preprocess_page(&$variables, $hook) {
  * @param $hook
  *   The name of the template being rendered ("node" in this case.)
  */
-/* -- Delete this line if you want to use this function
-function myZen_preprocess_node(&$variables, $hook) {
-  $variables['sample_variable'] = t('Lorem ipsum.');
+function myZen_preprocess_node( &$variables , $hook )
+{
+    $variables[ 'disclaimer' ] = t('mysite takes no responsibility for user contributed content and comments.');
 
-  // Optionally, run node-type-specific preprocess functions, like
-  // myZen_preprocess_node_page() or myZen_preprocess_node_story().
-  $function = __FUNCTION__ . '_' . $variables['node']->type;
-  if (function_exists($function)) {
-    $function($variables, $hook);
-  }
+
+    // Optionally, run node-type-specific preprocess functions, like
+    // myZen_preprocess_node_page() or myZen_preprocess_node_story().
+    $function = __FUNCTION__ . '_' . $variables[ 'node' ]->type;
+    if ( function_exists($function) ) {
+	$function($variables , $hook);
+    }
 }
-// */
 
 /**
  * Override or insert variables into the comment templates.
