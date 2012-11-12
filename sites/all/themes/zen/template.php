@@ -356,6 +356,15 @@ function zen_preprocess_region(&$variables, $hook) {
   }
 }
 
+//function zen_preprocess(&$variables, $hook) {
+//    if( isset($jeffNum) )
+//	$jeffNum++;
+//    else
+//	static $jeffNum = 1;
+//    fb($variables,$jeffNum);
+//    fb($hook,$jeffNum);
+//}
+
 /**
  * Override or insert variables into the block templates.
  *
