@@ -1,0 +1,23 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 13, 2012
+ *  time    :   10:14:23 AM
+ * */
+
+/**
+ * Implements hook_init().
+ */
+function addJsSpecial_init()
+{
+    $path = drupal_get_path('module' , 'addJsSpecial');
+    // only match   "domain/admin/modules"  page
+    if ( arg(0) == 'admin'  && arg(1 ) =='modules'  && is_null( arg(2) ) ) {
+	// The path to the mysite module.
+	drupal_add_js(array('addJsSpecialId' => 'edit-modules-pro-drupal-development-addjsspecial-enable'), 'setting');
+	drupal_add_js($path . '/js/doNotAddTooMuchModules.js');
+    }
+    drupal_add_js($path . '/js/toggleBlock.js');
+}

@@ -1,0 +1,5 @@
+name=addJsSpecial
+description='Allow js for special page'
+package=Pro Drupal Development
+core=7.x
+files[]=addJsSpecial.module
