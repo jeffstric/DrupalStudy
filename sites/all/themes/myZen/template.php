@@ -161,9 +161,16 @@
  */
 function myZen_preprocess_node( &$variables , $hook )
 {
-    $variables[ 'disclaimer' ] = t('mysite takes no responsibility for user contributed content and comments.');
+//    dpm($variables);
+    $variables[ 'disclaimer' ] = theme_get_setting('myzen_disclaimer');
 
-
+    $variables[ 'submitted' ] = t('Submitted by !username !datetimeago' ,
+		array( 
+		    '!username' => $variables[ 'name' ] ,
+		    '!datetime' => format_interval(REQUEST_TIME -$variables[ 'changed' ]
+		)
+	    )
+    );
     // Optionally, run node-type-specific preprocess functions, like
     // myZen_preprocess_node_page() or myZen_preprocess_node_story().
     $function = __FUNCTION__ . '_' . $variables[ 'node' ]->type;
