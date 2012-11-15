@@ -146,11 +146,11 @@ function smarter_preprocess_html(&$variables, $hook) {
  * @param $hook
  *   The name of the template being rendered ("page" in this case.)
  */
+/*
 function smarter_preprocess_page(&$variables, $hook) {
 //  $variables['sample_variable'] = t('Lorem ipsum.');
-    fb($variables);
-    fb($hook);
 }
+ */
 
 /**
  * Override or insert variables into the node templates.
@@ -160,7 +160,6 @@ function smarter_preprocess_page(&$variables, $hook) {
  * @param $hook
  *   The name of the template being rendered ("node" in this case.)
  */
-/* -- Delete this line if you want to use this function
 function smarter_preprocess_node(&$variables, $hook) {
   $variables['sample_variable'] = t('Lorem ipsum.');
 
@@ -171,7 +170,11 @@ function smarter_preprocess_node(&$variables, $hook) {
     $function($variables, $hook);
   }
 }
-// */
+
+function smarter_preprocess_node_homepage(&$variables, $hook) {
+     $path = drupal_get_path('theme', 'smarter');
+     drupal_add_js($path . '/js/homepage_slide.js');
+}
 
 /**
  * Override or insert variables into the comment templates.

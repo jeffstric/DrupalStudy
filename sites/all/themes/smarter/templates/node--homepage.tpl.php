@@ -116,5 +116,13 @@
   <?php print render($content['links']); ?>
 
   <?php print render($content['comments']); ?>
+    
+    <div>
+	<h3>幻灯片</h3>
+    </div>
+    
+    <div>
+	<h3>expert picks</h3>
+    </div>
 
 </article><!-- /.node -->
