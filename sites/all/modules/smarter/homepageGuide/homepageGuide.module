@@ -19,13 +19,13 @@
  * @return
  *   A result set object containing the list of blog entries.
  */
-function smarterEverywhere_list( $number )
+function homepageGuide_list( $number )
 {
 // Use the Database API to retrieve our data.
 // @see http://drupal.org/node/310069
 //    $query = db_select('node' , 'n')
 //	    ->fields('n' , array( 'nid' , 'title' , 'created' , 'uid' ))
-//	    ->condition('type' , smarterEverywhere_NODE_TYPE)
+//	    ->condition('type' , homepageGuide_NODE_TYPE)
 //	    ->condition('status' , 1)
 //	    ->orderBy('created' , 'DESC')
 //	    ->range(0 , $number)
@@ -37,14 +37,14 @@ function smarterEverywhere_list( $number )
 /**
  * Implements hook_block_info().
  */
-function smarterEverywhere_block_info()
+function homepageGuide_block_info()
 {
     $blocks = array( );
 // The array key defines the $delta parameter used in all
 // other block hooks.
-    $blocks[ 'homepagesmarterEverywhere' ] = array(
+    $blocks[ 'homepageGuide' ] = array(
 // The name of the block on the blocks administration page.
-	'info' => 'smarterEverywhere' ,
+	'info' => 'homepageGuide' ,
     );
     return $blocks;
 }
@@ -57,12 +57,12 @@ function smarterEverywhere_block_info()
  * @pararm $delta
  *   The name of the requested block.
  */
-function smarterEverywhere_block_view( $delta = '' )
+function homepageGuide_block_view( $delta = '' )
 {
 // Create an empty block.
     $block = array(
-	'subject' => 'smarterEverywhere title' ,
-	'content' => 'smarterEverywhere content' ,
+	'subject' => 'homepageGuide title' ,
+	'content' => 'homepageGuide content' ,
     );
 //// Check which block is being requested.
 //    if ( $delta == 'recent' ) {
@@ -71,7 +71,7 @@ function smarterEverywhere_block_view( $delta = '' )
 //// Check if the user can access content.
 //	if ( user_access('access content') ) {
 //// Retrieve the most recent nodes.
-//	    $result = smarterEverywhere_list(smarterEverywhere_LIST_COUNT);
+//	    $result = homepageGuide_list(homepageGuide_LIST_COUNT);
 //// Create links for each blog entry.
 //	    $items = array( );
 //	    foreach ( $result as $node ) {

@@ -1,0 +1,88 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 14, 2012
+ *  time    :   1:38:38 PM
+ * */
+/**
+ * @file
+ * * Enables a single-user blog.
+ */
+define('EXPERTPICKS_NODE_TYPE' , 'expect_picks');
+define('EXPERTPICKS_LIST_COUNT' , 5);
+
+/**
+ * Returns a list of blog entries.
+ *
+ * @param $number
+ *   The number of blog entries to return.
+ * @return
+ *   A result set object containing the list of blog entries.
+ */
+function expertPicks_list( $number )
+{
+// Use the Database API to retrieve our data.
+// @see http://drupal.org/node/310069
+    $query = db_select('node' , 'n')
+	    ->join('field_data_field_ep_image', 'i', 'n.nid = i.entity_id')
+	    ->fields('n' , array( 'nid' , 'title' , 'created' , 'uid' ))
+	    ->addField('i', 'title', 'my_title')
+	    ->condition('type' , 'expect_picks')
+	    ->condition('status' , 1)
+	    ->orderBy('created' , 'DESC')
+	    ->range(0 , $number)
+	    ->execute();
+    return $query;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function expertPicks_block_info()
+{
+    $blocks = array( );
+// The array key defines the $delta parameter used in all
+// other block hooks.
+    $blocks[ 'expertPicks' ] = array(
+// The name of the block on the blocks administration page.
+	'info' => 'expertPicks' ,
+    );
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ *  * First draft!
+ *
+ * @pararm $delta
+ *   The name of the requested block.
+ */
+function expertPicks_block_view( $delta = '' )
+{
+// Create an empty block.
+    $block = array(
+	'subject' => 'expertPicks title' ,
+	'content' => 'expertPicks content' ,
+    );
+// Set the block title.
+    $block[ 'subject' ] = t('Recent blog posts');
+// Retrieve the most recent nodes.
+    $result = expertPicks_list(EXPERTPICKS_LIST_COUNT);
+// Create links for each blog entry.
+    $items = array( );
+    foreach ( $result as $node ) {
+	$items[ ] = array(
+	    'data' => l($node->title , 'node/' . $node->nid) ,
+	    'class' => array( 'node-' . $node->nid ) ,
+	);
+    }
+    if ( !empty($items) ) {
+// Theme the list of blog entries.
+	$block[ 'content' ] = theme('item_list' , array(
+	    'items' => $items ));
+    }
+    return $block;
+}

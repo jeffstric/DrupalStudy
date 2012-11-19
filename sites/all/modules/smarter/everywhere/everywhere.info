@@ -1,0 +1,5 @@
+name = Everywhere
+description = Enables a single blog for an individual or multiple users.
+core = 7.x
+package = smarter homepage theme
+files[] = Everywhere.module

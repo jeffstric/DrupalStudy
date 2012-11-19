@@ -19,13 +19,13 @@
  * @return
  *   A result set object containing the list of blog entries.
  */
-function smarterGuideBlock_list( $number )
+function Everywhere_list( $number )
 {
 // Use the Database API to retrieve our data.
 // @see http://drupal.org/node/310069
 //    $query = db_select('node' , 'n')
 //	    ->fields('n' , array( 'nid' , 'title' , 'created' , 'uid' ))
-//	    ->condition('type' , smarterGuideBlock_NODE_TYPE)
+//	    ->condition('type' , Everywhere_NODE_TYPE)
 //	    ->condition('status' , 1)
 //	    ->orderBy('created' , 'DESC')
 //	    ->range(0 , $number)
@@ -37,14 +37,14 @@ function smarterGuideBlock_list( $number )
 /**
  * Implements hook_block_info().
  */
-function smarterGuideBlock_block_info()
+function Everywhere_block_info()
 {
     $blocks = array( );
 // The array key defines the $delta parameter used in all
 // other block hooks.
-    $blocks[ 'smarterGuideBlock' ] = array(
+    $blocks[ 'homepageEverywhere' ] = array(
 // The name of the block on the blocks administration page.
-	'info' => 'smarterGuideBlock' ,
+	'info' => 'Everywhere' ,
     );
     return $blocks;
 }
@@ -57,12 +57,12 @@ function smarterGuideBlock_block_info()
  * @pararm $delta
  *   The name of the requested block.
  */
-function smarterGuideBlock_block_view( $delta = '' )
+function Everywhere_block_view( $delta = '' )
 {
 // Create an empty block.
     $block = array(
-	'subject' => 'smarterGuideBlock title' ,
-	'content' => 'smarterGuideBlock content' ,
+	'subject' => 'Everywhere title' ,
+	'content' => 'Everywhere content' ,
     );
 //// Check which block is being requested.
 //    if ( $delta == 'recent' ) {
@@ -71,7 +71,7 @@ function smarterGuideBlock_block_view( $delta = '' )
 //// Check if the user can access content.
 //	if ( user_access('access content') ) {
 //// Retrieve the most recent nodes.
-//	    $result = smarterGuideBlock_list(smarterGuideBlock_LIST_COUNT);
+//	    $result = Everywhere_list(Everywhere_LIST_COUNT);
 //// Create links for each blog entry.
 //	    $items = array( );
 //	    foreach ( $result as $node ) {
