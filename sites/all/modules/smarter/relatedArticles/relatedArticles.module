@@ -1,0 +1,157 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 14, 2012
+ *  time    :   1:38:38 PM
+ * */
+/**
+ * @file
+ * * Enables a single-user blog.
+ */
+define('relatedArticles_NODE_TYPE' , 'expect_picks');
+define('relatedArticles_LIST_COUNT' , 5);
+/**
+ * Returns a list of blog entries.
+ *
+ * @param $number
+ *   The number of blog entries to return.
+ * @return
+ *   A result set object containing the list of blog entries.
+ */
+function relatedArticles_list( $nodeId , $number )
+{
+// Use the Database API to retrieve our data.
+// @see http://drupal.org/node/310069
+    //select taxnomy id
+    $query = db_select('taxonomy_index' , 'ti')
+	    ->fields('ti' , array( 'tid' ))
+	    ->condition('nid' , $nodeId)
+	    ->execute()
+	    ->fetchAssoc();
+
+    $tid = $query[ 'tid' ];
+
+    //select releated articles
+    $query = db_select('taxonomy_index' , 'ti');
+
+    $query->join('node' , 'n' , 'n.nid = ti.nid');
+    $query->join('field_data_field_topic_article_image' , 'tai' , 'ti.nid = tai.entity_id');
+    $query->join('file_managed' , 'fm' , 'tai.field_topic_article_image_fid = fm.fid');
+
+//    $query->groupBy('n.created');
+
+    $query->fields('ti' , array( 'nid' , 'tid' ))
+	    ->fields('n' , array( 'title' , 'created' ))
+	    ->fields('fm' , array( 'uri' ))
+	    ->fields('tai' , array( 'field_topic_article_image_alt' ))
+	    ->condition('ti.tid' , $tid)
+	    ->orderBy('created' , 'DESC')
+	    ->range(0 , 5);
+
+    $result = $query->execute();
+    return $result;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function relatedArticles_block_info()
+{
+    $blocks = array( );
+// The array key defines the $delta parameter used in all
+// other block hooks.
+    $blocks[ 'relatedArticles' ] = array(
+// The name of the block on the blocks administration page.
+	'info' => 'relatedArticles' ,
+    );
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ *  * First draft!
+ *
+ * @pararm $delta
+ *   The name of the requested block.
+ */
+function relatedArticles_block_view( $delta = '' )
+{
+    $nodeId = FALSE;
+    //get node id
+    if ( arg(0) == 'node' && is_numeric(arg(1)) && arg(2) == NULL ) {
+	// Your code here
+	$nodeId = arg(1);
+    }
+// Create an empty block.
+    $block = array(
+	'subject' => 'Related Articles' ,
+	'content' => 'relatedArticles content' ,
+    );
+// Retrieve the most recent nodes.
+    $result = ($nodeId) ? relatedArticles_list($nodeId , relatedArticles_LIST_COUNT) : FALSE;
+
+    $items = array(
+	'title' => '' ,
+	'type' => 'ul' ,
+    );
+    foreach ( $result as $node ) {
+	$items[ 'items' ][ ] = array(
+	    'name' => $node->title ,
+	    'src' => $node->uri ,
+	    'url' => file_create_url('node/' . $node->nid) ,
+	    'alt' => $node->field_topic_article_image_alt ,
+	);
+    }
+    if ( !empty($items) ) {
+	$block[ 'content' ] = theme('relatedArticlesOutput' , $items);
+    }
+    return $block;
+}
+
+function relatedArticles_theme()
+{
+    return array(
+	'relatedArticlesOutput' => array(
+	    'variables' => array( 'items' => array( ) ) ,
+	) ,
+    );
+}
+
+function theme_relatedArticlesOutput( $variables )
+{
+
+    $items = $variables[ 'items' ];
+    $title = $variables[ 'title' ];
+    $type = $variables[ 'type' ];
+
+    // Only output the list container and title, if there are any list items.
+    // Check to see whether the block title exists before adding a header.
+    // Empty headers are not semantic and present accessibility challenges.
+    $output = '<div class="item-list">';
+    if ( isset($title) && $title !== '' ) {
+	$output .= '<h3>' . $title . '</h3>';
+    }
+
+
+
+    if ( !empty($items) ) {
+	$output .= "<$type>";
+	foreach ( $items as $item ) {
+	    $item[ 'alt' ] = $item[ 'alt' ] ? $item[ 'alt' ] : $item[ 'name' ];
+	    $item[ 'src' ] = file_create_url($item[ 'src' ]);
+	    $output .='
+	<li>
+	    <span>
+		<a href="' . $item[ 'url' ] . '"><img src="' . $item[ 'src' ] . '" alt="' . $item[ 'alt' ] . '"></a>
+	    </span>
+		<a href="' . $item[ 'url' ] . '">' . $item[ 'name' ] . '</a>
+	</li>';
+	}
+	$output .= "</$type>";
+    }
+    $output .= '</div>';
+    return $output;
+}

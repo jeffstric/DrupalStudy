@@ -10,7 +10,6 @@
  * @file
  * * Enables a single-user blog.
  */
-
 /**
  * Returns a list of blog entries.
  *
@@ -19,6 +18,37 @@
  * @return
  *   A result set object containing the list of blog entries.
  */
+
+/**
+ * Implementation of hook_menu().
+ */
+function homepageGuide_menu()
+{
+    $items[ 'admin/config/homepage' ] = array(
+        'title' => 'homepage setting' ,
+        'description' => 'Adjust homepage options.' ,
+        'position' => 'right' ,
+        'weight' => -5 ,
+        'page callback' => 'system_admin_menu_block_page' ,
+        'access arguments' => array( 'administer site configuration' ) ,
+        'file' => 'system.admin.inc' ,
+        'file path' => drupal_get_path ('module' , 'system') ,
+    );
+    $items[ 'admin/config/homepage/guide' ] = array(
+        'title' => 'homepage guide' ,
+        'description' => 'Change how annotations behave.' ,
+        'page callback' => 'homepageGuide_hello' ,
+        'access arguments' => array( 'administer site configuration' ) ,
+    );
+    
+    return $items;
+}
+
+function homepageGuide_hello()
+{
+    return 'hi';
+}
+
 function homepageGuide_list( $number )
 {
 // Use the Database API to retrieve our data.
