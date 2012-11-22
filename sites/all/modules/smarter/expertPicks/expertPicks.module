@@ -23,36 +23,24 @@ define('EXPERTPICKS_LIST_COUNT' , 5);
  */
 function expertPicks_list( $number )
 {
-// Use the Database API to retrieve our data.
-// @see http://drupal.org/node/310069
-//    $query = db_select('node' , 'n')
-//	    ->join('users', 'u', 'n.uid = u.uid')
-//	    ->fields('n' , array( 'nid' , 'title' , 'created' , 'uid' ))
-//	    ->addField('i',array('field_expect_pick_image_fid'))
-//	    ->condition('type' , 'expect_picks')
-//	    ->condition('status' , 1)
-//	    ->orderBy('created' , 'DESC')
-//	    ->range(0 , $number)
-//	    ->execute();
-//        return $query;
     $query = db_select('node' , 'n');
 
     $query->join('field_data_field_expect_pick_image' , 'i' , 'n.nid = i.entity_id');
     $query->join('file_managed' , 'm' , 'i.field_expect_pick_image_fid = m.fid');
     $query->join('field_data_field_expect_pick_url' , 'u' , 'n.nid = u.entity_id');
 
+    $query->addField('i' , 'field_expect_pick_image_alt' , 'alt');
+    $query->addField('u' , 'field_expect_pick_url_value' , 'url');
+    $query->addField('m' , 'uri' , 'src');
+    $query->addField('n' , 'title' , 'name');
 
 //    $query->groupBy('n.created');
 
-    $query->fields('n' , array( 'title' ))
-	    ->fields('m' , array( 'uri' ))
-	    ->fields('i' , array( 'field_expect_pick_image_alt' ))
-	    ->fields('u' , array( 'field_expect_pick_url_value' ))
+    $query->fields('i' , array( 'field_expect_pick_image_fid' ))
 	    ->orderBy('created' , 'DESC')
 	    ->range(0 , 5);
 
-    $result = $query->execute();
-    return $result;
+    return $query->execute();
 }
 
 /**
@@ -66,6 +54,8 @@ function expertPicks_block_info()
     $blocks[ 'expertPicks' ] = array(
 // The name of the block on the blocks administration page.
 	'info' => 'expertPicks' ,
+	'cache' => DRUPAL_CACHE_PER_ROLE ,
+//	'cache' => DRUPAL_NO_CACHE,//develop environment
     );
     return $blocks;
 }
@@ -85,24 +75,12 @@ function expertPicks_block_view( $delta = '' )
 	'subject' => 'expert picks' ,
 	'content' => 'expertPicks content' ,
     );
-// Retrieve the most recent nodes.
-    $result = expertPicks_list(EXPERTPICKS_LIST_COUNT);
-//    dpm($result);
-// Create links for each blog entry.
     $items = array(
 	'title' => '' ,
 	'type' => 'ul' ,
+	'items' => expertPicks_list(EXPERTPICKS_LIST_COUNT) ,
     );
-    foreach ( $result as $node ) {
-	$items[ 'items' ][ ] = array(
-	    'name' => $node->title ,
-	    'src' => $node->uri ,
-	    'alt' => $node->field_expect_pick_image_alt ,
-	    'url' => $node->field_expect_pick_url_value ,
-	);
-    }
-    if ( !empty($items) ) {
-// Theme the list of blog entries.
+    if ( !empty($items['items']) ) {
 	$block[ 'content' ] = theme('expertPicksOutput' , $items);
     }
     return $block;
@@ -127,21 +105,22 @@ function theme_expertPicksOutput( $variables )
     // Check to see whether the block title exists before adding a header.
     // Empty headers are not semantic and present accessibility challenges.
     $output = '<div class="item-list">';
+    //title alawys empty , because block already has title
     if ( isset($title) && $title !== '' ) {
 	$output .= '<h3>' . $title . '</h3>';
     }
-
+    // output items
     if ( !empty($items) ) {
 	$output .= "<$type>";
 	foreach ( $items as $item ) {
-	    $item['alt'] = $item['alt']?$item['alt']:$item['name'];
-	    $item['src']= file_create_url($item['src']);
+	    $item->alt = $item->alt ? $item->alt : $item->name;
+	    $item->src = file_create_url($item->src);
 	    $output .=
-	    '<li>
-		<a href="' . $item[ 'url' ] . '" target="_self">
-		    <img src="'.$item['src'].'" alt="'.$item['alt'].'">
+	'<li>
+		<a href="' . $item->url . '" target="_self">
+		    <img src="' . $item->src . '" alt="' . $item->alt . '">
 		</a>
-		<a href="' . $item[ 'url' ] . '" target="_self">' . $item[ 'name' ] . '</a>
+		<a href="' . $item->url . '" target="_self">' . $item->name . '</a>
 	    </li>';
 	}
 	$output .= "</$type>";

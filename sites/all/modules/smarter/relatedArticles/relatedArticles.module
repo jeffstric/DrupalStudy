@@ -12,6 +12,7 @@
  */
 define('relatedArticles_NODE_TYPE' , 'expect_picks');
 define('relatedArticles_LIST_COUNT' , 5);
+
 /**
  * Returns a list of blog entries.
  *
@@ -47,8 +48,9 @@ function relatedArticles_list( $nodeId , $number )
 	    ->fields('fm' , array( 'uri' ))
 	    ->fields('tai' , array( 'field_topic_article_image_alt' ))
 	    ->condition('ti.tid' , $tid)
+	    ->condition('ti.nid',$nodeId,'<>')
 	    ->orderBy('created' , 'DESC')
-	    ->range(0 , 5);
+	    ->range(0 , 5); //select six because you may get the article in this page
 
     $result = $query->execute();
     return $result;
@@ -65,6 +67,8 @@ function relatedArticles_block_info()
     $blocks[ 'relatedArticles' ] = array(
 // The name of the block on the blocks administration page.
 	'info' => 'relatedArticles' ,
+	'cache' => 'DRUPAL_CACHE_PER_PAGE' ,
+//	'cache' => DRUPAL_NO_CACHE , //develop environment
     );
     return $blocks;
 }
@@ -98,12 +102,12 @@ function relatedArticles_block_view( $delta = '' )
 	'type' => 'ul' ,
     );
     foreach ( $result as $node ) {
-	$items[ 'items' ][ ] = array(
-	    'name' => $node->title ,
-	    'src' => $node->uri ,
-	    'url' => file_create_url('node/' . $node->nid) ,
-	    'alt' => $node->field_topic_article_image_alt ,
-	);
+	    $items[ 'items' ][ ] = array(
+		'name' => $node->title ,
+		'src' => $node->uri ,
+		'url' => file_create_url('node/' . $node->nid) ,
+		'alt' => $node->field_topic_article_image_alt ,
+	    );
     }
     if ( !empty($items) ) {
 	$block[ 'content' ] = theme('relatedArticlesOutput' , $items);

@@ -8,16 +8,11 @@
  * */
 /**
  * @file
- * * Enables a single-user blog.
- */
-/**
- * Returns a list of blog entries.
  *
- * @param $number
- *   The number of blog entries to return.
- * @return
- *   A result set object containing the list of blog entries.
+ * 
  */
+define('TOPIC_ARTICLE_TYPE' , 'topic_articles');
+define('VARIABLE_GUIDE_NAME' , 'homepage_guide');
 
 /**
  * Implementation of hook_menu().
@@ -25,43 +20,52 @@
 function homepageGuide_menu()
 {
     $items[ 'admin/config/homepage' ] = array(
-        'title' => 'homepage setting' ,
-        'description' => 'Adjust homepage options.' ,
-        'position' => 'right' ,
-        'weight' => -5 ,
-        'page callback' => 'system_admin_menu_block_page' ,
-        'access arguments' => array( 'administer site configuration' ) ,
-        'file' => 'system.admin.inc' ,
-        'file path' => drupal_get_path ('module' , 'system') ,
+	'title' => 'homepage setting' ,
+	'description' => 'Adjust homepage options.' ,
+	'position' => 'right' ,
+	'weight' => -5 ,
+	'page callback' => 'system_admin_menu_block_page' ,
+	'access arguments' => array( 'administer site configuration' ) ,
+	'file' => 'system.admin.inc' ,
+	'file path' => drupal_get_path('module' , 'system') ,
     );
     $items[ 'admin/config/homepage/guide' ] = array(
-        'title' => 'homepage guide' ,
-        'description' => 'Change how annotations behave.' ,
-        'page callback' => 'homepageGuide_hello' ,
-        'access arguments' => array( 'administer site configuration' ) ,
+	'title' => 'homepage guide' ,
+	'description' => 'Change how annotations behave.' ,
+//        'page callback' => 'homepageGuide_hello' ,
+	'page callback' => 'drupal_get_form' ,
+	'page arguments' => array( 'homepageGuide_admin_settings' ) ,
+	'access arguments' => array( 'administer site configuration' ) ,
+	'type' => MENU_NORMAL_ITEM ,
+	'file' => 'homepageGuide.admin.inc' ,
     );
-    
+
     return $items;
 }
 
-function homepageGuide_hello()
-{
-    return 'hi';
-}
-
-function homepageGuide_list( $number )
+function homepageGuide_list()
 {
 // Use the Database API to retrieve our data.
 // @see http://drupal.org/node/310069
-//    $query = db_select('node' , 'n')
-//	    ->fields('n' , array( 'nid' , 'title' , 'created' , 'uid' ))
-//	    ->condition('type' , homepageGuide_NODE_TYPE)
-//	    ->condition('status' , 1)
-//	    ->orderBy('created' , 'DESC')
-//	    ->range(0 , $number)
-//	    ->addTag('node_access')
-//	    ->execute();
-//    return $query;
+
+    $guideArticleId = variable_get(VARIABLE_GUIDE_NAME);
+
+    $query = db_select('node' , 'n');
+
+    $query->join('field_data_field_topic_article_image' , 'i' , 'n.nid = i.entity_id');
+    $query->join('file_managed' , 'm' , 'i.field_topic_article_image_fid = m.fid');
+    $query->addField('m' , 'uri' , 'src');
+    $query->addField('i' , 'field_topic_article_image_alt' , 'alt');
+
+    $query->fields('n' , array( 'title' , 'nid' , 'created' ))
+	    ->fields('i' , array( 'field_topic_article_image_fid' ))
+	    ->condition('n.nid' , $guideArticleId)
+	    ->orderBy('created' , 'DESC')
+	    ->range(0 , 6);
+
+    $result = $query->execute();
+
+    return $result;
 }
 
 /**
@@ -75,6 +79,8 @@ function homepageGuide_block_info()
     $blocks[ 'homepageGuide' ] = array(
 // The name of the block on the blocks administration page.
 	'info' => 'homepageGuide' ,
+	'cache' => DRUPAL_CACHE_PER_ROLE ,
+	'cache' => DRUPAL_NO_CACHE , //develop environment
     );
     return $blocks;
 }
@@ -94,6 +100,16 @@ function homepageGuide_block_view( $delta = '' )
 	'subject' => 'homepageGuide title' ,
 	'content' => 'homepageGuide content' ,
     );
+    $items = array(
+	'title' => '' ,
+	'type' => 'ul' ,
+	'items' => homepageGuide_list()
+    );
+    if ( !empty($items['items']) ) {
+	$block[ 'content' ] = theme('homepageGuideOutput' , $items);
+    }
+    
+//    dpm($result);
 //// Check which block is being requested.
 //    if ( $delta == 'recent' ) {
 //// Set the block title.
@@ -119,3 +135,22 @@ function homepageGuide_block_view( $delta = '' )
 //    }
     return $block;
 }
+
+function homepageGuide_theme()
+{
+    return array(
+	'homepageGuideOutput' => array(
+	    'variables' => array( 'items' => array( ) ) ,
+	) ,
+    );
+}
+
+function homepageGuideOutput($variables)
+{
+    $items = $variables[ 'items' ];
+    $title = $variables[ 'title' ];
+    $type = $variables[ 'type' ];
+    
+}
+
+   
