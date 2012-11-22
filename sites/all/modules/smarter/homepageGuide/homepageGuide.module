@@ -80,7 +80,7 @@ function homepageGuide_block_info()
 // The name of the block on the blocks administration page.
 	'info' => 'homepageGuide' ,
 	'cache' => DRUPAL_CACHE_PER_ROLE ,
-	'cache' => DRUPAL_NO_CACHE , //develop environment
+//	'cache' => DRUPAL_NO_CACHE , //develop environment
     );
     return $blocks;
 }
@@ -105,34 +105,9 @@ function homepageGuide_block_view( $delta = '' )
 	'type' => 'ul' ,
 	'items' => homepageGuide_list()
     );
-    if ( !empty($items['items']) ) {
+    if ( !empty($items[ 'items' ]) ) {
 	$block[ 'content' ] = theme('homepageGuideOutput' , $items);
     }
-    
-//    dpm($result);
-//// Check which block is being requested.
-//    if ( $delta == 'recent' ) {
-//// Set the block title.
-//	$block[ 'subject' ] = t('Recent blog posts');
-//// Check if the user can access content.
-//	if ( user_access('access content') ) {
-//// Retrieve the most recent nodes.
-//	    $result = homepageGuide_list(homepageGuide_LIST_COUNT);
-//// Create links for each blog entry.
-//	    $items = array( );
-//	    foreach ( $result as $node ) {
-//		$items[ ] = array(
-//		    'data' => l($node->title , 'node/' . $node->nid) ,
-//		    'class' => array( 'node-' . $node->nid ) ,
-//		);
-//	    }
-//	    if ( !empty($items) ) {
-//// Theme the list of blog entries.
-//		$block[ 'content' ] = theme('item_list' , array(
-//		    'items' => $items ));
-//	    }
-//	}
-//    }
     return $block;
 }
 
@@ -145,12 +120,48 @@ function homepageGuide_theme()
     );
 }
 
-function homepageGuideOutput($variables)
+function theme_homepageGuideOutput( $variables )
 {
+//    dpm($variables);
     $items = $variables[ 'items' ];
     $title = $variables[ 'title' ];
     $type = $variables[ 'type' ];
-    
+
+    $output = <<<EOE
+   <div class="content">
+    <div id="featureNormal" style="background:url(http://files.smarter.com/images/v6/smarter_blogs_20120827.jpg) no-repeat;">
+	<div id="featurepopup" style="height: 48px; display: block;">
+	    <div class="featurePng"><img src="http://files.smarter.com/images/v6/featureBannerBg.png" alt="" width="328" height="199"></div>
+	    <div class="featurePopupText">
+		<div class="featurePopupTitle"><a href="/shopping-guides/" target="_blank">SMART GUIDES</a></div>
+		<h3>latest update:</h3>
+		    <div class="blogcontent">
+EOE;
+    foreach ( $items as $item ) {
+	$item->alt = $item->alt ? $item->alt : $item->name;
+	$item->src = file_create_url($item->src);
+	$item->url = file_create_url( 'node/' . $item->nid);
+	$output.='
+		    <div class="blogitem" style="display: none;">
+			<div class="featurePic">
+			    <table><tbody><tr><td valign="middle"><img src=" ' . $item->src . '" alt="' . $item->alt . '" style="height: 104px;"></td></tr></tbody></table>
+			</div>
+			<p>
+			    <a href="' . $item->url . '" target="_blank">' . $item->title . '.</a>
+			</p>
+		    </div>
+	    ';
+    }
+    $output .=<<<EOT
+		    </div>
+		<div class="featureChange"><a href="#" class="prev">Prev</a><a href="#" class="next nextNo">Next</a></div>
+	    </div>
+	    <!-- end featurePopupText -->
+	</div>
+	<!-- end featurepopup --> 
+    </div> 
+</div>
+EOT;
+    return $output;
 }
 
-   
