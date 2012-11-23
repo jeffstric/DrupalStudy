@@ -1,0 +1,58 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 23, 2012
+ *  time    :   5:34:53 PM
+ * */
+
+/**
+ * Implements hook_schema(). 
+ */
+function reseizeImg_schema()
+{
+    $schema[ 'smarter_image_reseize' ] = array(
+	'description' => 'resize image ' ,
+	'fields' => array(
+	    'sir_id' => array(
+		'type' => 'int' ,
+		'unsigned' => TRUE ,
+		'not null' => TRUE ,
+		'default' => 0 ,
+	    ) ,
+	    'sir_node_type' => array(
+		'type' => 'varchar' ,
+		'length' => 50 ,
+		'not null' => TRUE ,
+		'description' => "node type" ,
+	    ) ,
+	    'sir_image_fieldname' => array(
+		'type' => 'varchar' ,
+		'length' => 50 ,
+		'not null' => TRUE ,
+		'description' => "node image field name" ,
+	    ) ,
+	    'sir_thumb_width' => array(
+		'type' => 'int' ,
+		'unsigned' => TRUE ,
+		'not null' => TRUE ,
+		'default' => 100 ,
+		'description' => "width of thumb" ,
+	    ) ,
+	    'sir_thumb_height' => array(
+		'type' => 'int' ,
+		'unsigned' => TRUE ,
+		'not null' => TRUE ,
+		'default' => 100 ,
+		'description' => "height of thumb" ,
+	    ) ,
+	) ,
+	'primary key' => array( 'sir_id' ) ,
+	'indexes' => array(
+	    'bid' => array( 'bid' ) ,
+	) ,
+    );
+
+    return $schema;
+}

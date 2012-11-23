@@ -1,0 +1,5 @@
+name = reseize image
+description = reseize image
+package = smarter file manage
+core = 7.x
+files[] = reseizeImg.module

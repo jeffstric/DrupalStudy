@@ -1,0 +1,102 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Oct 23, 2012
+ *  time    :   2:26:00 PM
+ * */
+/**
+ * @file
+ * image resize
+ */
+define('RESEIZEIMG_CLASS_FILENAME' , 'ThearchyImg.php');
+
+/**
+ * Implementation of hook_action_info().
+ */
+function reseizeImg_action_info()
+{
+    return array(
+	'reseizeImg_action' => array(
+	    'type' => 'system' ,
+	    'label' => t('reseize img') ,
+	    'configurable' => FALSE ,
+	    'triggers' => array( 'node_insert' , 'node_update' , 'node_delete' ) ,
+	) ,
+    );
+}
+
+function reseizeImg_action()
+{
+    $input = func_get_arg(1);
+    $nodes = $input[ 'node' ];
+
+    /**
+     * array key :  content type    |  in datebase  is  table :node_type , clumn : type 
+     * imageFieldName : image field  |  in database is table:field_config ,clumn : field_name
+     */
+    $nodeReseizeList = array(
+	'shopping_guide_slide_show' => array(
+	    'imageFieldName' => 'field_shop_guide_slide_image' ,
+	    'thumbSize' => array( '108' , '108' ) ,
+	) ,
+    );
+
+    if ( in_array($nodes->type , array_keys($nodeReseizeList)) ) {
+
+
+	$images = $nodes->field_shop_guide_slide_image;
+	$triggle = $input[ 'hook' ];
+	$type = $nodes->type;
+	unset($nodes);
+	unset($input);
+
+	$imageIds = array( );
+
+	foreach ( $images[ 'und' ] as $value ) {
+	    array_push($imageIds , $value[ 'fid' ]);
+	}
+
+	//get image dirctory
+	$query = db_select('field_config_instance' , 'c');
+	$result = $query->fields('c' , array( 'data' ))->condition('field_name' , $nodeReseizeList[ $type ][ 'imageFieldName' ])->execute()->fetchAssoc();
+
+	$dir = unserialize($result[ 'data' ]);
+	$file_directory = DRUPAL_ROOT . '/sites/default/files/' . $dir[ 'settings' ][ 'file_directory' ] . '/';
+	unset($dir);
+
+	//get images filename
+	$query = db_select('file_managed' , 'f');
+	$result = $query->fields('f' , array( 'filename' ))->condition('fid' , $imageIds)->execute();
+
+	$imageSeize = $nodeReseizeList[ $type ][ 'thumbSize' ];
+
+	require_once dirname(__FILE__) . '/' . RESEIZEIMG_CLASS_FILENAME;
+	$ThearchyImg = new ThearchyImg();
+
+	if ( $triggle == 'node_update' || $triggle == 'node_insert' ) {
+	    foreach ( $result as $value ) {
+		$fileThumb = $file_directory . reseizeImg_getThumbName($value->filename);
+		if ( !file_exists($fileThumb) )
+		    $ThearchyImg->resize(
+			    $fileThumb , $file_directory . $value->filename , $imageSeize[ 0 ] , $imageSeize[ 1 ]
+		    );
+	    }
+	}elseif ( $triggle == 'node_delete' ) {
+	    foreach ( $result as $value ) {
+		$fileThumb = $file_directory . reseizeImg_getThumbName($value->filename);
+		unlink($fileThumb);
+	    }
+	}
+    }
+}
+
+function reseizeImg_getThumbName( $filename )
+{
+    $strArray = explode('.' , $filename);
+    $lastSecondIndex = count($strArray) - 2;
+    array_splice($strArray , $lastSecondIndex , 1 , $strArray[ $lastSecondIndex ] . '_thumb');
+    return implode('.' , $strArray);
+}
+
