@@ -12,7 +12,7 @@
  */
 function reseizeImg_schema()
 {
-    $schema[ 'smarter_image_reseize' ] = array(
+    $schema[ RESEIZEIMG_TABLENAME ] = array(
 	'description' => 'resize image ' ,
 	'fields' => array(
 	    'sir_id' => array(
@@ -49,8 +49,8 @@ function reseizeImg_schema()
 	    ) ,
 	) ,
 	'primary key' => array( 'sir_id' ) ,
-	'indexes' => array(
-	    'bid' => array( 'bid' ) ,
+	'unique keys' => array(
+	    'unique_type_field' => array( 'sir_node_type' , 'sir_image_fieldname' ) ,
 	) ,
     );
 

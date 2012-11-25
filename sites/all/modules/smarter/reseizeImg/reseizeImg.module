@@ -11,6 +11,7 @@
  * image resize
  */
 define('RESEIZEIMG_CLASS_FILENAME' , 'ThearchyImg.php');
+define('RESEIZEIMG_TABLENAME','smarter_image_reseize');
 
 /**
  * Implementation of hook_action_info().
@@ -25,6 +26,21 @@ function reseizeImg_action_info()
 	    'triggers' => array( 'node_insert' , 'node_update' , 'node_delete' ) ,
 	) ,
     );
+}
+
+function reseizeImg_menu()
+{
+    $items[ 'admin/config/media/reseizeImg' ] = array(
+	'title' => 'resize image' ,
+	'description' => 'chose which field image should reseize' ,
+	'page callback' => 'drupal_get_form' ,
+	'page arguments' => array( 'reseizeImg_admin_settings' ) ,
+	'access arguments' => array( 'administer site configuration' ) ,
+	'type' => MENU_NORMAL_ITEM ,
+	'file' => 'reseizeImg.admin.inc' ,
+    );
+
+    return $items;
 }
 
 function reseizeImg_action()
@@ -44,9 +60,9 @@ function reseizeImg_action()
     );
 
     if ( in_array($nodes->type , array_keys($nodeReseizeList)) ) {
-
-
-	$images = $nodes->field_shop_guide_slide_image;
+	
+	$imageKey = $nodeReseizeList[$nodes->type]['imageFieldName'];
+	$images = $nodes->$imageKey;
 	$triggle = $input[ 'hook' ];
 	$type = $nodes->type;
 	unset($nodes);
