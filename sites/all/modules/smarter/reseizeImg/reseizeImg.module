@@ -11,7 +11,7 @@
  * image resize
  */
 define('RESEIZEIMG_CLASS_FILENAME' , 'ThearchyImg.php');
-define('RESEIZEIMG_TABLENAME','smarter_image_reseize');
+define('RESEIZEIMG_TABLENAME' , 'smarter_image_reseize');
 
 /**
  * Implementation of hook_action_info().
@@ -31,13 +31,29 @@ function reseizeImg_action_info()
 function reseizeImg_menu()
 {
     $items[ 'admin/config/media/reseizeImg' ] = array(
-	'title' => 'resize image' ,
-	'description' => 'chose which field image should reseize' ,
-	'page callback' => 'drupal_get_form' ,
-	'page arguments' => array( 'reseizeImg_admin_settings' ) ,
+	'title' => 'list resize image rule' ,
+	'description' => 'list reseize rules' ,
+	'page callback' => 'reseizeImg_rule_list' ,
 	'access arguments' => array( 'administer site configuration' ) ,
 	'type' => MENU_NORMAL_ITEM ,
-	'file' => 'reseizeImg.admin.inc' ,
+	'file' => 'reseizeImg.manage.inc' ,
+    );
+    $items[ 'admin/config/media/reseizeImg/delete/%' ] = array(
+	'title' => 'manage resize image rule' ,
+	'description' => 'manage reseize rules' ,
+	'page callback' => 'reseizeImg_delete' ,
+	'page arguments' => array( 5 ) ,
+	'access arguments' => array( 'administer site configuration' ) ,
+	'type' => MENU_NORMAL_ITEM ,
+    );
+    $items[ 'admin/config/media/reseizeImg/add' ] = array(
+	'title' => 'add resize image rule' ,
+	'description' => 'chose which field image should reseize' ,
+	'page callback' => 'drupal_get_form' ,
+	'page arguments' => array( 'reseizeImg_add_settings' ) ,
+	'access arguments' => array( 'administer site configuration' ) ,
+	'type' => MENU_NORMAL_ITEM ,
+	'file' => 'reseizeImg.add.inc' ,
     );
 
     return $items;
@@ -48,20 +64,27 @@ function reseizeImg_action()
     $input = func_get_arg(1);
     $nodes = $input[ 'node' ];
 
+    $query = db_select(RESEIZEIMG_TABLENAME , 'sir');
+    $result = $query->fields('sir')
+	    ->execute();
+
+    $nodeReseizeList = array( );
     /**
      * array key :  content type    |  in datebase  is  table :node_type , clumn : type 
      * imageFieldName : image field  |  in database is table:field_config ,clumn : field_name
      */
-    $nodeReseizeList = array(
-	'shopping_guide_slide_show' => array(
-	    'imageFieldName' => 'field_shop_guide_slide_image' ,
-	    'thumbSize' => array( '108' , '108' ) ,
-	) ,
-    );
+    foreach ( $result as $value ) {
+	$nodeReseizeList[ $value->sir_node_type ] = array(
+	    'imageFieldName' => $value->sir_image_fieldname ,
+	    'thumbSize' => array( $value->sir_thumb_width , $value->sir_thumb_height ) ,
+	);
+    }
+
+
 
     if ( in_array($nodes->type , array_keys($nodeReseizeList)) ) {
-	
-	$imageKey = $nodeReseizeList[$nodes->type]['imageFieldName'];
+
+	$imageKey = $nodeReseizeList[ $nodes->type ][ 'imageFieldName' ];
 	$images = $nodes->$imageKey;
 	$triggle = $input[ 'hook' ];
 	$type = $nodes->type;
@@ -106,6 +129,60 @@ function reseizeImg_action()
 	    }
 	}
     }
+}
+
+function reseizeImg_rule_list()
+{
+
+    $query = db_select(RESEIZEIMG_TABLENAME , 'sir');
+    $query->addField('sir' , 'sir_id' , 'id');
+    $query->addField('sir' , 'sir_node_type' , 'type');
+    $query->addField('sir' , 'sir_image_fieldname' , 'field');
+    $query->addField('sir' , 'sir_thumb_width' , 'width');
+    $query->addField('sir' , 'sir_thumb_height' , 'height');
+    $result = $query->execute();
+
+    $header = array(
+	'type' => array( 'data' => 'node type' ) ,
+	'field' => array( 'data' => 'image field name' ) ,
+	'width' => array( 'data' => 'width' ) ,
+	'height' => array( 'data' => 'height' ) ,
+	'delete' => array( 'data' => 'delete' ) ,
+    );
+    $rows = array( );
+
+    foreach ( $result as $key => $value ) {
+	$rows[ ] = array(
+	    'data' => array(
+		array( 'data' => $value->type ) ,
+		array( 'data' => $value->field ) ,
+		array( 'data' => $value->width ) ,
+		array( 'data' => $value->height ) ,
+		array( 'data' => l('delete' , file_create_url('admin/config/media/reseizeImg/delete/') . $value->id) ) ,
+	    ) ,
+	);
+    }
+
+
+    $table = array(
+	'#prefix' => l('create rule' , file_create_url('admin/config/media/reseizeImg/add')) ,
+	'#theme' => 'table' ,
+	'#rows' => $rows ,
+	'#header' => $header ,
+    );
+
+    return drupal_render($table);
+
+//    return $output;
+}
+
+function reseizeImg_delete( $sir_id )
+{
+    $sir_id = (int) $sir_id;
+    $result = db_delete(RESEIZEIMG_TABLENAME)
+	    ->condition('sir_id' , $sir_id)
+	    ->execute();
+    drupal_goto('admin/config/media/reseizeImg/list');
 }
 
 function reseizeImg_getThumbName( $filename )

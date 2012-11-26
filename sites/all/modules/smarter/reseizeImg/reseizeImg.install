@@ -12,14 +12,17 @@
  */
 function reseizeImg_schema()
 {
+     if (!defined('RESEIZEIMG_TABLENAME')) {
+      include_once drupal_get_path('module', 'reseizeImg') . '/reseizeImg.module';
+    }
     $schema[ RESEIZEIMG_TABLENAME ] = array(
 	'description' => 'resize image ' ,
 	'fields' => array(
 	    'sir_id' => array(
-		'type' => 'int' ,
+		'type' => 'serial' ,
 		'unsigned' => TRUE ,
 		'not null' => TRUE ,
-		'default' => 0 ,
+		'size' => 'medium',  
 	    ) ,
 	    'sir_node_type' => array(
 		'type' => 'varchar' ,
