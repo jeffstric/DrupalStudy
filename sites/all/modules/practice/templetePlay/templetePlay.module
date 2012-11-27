@@ -1,0 +1,56 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 27, 2012
+ *  time    :   4:50:47 PM
+ * */
+
+/**
+ * Implements hook_block_info().
+ */
+function templetePlay_block_info()
+{
+    $blocks = array( );
+// The array key defines the $delta parameter used in all
+// other block hooks.
+    $blocks[ 'templetePlay' ] = array(
+// The name of the block on the blocks administration page.
+	'info' => 'templete play' ,
+	'cache' => DRUPAL_NO_CACHE ,
+    );
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ *  * First draft!
+ *
+ * @pararm $delta
+ *   The name of the requested block.
+ */
+function templetePlay_block_view( $delta = '' )
+{
+// Create an empty block.
+    $block = array(
+	'subject' => 'templetePlay' ,
+	'content' => array(
+	    '#theme' => 'templetePlayTheme' ,
+	    '#name' =>array('jeffstric'),
+	)
+    );
+    return $block;
+}
+
+function templetePlay_theme()
+{
+    return array(
+	'templetePlayTheme' => array(
+	    'variables' => array( 'name' => array('jeff') ) ,
+	    'template' => 'templetePlay' ,
+	    'path' => drupal_get_path('module' , 'templetePlay') ,
+	) ,
+    );
+}

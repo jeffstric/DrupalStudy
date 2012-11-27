@@ -1,0 +1,5 @@
+name = header_side
+description = for special topic ,shopping guide 
+core = 7.x
+package = smarter homepage theme
+files[] =header_side.module

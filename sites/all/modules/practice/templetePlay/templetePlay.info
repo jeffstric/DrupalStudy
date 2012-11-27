@@ -1,0 +1,5 @@
+name = templete Play
+description = templetePlay 
+core = 7.x
+package = Pro Drupal Development
+files[] = templetePlay.module

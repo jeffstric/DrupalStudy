@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Contains the theme's functions to manipulate Drupal's default markup.
@@ -100,8 +101,6 @@
  *   please visit the Theme Developer's Guide on Drupal.org:
  *   http://drupal.org/node/223440 and http://drupal.org/node/1089656
  */
-
-
 /**
  * Override or insert variables into the maintenance page template.
  *
@@ -111,14 +110,14 @@
  *   The name of the template being rendered ("maintenance_page" in this case.)
  */
 /* -- Delete this line if you want to use this function
-function smarter_preprocess_maintenance_page(&$variables, $hook) {
+  function smarter_preprocess_maintenance_page(&$variables, $hook) {
   // When a variable is manipulated or added in preprocess_html or
   // preprocess_page, that same work is probably needed for the maintenance page
   // as well, so we can just re-use those functions to do that work here.
   smarter_preprocess_html($variables, $hook);
   smarter_preprocess_page($variables, $hook);
-}
-// */
+  }
+  // */
 
 /**
  * Override or insert variables into the html templates.
@@ -129,14 +128,14 @@ function smarter_preprocess_maintenance_page(&$variables, $hook) {
  *   The name of the template being rendered ("html" in this case.)
  */
 /* -- Delete this line if you want to use this function
-function smarter_preprocess_html(&$variables, $hook) {
+  function smarter_preprocess_html(&$variables, $hook) {
   $variables['sample_variable'] = t('Lorem ipsum.');
 
   // The body tag's classes are controlled by the $classes_array variable. To
   // remove a class from $classes_array, use array_diff().
   //$variables['classes_array'] = array_diff($variables['classes_array'], array('class-to-remove'));
-}
-// */
+  }
+  // */
 
 /**
  * Override or insert variables into the page templates.
@@ -146,14 +145,21 @@ function smarter_preprocess_html(&$variables, $hook) {
  * @param $hook
  *   The name of the template being rendered ("page" in this case.)
  */
-
-function smarter_preprocess_page(&$variables, $hook) {
+function smarter_preprocess_page( &$variables , $hook )
+{
 //  $variables['sample_variable'] = t('Lorem ipsum.');
-    if($variables['is_front']){
-	unset($variables['page']['content']['system_main']);
+
+    //delete defualt content for homepage
+    if ( $variables[ 'is_front' ] ) {
+	unset($variables[ 'page' ][ 'content' ][ 'system_main' ]);
+    }
+    
+    //let page.tpl.php can adapt node content type
+    if ( isset($variables[ 'node' ]) ) {
+	// If the node type is "blog" the template suggestion will be "page--blog.tpl.php".
+	$variables[ 'theme_hook_suggestions' ][ ] = 'page__' . $variables[ 'node' ]->type;
     }
 }
-
 
 /**
  * Override or insert variables into the node templates.

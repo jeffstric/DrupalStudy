@@ -1,0 +1,52 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 14, 2012
+ *  time    :   1:38:38 PM
+ * */
+/**
+ * @file
+ * 
+ */
+
+/**
+ * Implements hook_block_info().
+ */
+function header_side_block_info()
+{
+    $blocks = array( );
+// The array key defines the $delta parameter used in all
+// other block hooks.
+    $blocks[ 'homepageheader_side' ] = array(
+// The name of the block on the blocks administration page.
+	'info' => 'header_side' ,
+	'cache' => DRUPAL_CACHE_PER_ROLE ,
+//	'cache' => DRUPAL_NO_CACHE , //develop environment
+    );
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ *  * First draft!
+ *
+ * @pararm $delta
+ *   The name of the requested block.
+ */
+function header_side_block_view( $delta = '' )
+{
+// Create an empty block.
+    $block = array(
+	'subject' => '' ,
+	'content' => '
+	    <div class="toplink" id="toplink">
+		<a href="javascript:;" name="topic">Special Topic</a> |
+		<a href="/shopping-guides/" name="guides">Shopping Guides</a>
+	    </div>'
+    );
+    
+    return $block;
+}
