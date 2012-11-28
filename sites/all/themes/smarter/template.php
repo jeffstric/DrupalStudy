@@ -169,9 +169,8 @@ function smarter_preprocess_page( &$variables , $hook )
  * @param $hook
  *   The name of the template being rendered ("node" in this case.)
  */
-/*
 function smarter_preprocess_node(&$variables, $hook) {
-  $variables['sample_variable'] = t('Lorem ipsum.');
+//  $variables['sample_variable'] = t('Lorem ipsum.');
 
   // Optionally, run node-type-specific preprocess functions, like
   // smarter_preprocess_node_page() or smarter_preprocess_node_story().
@@ -180,7 +179,11 @@ function smarter_preprocess_node(&$variables, $hook) {
     $function($variables, $hook);
   }
 }
-*/
+
+function smarter_preprocess_node_shopping_guide_slide_show(){
+     drupal_add_css(drupal_get_path('theme', 'smarter').'/css/shopping_guide/shopping_guide.css', array('type' => 'file','group'=>CSS_THEME));
+     drupal_add_js(drupal_get_path('theme', 'smarter').'/js/shopping_guide/shopping_guide.js' , array('type' => 'file','group'=>JS_THEME));
+}
 
 /**
  * Override or insert variables into the comment templates.

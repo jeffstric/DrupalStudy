@@ -27,10 +27,10 @@ function expertPicks_list( $number )
 
     $query->join('field_data_field_expect_pick_image' , 'i' , 'n.nid = i.entity_id');
     $query->join('file_managed' , 'm' , 'i.field_expect_pick_image_fid = m.fid');
-    $query->join('field_data_field_expect_pick_url' , 'u' , 'n.nid = u.entity_id');
+    $query->join('field_data_field_url' , 'u' , 'n.nid = u.entity_id');
 
     $query->addField('i' , 'field_expect_pick_image_alt' , 'alt');
-    $query->addField('u' , 'field_expect_pick_url_value' , 'url');
+    $query->addField('u' , 'field_url_value' , 'url');
     $query->addField('m' , 'uri' , 'src');
     $query->addField('n' , 'title' , 'name');
 

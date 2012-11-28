@@ -83,34 +83,118 @@
  * @see template_process()
  */
 ?>
+<!--
+<div class="slidebox">
+    <div class="slidebut">
+	<a class="prevnone" href="#" ><img src="{$fileRoot}images/v6/special/slide_but.png" /></a>
+	<a class="next" href="#slide-1" ><img src="{$fileRoot}images/v6/special/slide_but.png" /></a>
+    </div>
+
+    {if $baseInfo.addDate}<div class="date">{$baseInfo.addDate|date_format:"%b %e, %Y"}</div>{/if}
+    {if $headerImg}
+    <h1><img src="{$fileRoot}{$headerImg}" alt="{$h1}" width="614" height="45"></h1>
+    {else}
+    <h1>{$h1}</h1>
+    {/if}
+    {if $baseInfo.author}<div class="author">By {$baseInfo.author}</div>{/if}
+
+    {foreach from=$list item=lsitem key=lskey name=lsname}
+    {if $lsitem.image}
+    <div class="productcontent  {if !$smarty.foreach.lsname.first}disn{/if}" {if !$smarty.foreach.lsname.first}name="{$lskey}"{else}name="main"{/if}>
+	 {if $smarty.foreach.lsname.first}
+	 <div class="intro">{$pageIntro}</div>
+	{/if}
+	<div class="imgbox">
+	    {if $lsitem.NoLink=='No' && !$smarty.foreach.lsname.first}
+	    <a {if $lsitem.trackingProdLink=='YES'}href="{$lsitem.trackingLink}"{else}href="{$lsitem.productLink}"{/if} title="{$lsitem.productName}" {if $lsitem.trackingProdLink=='YES'}target="_blank" rel="nofollow"{/if}>
+		<img src="{$fileRoot}{$lsitem.image}" alt="{$lsitem.productName}"/>
+	    </a>
+	    {elseif $smarty.foreach.lsname.first}
+	    <a href="#slide-1" title="{$lsitem.productName}">
+		<img src="{$fileRoot}{$lsitem.image}" alt="{$lsitem.productName}" width="614" />
+	    </a>
+	    {else}
+	    <img src="{$fileRoot}{$lsitem.image}" alt="{$lsitem.productName}"/>
+	    {/if}
+	</div>
+	{if !$smarty.foreach.lsname.first}
+	<div class="productinfo">
+	    {if $lsitem.NoLink=='No'}
+	    <a {if $lsitem.trackingProdLink=='YES'}href="{$lsitem.trackingLink}"{else}href="{$lsitem.productLink}"{/if} title="{$lsitem.productName}" {if $lsitem.trackingProdLink=='YES'}target="_blank" rel="nofollow"{/if}>
+		<h3>{$lsitem.productName}</h3>
+	    </a>
+	    <a href="{$lsitem.trackingLink}"  {if $lsitem.trackingProdLink=='YES'}target="_blank" rel="nofollow"{/if}>
+	       <p class="price">{if $lsitem.productPrice}${$lsitem.productPrice}{/if}</p>
+	    </a>
+	    {else}
+	    <h3>{$lsitem.productName}</h3>
+	    <p class="price">{if $lsitem.productPrice}${$lsitem.productPrice}{/if}</p>
+	    {/if}
+	    <p class="desc">{$lsitem.productDesc}</p>
+	</div>
+	<div class="cl"></div>
+	{/if}
+    </div>
+    {/if}
+    {/foreach}
+    <div class="slideselect">
+	<div class="prev"><a href="#"><img src="{$fileRoot}images/v6/special/slideprev.gif" width="11" height="22" /></a></div>
+	<div class="slidecontent">	
+	    <ul>
+		{foreach from=$list item=lsitem key=lskey name=lsname}
+		{if $lsitem.productName}
+		<li><a {if !$smarty.foreach.lsname.first}href="#slide-{$lskey}" name="{$lskey}"{else}href="#" name="main"{/if} class="{if $smarty.foreach.lsname.first}selected{else}normal{/if}" title="{$lsitem.productName}"><img src="{$fileRoot}{$lsitem.thumbImage}" alt="{$lsitem.productName}" width="108" height="108" /></a></li>
+		{/if}
+		{/foreach}
+	    </ul>
+	</div>
+	<div class="next"><a href="#slide-1"><img src="{$fileRoot}images/v6/special/slidenext.gif" width="11" height="22" /></a></div>                        
+	<div class="cl"></div>
+    </div>
+</div>
+-->
+
 <div class="slidebox">
     <div class="slidebut">
 	<a class="prev" href="#slide-1"><img src="http://files.smarter.com/images/v6/special/slide_but.png"></a>
 	<a class="next" href="#slide-3"><img src="http://files.smarter.com/images/v6/special/slide_but.png"></a>
     </div>
-    <div class="date">Aug 1, 2012</div> <h1><?php $title ?></h1>
+
+    <h1><?php print $title ?></h1>
+    <?php print $submitted ?>
+    <!--
+    <div class="date">Aug 1, 2012</div> 
     <div class="author">By Belinda Romano</div> 
-
-    <div class="productcontent " name="main" style="display: none;">
-	<div class="intro"><p>Comfortable, casual and always in style, there's no denying that the boat shoe is a summer time classic. Whether you're sunset sailing with friends, or lakeside relaxing with the family, these shoes add the perfect summer-cool vibe to any outfit. What's even better? Boat shoes are a great summer-to-fall transitional accessory. Just trade your bermudas for some khakis and your chambray button-downs for some cozy sweaters and you'll be ready for fall! From classic and sophisticated designs for mom and dad, to fun and contemporary trends for the kids, there is a boat shoe out there for everyone in the family.</p></div>
-	<div class="imgbox">
-	    <a href="#slide-1" title="Boat Shoes for the Entire Family">
-		<img src="http://files.smarter.com/images/special/special_0_20120801191638.jpg" alt="Boat Shoes for the Entire Family" width="614">
-	    </a>
-	</div>
-    </div>
-
+    -->
+    <?php dpm($content); ?>
+    <?php foreach ( $content[ 'field_shop_guide_slide_content' ][ '#items' ] as $key => $value ) : ?>
+        <div class="productcontent " name="main" style="display: none;">
+    	<div class="intro">
+    	    <p>
+		    <?php print $value[ 'value' ] ?>
+    	    </p>
+    	</div>
+    	<div class="imgbox">
+    	    <a href="#slide-1" title="Boat Shoes for the Entire Family">
+		    <?php print render($content[ 'field_shop_guide_slide_image' ][ $key ]); ?>
+    	    </a>
+    	</div>
+        </div>	
+    <?php endforeach; ?>
     <div class="slideselect">
 	<div class="prev"><a href="#slide-1"><img src="http://files.smarter.com/images/v6/special/slideprev.gif" width="11" height="22"></a></div>
 	<div class="slidecontent"> 
 	    <ul style="margin-left: 0px;">
-		<li><a href="#" name="main" class="normal" title="Boat Shoes for the Entire Family"><img src="http://files.smarter.com/images/special/special_thumb_0_20120801191639.jpg" alt="Boat Shoes for the Entire Family" width="108" height="108"></a></li>
+		<?php foreach ( $content[ 'field_shop_guide_slide_content' ][ '#items' ] as $key => $value ): ?>
+    		<li>
+    		    <a href="#" name="main" class="normal">
+    			<img src="<?php print image_style_url('thumbnail' , $content[ 'field_shop_guide_slide_image' ][ $key ][ '#item' ][ 'uri' ]); ?>"  width="108" height="108">
+    		    </a>
+    		</li>
+		<?php endforeach; ?>
+		<!--
 		<li><a href="#slide-1" name="1" class="normal" title="Dad"><img src="http://files.smarter.com/images/special/special_thumb_1_20120801182801.jpg" alt="Dad" width="108" height="108"></a></li>
-		<li><a href="#slide-2" name="2" class="selected" title="Mom"><img src="http://files.smarter.com/images/special/special_thumb_2_20120801182801.jpg" alt="Mom" width="108" height="108"></a></li>
-		<li><a href="#slide-3" name="3" class="normal" title="Big Sister"><img src="http://files.smarter.com/images/special/special_thumb_3_20120801182801.jpg" alt="Big Sister" width="108" height="108"></a></li>
-		<li><a href="#slide-4" name="4" class="normal" title="Little Sister"><img src="http://files.smarter.com/images/special/special_thumb_4_20120801182801.jpg" alt="Little Sister" width="108" height="108"></a></li>
-		<li><a href="#slide-5" name="5" class="normal" title="Big Brother"><img src="http://files.smarter.com/images/special/special_thumb_5_20120801182802.jpg" alt="Big Brother" width="108" height="108"></a></li>
-		<li><a href="#slide-6" name="6" class="normal" title="Little Brother"><img src="http://files.smarter.com/images/special/special_thumb_6_20120801182802.jpg" alt="Little Brother" width="108" height="108"></a></li>
+		-->
 	    </ul>
 	</div>
 	<div class="next"><a href="#slide-3"><img src="http://files.smarter.com/images/v6/special/slidenext.gif" width="11" height="22"></a></div> 
@@ -119,37 +203,4 @@
 
 </div>
 
-<article class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
-    <?php if ( $title_prefix || $title_suffix || $display_submitted || $unpublished || !$page && $title ): ?>
-        <header>
-	    <?php print render($title_prefix); ?>
-	    <?php if ( !$page && $title ): ?>
-	        <h2<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
-	    <?php endif; ?>
-	    <?php print render($title_suffix); ?>
-
-	    <?php if ( $display_submitted ): ?>
-	        <p class="submitted">
-		    <?php print $user_picture; ?>
-		    <?php print $submitted; ?>
-	        </p>
-	    <?php endif; ?>
-
-	    <?php if ( $unpublished ): ?>
-	        <p class="unpublished"><?php print t('Unpublished'); ?></p>
-	    <?php endif; ?>
-        </header>
-    <?php endif; ?>
-
-    <?php
-    // We hide the comments and links now so that we can render them later.
-    hide($content[ 'comments' ]);
-    hide($content[ 'links' ]);
-    print render($content);
-    ?>
-
-    <?php print render($content[ 'links' ]); ?>
-
-    <?php print render($content[ 'comments' ]); ?>
-
-</article><!-- /.node -->
+<!-- /.node -->

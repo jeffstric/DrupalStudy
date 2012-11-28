@@ -1,0 +1,118 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 28, 2012
+ *  time    :   5:15:17 PM
+ * */
+/**
+ * @file 
+ * add  shopping guide field using the Field API. 
+ * 
+ */
+
+/**
+ * Implements hook_field_info(). 
+ * 
+ * Provides the description of the field. 
+ */
+function shoppingGuide_field_info()
+{
+    return array(
+	'shoppingGuideType' => array(
+	    'label' => t('shopping guide type') ,
+	    'description' => t('add  shopping guide field ') ,
+	    'settings' => array( 'max_length' => 255 ) ,
+	    'default_widget' => 'shopping_guide_type_list' ,
+	    'default_formatter' => 'shopping_guide_type_list' ,
+	) ,
+    );
+}
+
+/**
+ * Implements hook_field_schema(). 
+ */
+function shoppingGuide_field_schema( $field )
+{
+    $columns = array(
+	'shop_guide_type' => array( 'type' => 'varchar' , 'length' => 255 , 'not null' => TRUE ) ,
+    );
+    $indexes = array(
+	'shop_guide_type' => array( 'shop_guide_type' ) ,
+    );
+    return array(
+	'columns' => $columns ,
+	'indexes' => $indexes ,
+    );
+}
+
+function shoppingGuide_field_validate( $entity_type , $entity , $field , $instance , $langcode , $items , &$errors )
+{
+    foreach ( $items as $delta => $item ) {
+	dpm($item);
+//    if(!empty($item['rgb'])) { 
+//      if(! preg_match('@^#[0-9a-f]{6}$@', $item['rgb'])) { 
+//        $errors[$field['field_name']][$langcode][$delta][] = array( 
+//          'error' => 'color_example_invalid', 
+//          'message' => t('Color must be in the HTML format #abcdef.'), 
+//        ); 
+//      } 
+//    } 
+    }
+}
+
+/**
+ * Implements hook_field_is_empty(). 
+ */
+function shoppingGuide_field_is_empty( $item , $field )
+{
+    return empty($item[ 'rgb' ]);
+}
+
+/**
+ * Implements hook_field_formatter_info(). 
+ */
+function shoppingGuide_field_formatter_info()
+{
+    return array(
+	// This formatter just displays the hex value in the color indicated. 
+	'shopping_guide_type_list' => array(
+	    'label' => t('Simple text-based formatter') ,
+	    'field types' => array( 'list_text' ) ,
+	) ,
+	    // 
+    );
+}
+
+/**
+ * Implements hook_field_formatter_view(). 
+ */
+function shoppingGuide_field_formatter_view( $entity_type , $entity , $field , $instance , $langcode , $items , $display )
+{
+    $element = array( );
+
+    switch ( $display[ 'type' ] ) {
+	// This formatter simply outputs the field as text and with a color. 
+	case 'shopping_guide_type_list':
+	    foreach ( $items as $delta => $item ) {
+		$element[ $delta ][ '#markup' ] = '<p style="color: ' . $item[ 'rgb' ] . '">'
+			. t('The color for this event is @code' , array( '@code' => $item[ 'rgb' ] ))
+			. '</p>';
+	    }
+	    break;
+	// This formatter adds css to the page changing the '.region-content' area's 
+	// background color. If there are many fields, the last one will win. 
+	case 'color_example_color_background':
+	    foreach ( $items as $delta => $item ) {
+		drupal_add_css('div.region-content { background-color:' . $item[ 'rgb' ]
+			. ';}' , array( 'type' => 'inline' ));
+		$element[ $delta ][ '#markup' ] = '<p>'
+			. t('The color for this event has been changed to @code' , array( '@code'
+			    => $item[ 'rgb' ] )) . '</p>';
+	    }
+	    break;
+    }
+
+    return $element;
+}
