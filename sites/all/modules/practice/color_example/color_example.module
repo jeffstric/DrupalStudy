@@ -204,8 +204,6 @@ colorpicker')),
             break;
     }
     
-//    dpm($element);
-    
     return $element;
 }
 
@@ -218,8 +216,6 @@ function color_example_3text_validate($element, &$form_state) {
     $field = $form_state['field'][$element['#field_name']][$element['#language']]['field'];
     $field_name = $field['field_name'];
     
-    dpm($element);
-    dpm($form_state);
     
     if (isset($form_state['values'][$field_name][$element['#language']][$delta])) {
         $values = $form_state['values'][$field_name][$element['#language']][$delta];
