@@ -166,7 +166,7 @@
     <div class="date">Aug 1, 2012</div> 
     <div class="author">By Belinda Romano</div> 
     -->
-    <?php dpm($content); ?>
+    <?php // dpm($content); ?>
     <?php foreach ( $content[ 'field_shop_guide_slide_content' ][ '#items' ] as $key => $value ) : ?>
         <div class="productcontent " name="main" style="display: none;">
     	<div class="intro">

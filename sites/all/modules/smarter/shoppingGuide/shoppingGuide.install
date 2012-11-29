@@ -1,0 +1,25 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 29, 2012
+ *  time    :   10:04:22 AM
+ * */
+/**
+ * Implements hook_field_schema().
+ */
+//function shoppingGuide_field_schema( $field )
+//{
+//    $columns = array(
+//	'iid' => array(
+//	    'type' => 'int' ,
+//	    'unsigned' => TRUE ,
+//	    'not null' => TRUE ,
+//	) ,
+//    );
+//
+//    return array(
+//	'columns' => $columns ,
+//    );
+//}
