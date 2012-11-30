@@ -11,330 +11,164 @@
  * add  shopping guide field using the Field API. 
  * 
  */
-define('SHOPGUIDE_TABLENAME' , 'field_data_field_shop_guide_item_id');
+//define('SHOPGUIDE_TABLENAME' , 'field_data_field_shop_guide_item_id');
 
-///**
-// * Implements hook_field_info(). 
-// * 
-// * Provides the description of the field. 
-// */
-//function shoppingGuide_field_info()
-//{
-//    return array(
-//	'shopGuideItemField' => array(
-//	    'label' => t('shopping guide item') ,
-//	    'description' => t('add  shopping guide field ') ,
-//	    'default_widget' => 'shopGuideItemWidget' ,
-//	    'default_formatter' => 'shopping_guide_item_list' ,
-//	) ,
-//    );
-//}
-//
-//function shoppingGuide_field_schema( $field )
-//{
-//    $columns = array(
-//	'iid' => array(
-////	    'type' => 'int' ,
-////	    'unsigned' => TRUE ,
-////	    'not null' => TRUE ,
-//
-//	    'type' => 'varchar' , 'length' => 20 , 'not null' => FALSE
-//	) ,
-//    );
-//
-//    return array(
-//	'columns' => $columns ,
-//    );
-//}
-//
-///**
-// * Implements hook_field_validate().
-// *
-// *
-// */
-//function shoppingGuide_field_validate( $entity_type , $entity , $field , $instance , $langcode , $items , &$errors )
-//{
-//    foreach ( $items as $delta => $item ) {
-//	if ( !empty($item[ 'iid' ]) ) {
-//	    if ( preg_match('\W' , $item[ 'iid' ]) ) {
-//		$errors[ $field[ 'field_name' ] ][ $langcode ][ $delta ][ ] = array(
-//		    'error' => 'invalid_item_id' ,
-//		    'message' => t('invalid') ,
-//		);
-//	    }
-//	}
-//    }
-//}
-//
-///**
-// * Implements hook_field_is_empty(). 
-// */
-//function shoppingGuide_field_is_empty( $item , $field )
-//{
-//    return empty($item[ 'iid' ]);
-//}
-//
-///**
-// * Implements hook_field_formatter_info(). 
-// */
-//function shoppingGuide_field_formatter_info()
-//{
-//    return array(
-//	// This formatter just displays the hex value in the color indicated. 
-//	'shopping_guide_item_list' => array(
-//	    'label' => t('select items in this shopping guide') ,
-//	    'field types' => array( 'shopGuideItemField' ) ,
-//	) ,
-//    );
-//}
-//
-///**
-// * Implements hook_field_formatter_view(). 
-// */
-//function shoppingGuide_field_formatter_view( $entity_type , $entity , $field , $instance , $langcode , $items , $display )
-//{
-//    $element = array( );
-//    switch ( $display[ 'type' ] ) {
-//	// This formatter simply outputs the field 
-//	case 'shopping_guide_item_list':
-//	    foreach ( $items as $delta => $item ) {
-//		$element[ $delta ][ '#markup' ] = '<select><option value="1">success</option></select>';
-//	    }
-//	    break;
-//    }
-//
-//    return $element;
-//}
-//
-///**
-// * Implements hook_field_widget_info(). 
-// */
-//function shoppingGuide_field_widget_info()
-//{
-//    return array(
-//	'shopGuideItemWidget' => array(
-//	    'label' => t('nomal items show') ,
-//	    'field types' => array( 'shopGuideItemField' ) ,
-//	) ,
-//    );
-//}
-//
-///**
-// * Implements hook_field_widget_form(). 
-// */
-function shoppingGuide_field_widget_form( &$form , &$form_state , $field , $instance , $langcode , $items , $delta , $element )
+define('SHOP_ITEM_TYPE_NAME' , 'shop_guide_item');
+
+/**
+ * Implements hook_field_info(). 
+ * 
+ * Provides the description of the field. 
+ */
+function shoppingGuide_field_info()
 {
-    $value = isset($items[$delta]['itemid']) ? $items[$delta]['itemid'] : '';
-    $element += array(
-	'#delta' => $delta ,
-    );
-    $element[ 'itemid' ] = array( );
-
-    switch ( $instance['widget']['type'] ) {
-	case 'shoppingGuide_text':
-	    $element[ 'itemid' ] += array(
-		'#type' => 'textfield' ,
-		'#title' => t('select shopping guide item') ,
-		'#default_value' => $value ,
-		 '#size' => 7,
-		 '#maxlength' => 7,
-//		'#options' => shoppingGuide_getItems() ,
-		'#description' => t('select node item for shopping guide') ,
-//		'#element_validate' => array( 'shoppingGuide_validate' ) ,
-	    );
-    }
-    
-//    dpm($element);
-    
-    return $element;
-}
-
-/**
- * Implements hook_field_widget_form().
- */
-//function shoppingGuide_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
-//    $value = isset($items[$delta]['itemid']) ? $items[$delta]['itemid'] : '';
-//    $element += array(
-//        '#delta' => $delta,
-//    );
-//    $element['itemid'] = array();
-//    switch ($instance['widget']['type']) {
-//// DELIBERATE fall-through: From here on the shoppingGuide_text and
-//// shoppingGuide_colorpicker are exactly the same.
-//        case 'shoppingGuide_text':
-//            $element['itemid'] += array(
-//                '#title' => t('Event\’s RGB Color'),
-//                '#type' => 'textfield',
-//                '#default_value' => $value,
-//// Allow a slightly larger size than the field length to allow for some
-//// configurations where all characters won't fit in input field.
-//                '#size' => 7,
-//                '#maxlength' => 7,
-//            );
-//            break;
-//    }
-//    
-//    return $element;
-//}
-//
-//
-//function shoppingGuide_getItems()
-//{
-//    $query = db_select('node' , 'n');
-//    $result = $query->condition('type' , 'shopping_guide_item')
-//	    ->fields('n' , array( 'nid' , 'title' ))
-//	    ->execute();
-//
-//    $return = array( 0 => t('chose  items') );
-//    foreach ( $result as $value ) {
-//	$return[ $value->nid ] = $value->title;
-//    }
-//    return $return;
-//}
-//
-//function shoppingGuide_getDefaultValue()
-//{
-//    return array( 0 );
-//}
-//
-//function shoppingGuide_validate( $element , &$form_state )
-//{
-//    $value = $element[ '#value' ];
-//    
-////    dpm($element);
-////    dpm($form_state);
-//    
-//    if ( is_numeric($value) ) {
-//	form_set_value($element , array( 'iid' =>1 ) , $form_state);
-//    } else {
-//	form_error($element , t('illegal input'));
-//    }
-//   
-//}
-//
-//
-///**
-// * Implements hook_field_error().
-// */
-//function shoppingGuide_field_widget_error( $element , $error , $form , &$form_state )
-//{
-//    switch ( $error[ 'error' ] ) {
-//	case 'invalid_item_id':
-//	    form_error($element , $error[ 'message' ]);
-//	    break;
-//    }
-//}
-
-
-/**
- * Implements hook_field_info().
- *
- * Provides the description of the field.
- */
-function shoppingGuide_field_info() {
     return array(
-        'shoppingGuide_field' => array(
-            'label' => t('shopping guide item'),
-            'description' => t('Demonstrates a field composed of an RGB color.'),
-            'default_widget' => 'shoppingGuide_text',
-            'default_formatter' => 'shoppingGuide_simple_text',
-        ),
-    );
-}
-
-/**
- * Implements hook_field_schema().
- */
-function shoppingGuide_field_schema($field) {
-    $columns = array(
-        'itemid' => array('type' => 'varchar', 'length' => 7, 'not null' => FALSE),
-    );
-    return array(
-        'columns' => $columns,
+	'shopGuideItemField' => array(
+	    'label' => t('shopping guide item') ,
+	    'description' => t('add  shopping guide field ') ,
+	    'default_widget' => 'shopGuideItemWidget' ,
+	    'default_formatter' => 'shopping_guide_item_list' ,
+	) ,
     );
 }
 
 /**
  * Implements hook_field_validate().
  *
- * Verifies that the RGB field as combined is valid
- * (6 hex digits with a # at the beginning).
+ *
  */
-function shoppingGuide_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
-    foreach ($items as $delta => $item) {
-        if (!empty($item['itemid'])) {
-            if (!preg_match('@\W@', $item['itemid'])) {
-                $errors[$field['field_name']][$langcode][$delta][] = array(
-                    'error' => 'shoppingGuide_invalid',
-                    'message' => t('Color must be in the HTML format #abcdef.'),
-                );
-            }
-        }
+function shoppingGuide_field_validate( $entity_type , $entity , $field , $instance , $langcode , $items , &$errors )
+{
+    foreach ( $items as $delta => $item ) {
+	if ( !empty($item[ 'iid' ]) ) {
+	    if ( !is_numeric($item[ 'iid' ]) ) {
+		$errors[ $field[ 'field_name' ] ][ $langcode ][ $delta ][ ] = array(
+		    'error' => 'invalid_type_item_id' ,
+		    'message' => t('The shop item id must numeric') ,
+		);
+	    }
+	}
     }
 }
 
 /**
- * Implements hook_field_is_empty().
+ * Implements hook_field_is_empty(). 
  */
-function shoppingGuide_field_is_empty($item, $field) {
-    return empty($item['itemid']);
+function shoppingGuide_field_is_empty( $item , $field )
+{
+    return empty($item[ 'iid' ]);
 }
 
 /**
- * Implements hook_field_formatter_info().
+ * Implements hook_field_formatter_info(). 
  */
-function shoppingGuide_field_formatter_info() {
+function shoppingGuide_field_formatter_info()
+{
     return array(
-// This formatter just displays the hex value in the color indicated.
-        'shoppingGuide_simple_text' => array(
-            'label' => t('Simple text-based formatter'),
-            'field types' => array('shoppingGuide_field'),
-        ),
-
+	// This formatter just displays the hex value in the color indicated. 
+	'shopping_guide_item_list' => array(
+	    'label' => t('select items in this shopping guide') ,
+	    'field types' => array( 'shopGuideItemField' ) ,
+	) ,
     );
 }
 
 /**
- * Implements hook_field_formatter_view().
+ * Implements hook_field_formatter_view(). 
  */
-function shoppingGuide_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
-    $element = array();
-    switch ($display['type']) {
-// This formatter simply outputs the field as text and with a color.
-        case 'shoppingGuide_simple_text':
-            foreach ($items as $delta => $item) {
-                $element[$delta]['#markup'] = '<p style="color: ' . $item['itemid'] . '">'
-                        . t('The color for this event is @code', array('@code' => $item['itemid']))
-                        . '</p>';
-            }
-            break;
+function shoppingGuide_field_formatter_view( $entity_type , $entity , $field , $instance , $langcode , $items , $display )
+{
+    $element = array( );
+    switch ( $display[ 'type' ] ) {
+	// This formatter simply outputs the field 
+	case 'shopping_guide_item_list':
+	    $nodeIds = array( );
+	    foreach ( $items as $key => $value ) {
+		$nodeIds[ $key ] = $value[ 'iid' ];
+	    }
+	    $items = node_load_multiple($nodeIds);
+//	    foreach ( $items as $k => $v ) {
+//		$element[ $k ][ '#makeup' ] = '<h1>hi</h1>';
+//	    }
+	    foreach ( $items as $delta => $item ) {
+		$element[ $delta ] = array(
+		    '#markup' => '<h1>jeff</h1>' ,
+		);
+	    }
+//	    dpm($element);
+	    break;
     }
+
+    return $element;
 }
 
 /**
- * Implements hook_field_widget_info().
+ * Implements hook_field_widget_info(). 
  */
-function shoppingGuide_field_widget_info() {
+function shoppingGuide_field_widget_info()
+{
     return array(
-        'shoppingGuide_text' => array(
-            'label' => t('RGB value as #ffffff'),
-            'field types' => array('shoppingGuide_field'),
-        ),
+	'shopGuideItemWidget' => array(
+	    'label' => t('nomal items show') ,
+	    'field types' => array( 'shopGuideItemField' ) ,
+	) ,
     );
 }
 
+/**
+ * Implements hook_field_widget_form(). 
+ */
+function shoppingGuide_field_widget_form( &$form , &$form_state , $field , $instance , $langcode , $items , $delta , $element )
+{
+    $value = isset($items[ $delta ][ 'iid' ]) ? $items[ $delta ][ 'iid' ] : '';
+    $element += array(
+	'#delta' => $delta ,
+    );
+    $element[ 'iid' ] = array( );
 
+    switch ( $instance[ 'widget' ][ 'type' ] ) {
+	case 'shopGuideItemWidget':
+	    $element[ 'iid' ] += array(
+		'#type' => 'select' ,
+		'#title' => t('select shopping guide item') ,
+//		'#default_value' => $value ,
+		'#options' => shoppingGuide_getItems() ,
+		'#description' => t('select node item for shopping guide') ,
+	    );
+    }
+
+
+    return $element;
+}
+
+function shoppingGuide_getItems()
+{
+    $query = db_select('node' , 'n');
+    $result = $query->condition('type' , SHOP_ITEM_TYPE_NAME)
+	    ->fields('n' , array( 'nid' , 'title' ))
+	    ->execute();
+
+    $return = array( 0 => t('chose  items') );
+    foreach ( $result as $value ) {
+	$return[ $value->nid ] = $value->title;
+    }
+    return $return;
+}
+
+function shoppingGuide_getDefaultValue()
+{
+    return array( 0 );
+}
 
 /**
  * Implements hook_field_error().
  */
-function shoppingGuide_field_widget_error($element, $error, $form, &$form_state) {
-    switch ($error['error']) {
-        case 'shoppingGuide_invalid':
-            form_error($element, $error['message']);
-            break;
+function shoppingGuide_field_widget_error( $element , $error , $form , &$form_state )
+{
+    switch ( $error[ 'error' ] ) {
+	case 'invalid_item_id':
+	    form_error($element , $error[ 'message' ]);
+	    break;
     }
 }
-
-?>
 

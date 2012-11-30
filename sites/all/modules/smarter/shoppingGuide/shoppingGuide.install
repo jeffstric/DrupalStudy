@@ -9,17 +9,17 @@
 /**
  * Implements hook_field_schema().
  */
-//function shoppingGuide_field_schema( $field )
-//{
-//    $columns = array(
-//	'iid' => array(
-//	    'type' => 'int' ,
-//	    'unsigned' => TRUE ,
-//	    'not null' => TRUE ,
-//	) ,
-//    );
-//
-//    return array(
-//	'columns' => $columns ,
-//    );
-//}
+function shoppingGuide_field_schema( $field )
+{
+    $columns = array(
+	'iid' => array(
+	    'type' => 'int' ,
+	    'unsigned' => TRUE ,
+	    'not null' => TRUE ,
+	) ,
+    );
+
+    return array(
+	'columns' => $columns ,
+    );
+}
