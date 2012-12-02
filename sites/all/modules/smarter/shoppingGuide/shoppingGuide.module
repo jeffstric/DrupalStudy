@@ -87,17 +87,32 @@ function shoppingGuide_field_formatter_view( $entity_type , $entity , $field , $
 		$nodeIds[ $key ] = $value[ 'iid' ];
 	    }
 	    $items = node_load_multiple($nodeIds);
-//	    foreach ( $items as $k => $v ) {
-//		$element[ $k ][ '#makeup' ] = '<h1>hi</h1>';
-//	    }
+	    
+	    
 	    foreach ( $items as $delta => $item ) {
-		$element[ $delta ] = array(
-		    '#markup' => '<h1>jeff</h1>' ,
-		);
+		$element[ $delta ] =  $item ;
+		
+		//slove the array has 'und' index problem
+		/* solution B BETTER */
+		
+		$query = db_select('field_config_instance','f');
+		$result = $query->fields('f', array('field_name'))
+			->condition('bundle', SHOP_ITEM_TYPE_NAME)
+			->execute();
+		foreach($result as $v){
+		    $key = $v->field_name;
+		    if(isset($item->$key)){
+			$item->$key = field_get_items('node' , $item , $key);
+		    }
+		}
+		
+		// get strore information ,it's shopping guide item special
+		$item->field_store[0]['store'] = taxonomy_term_load($item->field_store[0]['tid']);
 	    }
-//	    dpm($element);
 	    break;
     }
+    
+    $element = array('shopGuideItems'=>$element);
 
     return $element;
 }

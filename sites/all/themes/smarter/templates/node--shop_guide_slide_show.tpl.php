@@ -93,7 +93,7 @@
     <h1>HIHIHI</h1>
     <h1><?php print $title ?></h1>
     <?php print $submitted ?>
-    <?php dpm($node); ?>
+    <?php fb($content,'templete'); ?>
 
 </div>
 
