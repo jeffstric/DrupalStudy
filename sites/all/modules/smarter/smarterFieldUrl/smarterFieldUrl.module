@@ -1,0 +1,42 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 14, 2012
+ *  time    :   1:38:38 PM
+ * */
+/**
+ * @file
+ * * transfer outgoing url to track url
+ */
+
+/**
+ * Define custom presave behavior for this module's field types.
+ *
+ * Make changes or additions to field values by altering the $items parameter by
+ * reference. There is no return value.
+ *
+ * @param $entity_type
+ *   The type of $entity.
+ * @param $entity
+ *   The entity for the operation.
+ * @param $field
+ *   The field structure for the operation.
+ * @param $instance
+ *   The instance structure for $field on $entity's bundle.
+ * @param $langcode
+ *   The language associated with $items.
+ * @param $items
+ *   $entity->{$field['field_name']}[$langcode], or an empty array if unset.
+ */
+function smarterFieldUrl_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
+    die('what');
+    dpm('HI');
+  if ($field['type'] == 'field_url') {
+    // Let PHP round the value to ensure consistent behavior across storage
+    // backends.
+   dpm($field);
+   dpm($items);
+  }
+}

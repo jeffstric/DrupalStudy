@@ -11,8 +11,10 @@
  * add  shopping guide field using the Field API. 
  * 
  */
-//define('SHOPGUIDE_TABLENAME' , 'field_data_field_shop_guide_item_id');
+//This is use to get default value, you can omit it before you instancing a field
+define('SHOPGUIDE_TABLENAME' , 'field_data_field_shop_guide_item_id');
 
+//This is the shop guide item's node type machine name
 define('SHOP_ITEM_TYPE_NAME' , 'shop_guide_item');
 
 /**
@@ -87,32 +89,32 @@ function shoppingGuide_field_formatter_view( $entity_type , $entity , $field , $
 		$nodeIds[ $key ] = $value[ 'iid' ];
 	    }
 	    $items = node_load_multiple($nodeIds);
-	    
-	    
+
+
 	    foreach ( $items as $delta => $item ) {
-		$element[ $delta ] =  $item ;
-		
+		$element[ $delta ] = $item;
+
 		//slove the array has 'und' index problem
 		/* solution B BETTER */
-		
-		$query = db_select('field_config_instance','f');
-		$result = $query->fields('f', array('field_name'))
-			->condition('bundle', SHOP_ITEM_TYPE_NAME)
+
+		$query = db_select('field_config_instance' , 'f');
+		$result = $query->fields('f' , array( 'field_name' ))
+			->condition('bundle' , SHOP_ITEM_TYPE_NAME)
 			->execute();
-		foreach($result as $v){
+		foreach ( $result as $v ) {
 		    $key = $v->field_name;
-		    if(isset($item->$key)){
+		    if ( isset($item->$key) ) {
 			$item->$key = field_get_items('node' , $item , $key);
 		    }
 		}
-		
+
 		// get strore information ,it's shopping guide item special
-		$item->field_store[0]['store'] = taxonomy_term_load($item->field_store[0]['tid']);
+		$item->field_store[ 0 ][ 'store' ] = taxonomy_term_load($item->field_store[ 0 ][ 'tid' ]);
 	    }
 	    break;
     }
-    
-    $element = array('shopGuideItems'=>$element);
+
+    $element = array( 'shopGuideItems' => $element );
 
     return $element;
 }
@@ -135,6 +137,9 @@ function shoppingGuide_field_widget_info()
  */
 function shoppingGuide_field_widget_form( &$form , &$form_state , $field , $instance , $langcode , $items , $delta , $element )
 {
+
+    $node = isset($form_state[ 'node' ]) ? $form_state[ 'node' ] : FALSE;
+    $nid = (isset($node) && isset($node->nid) ) ? $node->nid : FALSE;
     $value = isset($items[ $delta ][ 'iid' ]) ? $items[ $delta ][ 'iid' ] : '';
     $element += array(
 	'#delta' => $delta ,
@@ -144,14 +149,14 @@ function shoppingGuide_field_widget_form( &$form , &$form_state , $field , $inst
     switch ( $instance[ 'widget' ][ 'type' ] ) {
 	case 'shopGuideItemWidget':
 	    $element[ 'iid' ] += array(
-		'#type' => 'select' ,
+		'#type' => 'select', 
 		'#title' => t('select shopping guide item') ,
-//		'#default_value' => $value ,
+		'#default_value' => shoppingGuide_getDefaultValue($nid) ,
 		'#options' => shoppingGuide_getItems() ,
-		'#description' => t('select node item for shopping guide') ,
+//		'#element_validate' => array( 'shoppingGuide_widget_form_validate' ) ,
 	    );
     }
-
+//    dpm($element);
 
     return $element;
 }
@@ -163,17 +168,36 @@ function shoppingGuide_getItems()
 	    ->fields('n' , array( 'nid' , 'title' ))
 	    ->execute();
 
-    $return = array( 0 => t('chose  items') );
+//    $return = array( 0 => t('chose  items') );
+    $return = array( );
     foreach ( $result as $value ) {
 	$return[ $value->nid ] = $value->title;
     }
     return $return;
 }
 
-function shoppingGuide_getDefaultValue()
+function shoppingGuide_getDefaultValue( $nodeId = FALSE )
 {
-    return array( 0 );
+    $result = array( );
+    if ( $nodeId ) {
+	$query = db_select(SHOPGUIDE_TABLENAME , 'ST');
+	$query->addField('ST' , 'field_shop_guide_item_id_iid' , 'iid');
+	$resultDB = $query->fields('ST' , array( 'entity_id' ))
+		->condition('entity_id' , $nodeId)
+		->execute();
+	foreach ( $resultDB as $value ) {
+	    $result[ ] = $value->iid;
+	}
+    }
+    return $result;
 }
+
+//function shoppingGuide_widget_form_validate( $element , &$form_state )
+//{
+//    dpm($element);
+//     form_error($element, t("Saturation value must be a 2-digit hexadecimal value between 00 and ff."));
+//    form_set_value($element , array( 'iid' => NULL ) , $form_state);
+//}
 
 /**
  * Implements hook_field_error().
@@ -185,5 +209,21 @@ function shoppingGuide_field_widget_error( $element , $error , $form , &$form_st
 	    form_error($element , $error[ 'message' ]);
 	    break;
     }
+}
+
+/**
+ * Implements  hook_field_presave
+ */
+function shoppingGuide_field_presave( $entity_type , $entity , $field , $instance , $langcode , &$items )
+{
+//    if ( $field[ 'type' ] == 'shopGuideItemField' ) {
+//	$value = array_shift($items);
+//	$items = array();
+//	foreach($value['iid'] as $V){
+//	    $items[] = array(
+//		'iid'=>$V
+//	    );
+//	}
+//    }
 }
 

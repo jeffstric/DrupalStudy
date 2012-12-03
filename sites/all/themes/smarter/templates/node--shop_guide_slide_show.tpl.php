@@ -89,11 +89,35 @@
 	<a class="prev" href="#slide-1"><img src="http://files.smarter.com/images/v6/special/slide_but.png"></a>
 	<a class="next" href="#slide-3"><img src="http://files.smarter.com/images/v6/special/slide_but.png"></a>
     </div>
-    
-    <h1>HIHIHI</h1>
+
     <h1><?php print $title ?></h1>
     <?php print $submitted ?>
-    <?php fb($content,'templete'); ?>
+
+    <!-- fb $content  start-->
+    <?php fb($content[ 'field_shop_guide_item_id' ][ 'shopGuideItems' ] , 'templete'); ?>
+    <!-- fb $content  end-->
+
+    <?php
+    $keysArray = array_keys($content[ 'field_shop_guide_item_id' ][ 'shopGuideItems' ]);
+    foreach ( $content[ 'field_shop_guide_item_id' ][ 'shopGuideItems' ] as $key => $value ):
+	$key = array_search($key , $keysArray);
+	?>
+	<?php if ( isset($value->field_shop_guide_item_img) ): ?>
+	    <div class="productcontent <?php if ( $key ): ?>disn<?php endif; ?>" name="<?php if ( $key ) echo $key;else echo 'main' ?>">
+
+		<?php if ( !$key ): ?>
+	    	<div class="intro">
+			<?php
+			$body = array_shift($value->body);
+			print $body[ 'safe_value' ];
+			?>
+	    	</div>
+		<?php endif; ?>
+
+	    </div>
+	<?php endif; ?>
+    <?php endforeach; ?>
+
 
 </div>
 
