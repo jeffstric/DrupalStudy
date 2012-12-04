@@ -35,25 +35,6 @@ function shoppingGuide_field_info()
 }
 
 /**
- * Implements hook_field_validate().
- *
- *
- */
-function shoppingGuide_field_validate( $entity_type , $entity , $field , $instance , $langcode , $items , &$errors )
-{
-    foreach ( $items as $delta => $item ) {
-	if ( !empty($item[ 'iid' ]) ) {
-	    if ( !is_numeric($item[ 'iid' ]) ) {
-		$errors[ $field[ 'field_name' ] ][ $langcode ][ $delta ][ ] = array(
-		    'error' => 'invalid_type_item_id' ,
-		    'message' => t('The shop item id must numeric') ,
-		);
-	    }
-	}
-    }
-}
-
-/**
  * Implements hook_field_is_empty(). 
  */
 function shoppingGuide_field_is_empty( $item , $field )
@@ -148,12 +129,17 @@ function shoppingGuide_field_widget_form( &$form , &$form_state , $field , $inst
 
     switch ( $instance[ 'widget' ][ 'type' ] ) {
 	case 'shopGuideItemWidget':
+	    //whether this widget is add or edit input
+	    $is_edit = $delta <= count($items) - 1;
+
+	    $defaultValue = shoppingGuide_getDefaultValue($nid);
+	    $default = isset($defaultValue[ $delta ]) ? $defaultValue[ $delta ] : '';
+
 	    $element[ 'iid' ] += array(
-		'#type' => 'select', 
+		'#type' => 'select' ,
 		'#title' => t('select shopping guide item') ,
-		'#default_value' => shoppingGuide_getDefaultValue($nid) ,
-		'#options' => shoppingGuide_getItems() ,
-//		'#element_validate' => array( 'shoppingGuide_widget_form_validate' ) ,
+		'#default_value' => array( $default ) ,
+		'#options' => shoppingGuide_getItems($is_edit) ,
 	    );
     }
 //    dpm($element);
@@ -161,15 +147,15 @@ function shoppingGuide_field_widget_form( &$form , &$form_state , $field , $inst
     return $element;
 }
 
-function shoppingGuide_getItems()
+function shoppingGuide_getItems( $edit_item = TRUE )
 {
     $query = db_select('node' , 'n');
     $result = $query->condition('type' , SHOP_ITEM_TYPE_NAME)
 	    ->fields('n' , array( 'nid' , 'title' ))
 	    ->execute();
 
-//    $return = array( 0 => t('chose  items') );
-    $return = array( );
+    $choose_value = ($edit_item) ? t('delete current items') : t('chose  items');
+    $return = array( 0 => $choose_value );
     foreach ( $result as $value ) {
 	$return[ $value->nid ] = $value->title;
     }
@@ -192,20 +178,32 @@ function shoppingGuide_getDefaultValue( $nodeId = FALSE )
     return $result;
 }
 
-//function shoppingGuide_widget_form_validate( $element , &$form_state )
-//{
-//    dpm($element);
-//     form_error($element, t("Saturation value must be a 2-digit hexadecimal value between 00 and ff."));
-//    form_set_value($element , array( 'iid' => NULL ) , $form_state);
-//}
+/**
+ * Implements hook_field_validate().
+ *
+ *
+ */
+function shoppingGuide_field_validate( $entity_type , $entity , $field , $instance , $langcode , $items , &$errors )
+{
+    foreach ( $items as $delta => $item ) {
+	if ( !empty($item[ 'iid' ]) ) {
+	    if ( !is_numeric($item[ 'iid' ]) ) {
+		$errors[ $field[ 'field_name' ] ][ $langcode ][ $delta ][ ] = array(
+		    'error' => 'invalid_type_item_id' ,
+		    'message' => t('The shop item id must numeric') ,
+		);
+	    }
+	}
+    }
+}
 
 /**
- * Implements hook_field_error().
+ * Implements hook_field_widget_error().
  */
 function shoppingGuide_field_widget_error( $element , $error , $form , &$form_state )
 {
     switch ( $error[ 'error' ] ) {
-	case 'invalid_item_id':
+	case 'invalid_type_item_id':
 	    form_error($element , $error[ 'message' ]);
 	    break;
     }
@@ -214,16 +212,7 @@ function shoppingGuide_field_widget_error( $element , $error , $form , &$form_st
 /**
  * Implements  hook_field_presave
  */
-function shoppingGuide_field_presave( $entity_type , $entity , $field , $instance , $langcode , &$items )
-{
-//    if ( $field[ 'type' ] == 'shopGuideItemField' ) {
-//	$value = array_shift($items);
-//	$items = array();
-//	foreach($value['iid'] as $V){
-//	    $items[] = array(
-//		'iid'=>$V
-//	    );
-//	}
-//    }
-}
+//function shoppingGuide_field_presave( $entity_type , $entity , $field , $instance , $langcode , &$items )
+//{
+//}
 

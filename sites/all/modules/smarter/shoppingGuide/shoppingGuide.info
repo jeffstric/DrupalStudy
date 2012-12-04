@@ -1,5 +1,5 @@
 name = shopping guide
 description = add field shopping guide item
-package = smarter manage
+package = smarter field manage
 core = 7.x
 files[] = shoppingGuide.module

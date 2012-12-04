@@ -1,0 +1,30 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 29, 2012
+ *  time    :   10:04:22 AM
+ * */
+
+/**
+ * Implements hook_field_schema().
+ */
+function smarterFieldUrl_field_schema( $field )
+{
+    if ( !defined('SMARTER_URL_CLOUMN_NAME') ) {
+	include_once drupal_get_path('module' , 'smarterFieldUrl') . '/smarterFieldUrl.module';
+    }
+    $columns = array(
+	SMARTER_URL_CLOUMN_NAME => array(
+	    'type' => 'Varchar' ,
+	    'length' => 1000 , // Required. 
+	    'not null' => TRUE , // Defaults to FALSE. 
+	    'description' => t('store url to in smarter') ,
+	) ,
+    );
+
+    return array(
+	'columns' => $columns ,
+    );
+}

@@ -10,6 +10,115 @@
  * @file
  * * transfer outgoing url to track url
  */
+define('SMARTER_URL_CLOUMN_NAME' , 'url');
+
+/**
+ * Implements hook_field_info(). 
+ * 
+ * Provides the description of the field. 
+ */
+function smarterFieldUrl_field_info()
+{
+    return array(
+	'smarterFieldUrlField' => array(
+	    'label' => t('smarter track url') ,
+	    'description' => t('add  track url field ') ,
+	    'default_widget' => 'smarterFieldUrlWidget' ,
+	    'default_formatter' => 'smarterFieldUrlFormatter' ,
+	) ,
+    );
+}
+
+/**
+ * Implements hook_field_widget_info(). 
+ */
+function smarterFieldUrl_field_widget_info()
+{
+    return array(
+	'smarterFieldUrlWidget' => array(
+	    'label' => t('smarter url input') ,
+	    'field types' => array( 'smarterFieldUrlField' ) ,
+	) ,
+    );
+}
+
+/**
+ * Implements hook_field_widget_form(). 
+ */
+function smarterFieldUrl_field_widget_form( &$form , &$form_state , $field , $instance , $langcode , $items , $delta , $element )
+{
+
+
+    switch ( $instance[ 'widget' ][ 'type' ] ) {
+	case 'smarterFieldUrlField':
+	    //whether this widget is add or edit input
+	    $element[ SMARTER_URL_CLOUMN_NAME ] += array(
+		'#title' => t('url'), 
+		'#type' => 'textfield' ,
+		'#description' => t('Enter the url of item') ,
+		'#default_value' => '',
+		'#maxlength' => 250 ,
+		'#required' => TRUE ,
+		'#size' => 130 ,
+	    );
+    }
+
+    return $element;
+}
+
+/**
+ * Implements hook_field_validate().
+ *
+ *
+ */
+function smarterFieldUrl_field_validate( $entity_type , $entity , $field , $instance , $langcode , $items , &$errors )
+{
+    foreach ( $items as $delta => $item ) {
+	if ( !empty($item[ SMARTER_URL_CLOUMN_NAME ]) ) {
+	    if ( !is_string($item[ SMARTER_URL_CLOUMN_NAME ]) ) {
+		$errors[ $field[ 'field_name' ] ][ $langcode ][ $delta ][ ] = array(
+		    'error' => 'invalid_type_smarter_url' ,
+		    'message' => t('URL MUST BE STRING') ,
+		);
+	    }
+	}
+    }
+}
+
+/**
+ * Implements hook_field_widget_error().
+ */
+function smarterFieldUrl_field_widget_error( $element , $error , $form , &$form_state )
+{
+    switch ( $error[ 'error' ] ) {
+	case 'invalid_type_smarter_url':
+	    form_error($element , $error[ 'message' ]);
+	    break;
+    }
+}
+
+/**
+ * Implements hook_field_formatter_info(). 
+ */
+function smarterFieldUrl_field_formatter_info()
+{
+    return array(
+	// This formatter just displays the hex value in the color indicated. 
+	'smarterFieldUrlFormatter' => array(
+	    'label' => t('select items in this shopping guide') ,
+	    'field types' => array( 'smarterFieldUrlField' ) ,
+	) ,
+    );
+}
+
+/**
+ * Implements hook_field_formatter_view(). 
+ */
+function smarterFieldUrl_field_formatter_view( $entity_type , $entity , $field , $instance , $langcode , $items , $display )
+{
+    $element = array( );
+    return $element;
+}
 
 /**
  * Define custom presave behavior for this module's field types.
@@ -17,26 +126,12 @@
  * Make changes or additions to field values by altering the $items parameter by
  * reference. There is no return value.
  *
- * @param $entity_type
- *   The type of $entity.
- * @param $entity
- *   The entity for the operation.
- * @param $field
- *   The field structure for the operation.
- * @param $instance
- *   The instance structure for $field on $entity's bundle.
- * @param $langcode
- *   The language associated with $items.
- * @param $items
- *   $entity->{$field['field_name']}[$langcode], or an empty array if unset.
  */
-function smarterFieldUrl_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
-    die('what');
-    dpm('HI');
-  if ($field['type'] == 'field_url') {
-    // Let PHP round the value to ensure consistent behavior across storage
-    // backends.
-   dpm($field);
-   dpm($items);
-  }
+function smarterFieldUrl_field_presave( $entity_type , $entity , $field , $instance , $langcode , &$items )
+{
+    dpm($items);
+    if ( $field[ 'type' ] == 'field_url' ) {
+	// Let PHP round the value to ensure consistent behavior across storage
+	// backends.
+    }
 }
