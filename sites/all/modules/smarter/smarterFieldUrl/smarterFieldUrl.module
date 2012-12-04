@@ -29,6 +29,10 @@ function smarterFieldUrl_field_info()
     );
 }
 
+function smarterFieldUrl_field_is_empty($item , $field ){
+    return empty($item[ SMARTER_URL_CLOUMN_NAME ]);
+}
+
 /**
  * Implements hook_field_widget_info(). 
  */
@@ -48,18 +52,16 @@ function smarterFieldUrl_field_widget_info()
 function smarterFieldUrl_field_widget_form( &$form , &$form_state , $field , $instance , $langcode , $items , $delta , $element )
 {
 
-
     switch ( $instance[ 'widget' ][ 'type' ] ) {
-	case 'smarterFieldUrlField':
-	    //whether this widget is add or edit input
-	    $element[ SMARTER_URL_CLOUMN_NAME ] += array(
+	case 'smarterFieldUrlWidget':
+	    $element[SMARTER_URL_CLOUMN_NAME] = array(
 		'#title' => t('url'), 
 		'#type' => 'textfield' ,
 		'#description' => t('Enter the url of item') ,
 		'#default_value' => '',
-		'#maxlength' => 250 ,
-		'#required' => TRUE ,
-		'#size' => 130 ,
+		'#maxlength' => 300 ,
+
+		'#size' => 110 ,
 	    );
     }
 
@@ -116,8 +118,7 @@ function smarterFieldUrl_field_formatter_info()
  */
 function smarterFieldUrl_field_formatter_view( $entity_type , $entity , $field , $instance , $langcode , $items , $display )
 {
-    $element = array( );
-    return $element;
+    return array();
 }
 
 /**
@@ -131,7 +132,10 @@ function smarterFieldUrl_field_presave( $entity_type , $entity , $field , $insta
 {
     dpm($items);
     if ( $field[ 'type' ] == 'field_url' ) {
-	// Let PHP round the value to ensure consistent behavior across storage
-	// backends.
+	foreach($items as $value){
+	    //transfer url
+	    $value['url'] = $value['url'];
+	}
+	
     }
 }

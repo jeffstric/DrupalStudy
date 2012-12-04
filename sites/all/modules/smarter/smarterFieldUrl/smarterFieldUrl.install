@@ -17,7 +17,7 @@ function smarterFieldUrl_field_schema( $field )
     }
     $columns = array(
 	SMARTER_URL_CLOUMN_NAME => array(
-	    'type' => 'Varchar' ,
+	    'type' => 'varchar' ,
 	    'length' => 1000 , // Required. 
 	    'not null' => TRUE , // Defaults to FALSE. 
 	    'description' => t('store url to in smarter') ,
