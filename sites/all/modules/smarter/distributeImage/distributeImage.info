@@ -1,0 +1,5 @@
+name = distribute upload image
+description = distribute image
+package = smarter file manage
+core = 7.x
+files[] = distributeImage.module

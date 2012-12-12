@@ -1,0 +1,54 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   2012-12-12
+ *  time    :   20:04:01
+ * */
+
+/**
+ * Implements hook_schema(). 
+ */
+function reseizeImg_schema()
+{
+    if ( !defined('DISTRIBUTE_IMAGE_TABLENAME') ) {
+	include_once drupal_get_path('module' , 'distributeImage') . '/distributeImage.module';
+    }
+    $schema[ DISTRIBUTE_IMAGE_TABLENAME ] = array(
+	'description' => 'resize image ' ,
+	'fields' => array(
+	    'di_id' => array(
+		'type' => 'serial' ,
+		'unsigned' => TRUE ,
+		'not null' => TRUE ,
+		'size' => 'medium' ,
+	    ) ,
+	    'di_node_type' => array(
+		'type' => 'varchar' ,
+		'length' => 50 ,
+		'not null' => TRUE ,
+		'description' => "node type" ,
+	    ) ,
+	    'di_image_fieldname' => array(
+		'type' => 'varchar' ,
+		'length' => 50 ,
+		'not null' => TRUE ,
+		'description' => "node image field name" ,
+	    ) ,
+	    'di_style' => array(
+		'type' => 'int' ,
+		'unsigned' => TRUE ,
+		'not null' => TRUE ,
+		'default' => 1 ,
+		'description' => "1 mean by year+month,2 mean by year+month+day" ,
+	    ) ,
+	) ,
+	'primary key' => array( 'di_id' ) ,
+	'unique keys' => array(
+	    'unique_type_field' => array( 'di_node_type' ) ,
+	) ,
+    );
+
+    return $schema;
+}
