@@ -83,6 +83,57 @@
  * @see template_process()
  */
 ?>
+<article class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
+    <?php if ( $title ): ?>
+        <div id="article-top">
+    	<div class="left">
+    	    <h1 class="title" id="page-title-article"><?php print $title; ?></h1>
+    	    <div class="social-items">social-items</div>
+    	</div>
+    	<div class="right">
+    	    <div id="feel-smarter-top">feel-smarter-top</div>	
+    	</div>
 
+        </div>
+    <?php endif; ?>
+    <?php if ( $title_prefix || $title_suffix || $display_submitted || $unpublished || !$page && $title ): ?>
+        <header>
+	    <?php print render($title_prefix); ?>
+	    <?php if ( !$page && $title ): ?>
+		<h2<?php print $title_attributes; ?>><a href="<?php print $node_url; ?>"><?php print $title; ?></a></h2>
+	    <?php endif; ?>
+	    <?php print render($title_suffix); ?>
 
-<!-- /.node -->
+	    <?php if ( $display_submitted ): ?>
+		<p class="submitted">
+		    <?php print $user_picture; ?>
+		    <?php print $submitted; ?>
+		</p>
+	    <?php endif; ?>
+
+	    <?php if ( $unpublished ): ?>
+		<p class="unpublished"><?php print t('Unpublished'); ?></p>
+	    <?php endif; ?>
+        </header>
+    <?php endif; ?>
+
+    <?php
+    // We hide the comments and links now so that we can render them later.
+    hide($content[ 'comments' ]);
+    hide($content[ 'links' ]);
+    print render($content);
+    ?>
+     <div id="article-bottom">
+    	<div class="left">
+    	    <div class="social-items">social-items</div>
+    	</div>
+    	<div class="right">
+    	    <div id="feel-smarter-top">feel-smarter-bottom</div>	
+    	</div>
+
+        </div>
+    
+    <?php print render($content[ 'links' ]); ?>
+    <?php print render($content[ 'comments' ]); ?>
+    <div class="social-items"></div>
+</article><!-- /.node -->

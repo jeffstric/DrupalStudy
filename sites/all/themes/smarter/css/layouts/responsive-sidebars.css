@@ -76,8 +76,15 @@
     position: relative;
   }
 
-  #navigation {
+/*
+#navigation {
     position: absolute;
+    top: 0;  Move the navbar up inside #main's padding. 
+    height: 3em;
+    width: 100%;
+  }
+*/
+ #navigation {
     top: 0; /* Move the navbar up inside #main's padding. */
     height: 3em;
     width: 100%;

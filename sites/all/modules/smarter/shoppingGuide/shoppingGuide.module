@@ -11,7 +11,7 @@
  * add  shopping guide field using the Field API. 
  * 
  */
-//This is use to get default value, you can omit it before you instancing a field
+//This is used to get default value, you can omit it before you instancing a field
 define('SHOPGUIDE_TABLENAME' , 'field_data_field_shop_guide_item_id');
 
 //This is the shop guide item's node type machine name

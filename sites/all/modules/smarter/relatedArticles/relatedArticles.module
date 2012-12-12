@@ -48,7 +48,7 @@ function relatedArticles_list( $nodeId , $number )
 	    ->fields('fm' , array( 'uri' ))
 	    ->fields('tai' , array( 'field_topic_article_image_alt' ))
 	    ->condition('ti.tid' , $tid)
-	    ->condition('ti.nid',$nodeId,'<>')
+	    ->condition('ti.nid' , $nodeId , '<>')
 	    ->orderBy('created' , 'DESC')
 	    ->range(0 , 5); //select six because you may get the article in this page
 
@@ -101,14 +101,15 @@ function relatedArticles_block_view( $delta = '' )
 	'title' => '' ,
 	'type' => 'ul' ,
     );
-    foreach ( $result as $node ) {
+    if ( $result )
+	foreach ( $result as $node ) {
 	    $items[ 'items' ][ ] = array(
 		'name' => $node->title ,
 		'src' => $node->uri ,
 		'url' => file_create_url('node/' . $node->nid) ,
 		'alt' => $node->field_topic_article_image_alt ,
 	    );
-    }
+	}
     if ( !empty($items) ) {
 	$block[ 'content' ] = theme('relatedArticlesOutput' , $items);
     }

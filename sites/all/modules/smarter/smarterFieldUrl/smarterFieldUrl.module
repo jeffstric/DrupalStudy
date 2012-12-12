@@ -10,6 +10,10 @@
  * @file
  * * transfer outgoing url to track url
  */
+//This is used to get default value, you can omit it before you instancing a field
+define('SMARTER_URL_TABLENAME' , 'field_data_field_smarter_url');
+
+//This is db table cloumn last name
 define('SMARTER_URL_CLOUMN_NAME' , 'url');
 
 /**
@@ -29,7 +33,8 @@ function smarterFieldUrl_field_info()
     );
 }
 
-function smarterFieldUrl_field_is_empty($item , $field ){
+function smarterFieldUrl_field_is_empty( $item , $field )
+{
     return empty($item[ SMARTER_URL_CLOUMN_NAME ]);
 }
 
@@ -51,21 +56,36 @@ function smarterFieldUrl_field_widget_info()
  */
 function smarterFieldUrl_field_widget_form( &$form , &$form_state , $field , $instance , $langcode , $items , $delta , $element )
 {
+    $node = isset($form_state[ 'node' ]) ? $form_state[ 'node' ] : FALSE;
+    $nid = (isset($node) && isset($node->nid) ) ? $node->nid : FALSE;
 
     switch ( $instance[ 'widget' ][ 'type' ] ) {
 	case 'smarterFieldUrlWidget':
-	    $element[SMARTER_URL_CLOUMN_NAME] = array(
-		'#title' => t('url'), 
+	    $element[ SMARTER_URL_CLOUMN_NAME ] = array(
+		'#title' => t('url') ,
 		'#type' => 'textfield' ,
 		'#description' => t('Enter the url of item') ,
-		'#default_value' => '',
-		'#maxlength' => 300 ,
-
+		'#default_value' => smarterFieldUrl_getDefaultValue($nid) ,
+		'#maxlength' => 500 ,
 		'#size' => 110 ,
 	    );
     }
 
     return $element;
+}
+
+function smarterFieldUrl_getDefaultValue( $nid )
+{
+    if ( $nid ) {
+	$query = db_select('field_data_field_smarter_url' , 'U');
+	$query->addField('U' , 'field_smarter_url_url' , 'url');
+	$query->fields('U' , array( 'entity_id' ));
+	$result = $query->condition('entity_id' , $nid)->execute()->fetchAssoc();
+
+	return $result['url'];
+    } else {
+	return '';
+    }
 }
 
 /**
@@ -118,7 +138,7 @@ function smarterFieldUrl_field_formatter_info()
  */
 function smarterFieldUrl_field_formatter_view( $entity_type , $entity , $field , $instance , $langcode , $items , $display )
 {
-    return array();
+    return array( );
 }
 
 /**
@@ -130,12 +150,22 @@ function smarterFieldUrl_field_formatter_view( $entity_type , $entity , $field ,
  */
 function smarterFieldUrl_field_presave( $entity_type , $entity , $field , $instance , $langcode , &$items )
 {
-    dpm($items);
-    if ( $field[ 'type' ] == 'field_url' ) {
-	foreach($items as $value){
+    global $base_url;
+
+    if ( $field[ 'type' ] == 'smarterFieldUrlField' ) {
+
+	require_once drupal_get_path('module' , 'smarterFieldUrl') . '/UrlBuilder.php';
+
+	foreach ( $items as $key => $value ) {
 	    //transfer url
-	    $value['url'] = $value['url'];
+	    if ( web_judgeOutLink($value[ SMARTER_URL_CLOUMN_NAME ]) )
+		$items[ $key ][ SMARTER_URL_CLOUMN_NAME ] = 
+		$base_url . '/' .
+		Tracking_UrlBuilder::build(array(
+			Tracking_UrlBuilder::URL_PARAM_BUILD_TYPE => 'general' , // redrect type，value is  general 
+			Tracking_UrlBuilder::URL_PARAM_DESTINED_URL => trim($value[ SMARTER_URL_CLOUMN_NAME ]) // URL
+		    ));
 	}
-	
     }
+    
 }
