@@ -56,6 +56,14 @@ DirectoryIndex index.php index.html index.htm
 <IfModule mod_rewrite.c>
   RewriteEngine on
 
+    # this is for smarter imagesi
+    RewriteEngine on
+    RewriteCond %{REQUEST_FILENAME} /imagesi
+    RewriteRule ^imagesi/(.*) $1 [L]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule \.(jpg|jpeg|png|gif)$ imageProcess.php [L]
+
   # Block access to "hidden" directories whose names begin with a period. This
   # includes directories used by version control systems such as Subversion or
   # Git to store control files. Files whose names begin with a period, as well
