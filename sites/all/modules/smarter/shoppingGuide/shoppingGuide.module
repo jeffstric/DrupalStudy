@@ -100,6 +100,17 @@ function shoppingGuide_field_formatter_view( $entity_type , $entity , $field , $
     return $element;
 }
 
+function shoppingGuide_field_prepare_view( $entity_type , $entities , $field , $instances , $langcode , &$items )
+{
+//    dpm($entity_type);dpm($entities);dpm($field);dpm($instances);dpm($langcode);dpm($items);
+}
+
+//function shoppingGuide_field_formatter_prepare_view( $entity_type , $entities , $field , $instances , $langcode , &$items , $displays )
+//{
+//    dpm($items);
+//    return array( 'hi' => 'fuck' );
+//}
+
 /**
  * Implements hook_field_widget_info(). 
  */

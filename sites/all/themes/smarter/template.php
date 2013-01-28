@@ -148,12 +148,11 @@
 function smarter_preprocess_page( &$variables , $hook )
 {
 //  $variables['sample_variable'] = t('Lorem ipsum.');
-
     //delete defualt content for homepage
     if ( $variables[ 'is_front' ] ) {
 	unset($variables[ 'page' ][ 'content' ][ 'system_main' ]);
     }
-    
+
     //let page.tpl.php can adapt node content type
     if ( isset($variables[ 'node' ]) ) {
 	// If the node type is "blog" the template suggestion will be "page--blog.tpl.php".
@@ -169,22 +168,35 @@ function smarter_preprocess_page( &$variables , $hook )
  * @param $hook
  *   The name of the template being rendered ("node" in this case.)
  */
-function smarter_preprocess_node(&$variables, $hook) {
+function smarter_preprocess_node( &$variables , $hook )
+{
 //  $variables['sample_variable'] = t('Lorem ipsum.');
-
-  // Optionally, run node-type-specific preprocess functions, like
-  // smarter_preprocess_node_page() or smarter_preprocess_node_story().
-  $function = __FUNCTION__ . '_' . $variables['node']->type;
-  if (function_exists($function)) {
-    $function($variables, $hook);
-  }
+    // Optionally, run node-type-specific preprocess functions, like
+    // smarter_preprocess_node_page() or smarter_preprocess_node_story().
+    $function = __FUNCTION__ . '_' . $variables[ 'node' ]->type;
+    if ( function_exists($function) ) {
+	$function($variables , $hook);
+    }
 }
 
-function smarter_preprocess_node_shopping_guide_slide_show(){
-     drupal_add_css(drupal_get_path('theme', 'smarter').'/css/shopping_guide/shopping_guide.css', array('type' => 'file','group'=>CSS_THEME));
-     drupal_add_js(drupal_get_path('theme', 'smarter').'/js/shopping_guide/shopping_guide.js' , array('type' => 'file','group'=>JS_THEME));
+function smarter_preprocess_node_shopping_guide_slide_show()
+{
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/shopping_guide.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_js(drupal_get_path('theme' , 'smarter') . '/js/shopping_guide/shopping_guide.js' , array( 'type' => 'file' , 'group' => JS_THEME ));
 }
 
+function smarter_preprocess_field( $variables )
+{
+    dpm($variables);
+    $function = 'smater_preprocess_field__' . $variables[ 'element' ][ '#field_name' ];
+    dpm($function);
+    if ( function_exists($function) ) {
+	$variables = $function($variables);
+    }
+    
+}
+
+//field__shop_guide_slide_show
 /**
  * Override or insert variables into the comment templates.
  *
