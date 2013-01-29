@@ -11,8 +11,8 @@
  * add  shopping guide field using the Field API. 
  * 
  */
-//This is used to get default value, you can omit it before you instancing a field
-define('SHOPGUIDE_TABLENAME' , 'field_data_field_shop_guide_item_id');
+//This is the shop guide item's field machine name in shop guide show
+define('SHOP_ITEM_FIELD_NAME' , 'field_shop_guide_item_id');
 
 //This is the shop guide item's node type machine name
 define('SHOP_ITEM_TYPE_NAME' , 'shop_guide_item');
@@ -62,54 +62,37 @@ function shoppingGuide_field_formatter_info()
 function shoppingGuide_field_formatter_view( $entity_type , $entity , $field , $instance , $langcode , $items , $display )
 {
     $element = array( );
-    switch ( $display[ 'type' ] ) {
-	// This formatter simply outputs the field 
-	case 'shopping_guide_item_list':
-	    $nodeIds = array( );
-	    foreach ( $items as $key => $value ) {
-		$nodeIds[ $key ] = $value[ 'iid' ];
-	    }
-	    $items = node_load_multiple($nodeIds);
+    if ( $display[ 'type' ] == 'shopping_guide_item_list' ) {
+	$nodeIds = array( );
+	foreach ( $items as $key => $value ) {
+	    $nodeIds[ $key ] = $value[ 'iid' ];
+	}
+	$items = node_load_multiple($nodeIds);
 
+	foreach ( $items as $delta => $item ) {
 
-	    foreach ( $items as $delta => $item ) {
-		$element[ $delta ] = $item;
-
-		//slove the array has 'und' index problem
-		/* solution B BETTER */
-
-		$query = db_select('field_config_instance' , 'f');
-		$result = $query->fields('f' , array( 'field_name' ))
-			->condition('bundle' , SHOP_ITEM_TYPE_NAME)
-			->execute();
-		foreach ( $result as $v ) {
-		    $key = $v->field_name;
-		    if ( isset($item->$key) ) {
-			$item->$key = field_get_items('node' , $item , $key);
-		    }
+	    $query = db_select('field_config_instance' , 'f');
+	    $result = $query->fields('f' , array( 'field_name' ))
+		    ->condition('bundle' , SHOP_ITEM_TYPE_NAME)
+		    ->execute();
+	    foreach ( $result as $v ) {
+		$key = $v->field_name;
+		if ( isset($item->$key) ) {
+		    $item->$key = field_get_items('node' , $item , $key);
 		}
-
-		// get strore information ,it's shopping guide item special
-		$item->field_store[ 0 ][ 'store' ] = taxonomy_term_load($item->field_store[ 0 ][ 'tid' ]);
 	    }
-	    break;
+
+	    // get strore information ,it's shopping guide item special
+	    $item->field_store[ 0 ][ 'store' ] = taxonomy_term_load($item->field_store[ 0 ][ 'tid' ]);
+	    $info = (shoppingGuide_getItemInfo($item) );
+	    $element[ $delta ] = $info;
+	}
     }
 
-    $element = array( 'shopGuideItems' => $element );
+    $element = array( SHOP_ITEM_FIELD_NAME . '_detail' => $element );
 
     return $element;
 }
-
-function shoppingGuide_field_prepare_view( $entity_type , $entities , $field , $instances , $langcode , &$items )
-{
-//    dpm($entity_type);dpm($entities);dpm($field);dpm($instances);dpm($langcode);dpm($items);
-}
-
-//function shoppingGuide_field_formatter_prepare_view( $entity_type , $entities , $field , $instances , $langcode , &$items , $displays )
-//{
-//    dpm($items);
-//    return array( 'hi' => 'fuck' );
-//}
 
 /**
  * Implements hook_field_widget_info(). 
@@ -153,9 +136,27 @@ function shoppingGuide_field_widget_form( &$form , &$form_state , $field , $inst
 		'#options' => shoppingGuide_getItems($is_edit) ,
 	    );
     }
-//    dpm($element);
-
     return $element;
+}
+
+function shoppingGuide_getItemInfo( stdClass $info )
+{
+    $title = $info->title;
+
+    $body = $info->body;
+    $body = $body[ 0 ][ 'safe_value' ];
+
+    $store = $info->field_store;
+    $store = $store[ 0 ][ 'store' ];
+    $store = $store->name;
+
+    $price = $info->field_price;
+    $price = $price[ 0 ][ 'value' ];
+
+    $image = $info->field_shop_guide_item_img;
+    $image = file_create_url($image[ 0 ][ 'uri' ]);
+
+    return compact('title' , 'body' , 'store' , 'price' , 'image');
 }
 
 function shoppingGuide_getItems( $edit_item = TRUE )
@@ -177,16 +178,43 @@ function shoppingGuide_getDefaultValue( $nodeId = FALSE )
 {
     $result = array( );
     if ( $nodeId ) {
-	$query = db_select(SHOPGUIDE_TABLENAME , 'ST');
-	$query->addField('ST' , 'field_shop_guide_item_id_iid' , 'iid');
-	$resultDB = $query->fields('ST' , array( 'entity_id' ))
-		->condition('entity_id' , $nodeId)
-		->execute();
-	foreach ( $resultDB as $value ) {
-	    $result[ ] = $value->iid;
+	$tableName = cache_get('shop_guide_item_id_table' , 'cache_field');
+	if ( !$tableName ) {
+	    $tableName = shoppingGuide_getTableName(SHOP_ITEM_FIELD_NAME);
+	    cache_set('shop_guide_item_id_table' , $tableName , 'cache_field' , CACHE_PERMANENT);
+	} else {
+	    $tableName = $tableName->data;
+	}
+	if ( $tableName ) {
+	    $query = db_select($tableName , 'ST');
+	    $query->addField('ST' , 'field_shop_guide_item_id_iid' , 'iid');
+	    $resultDB = $query->fields('ST' , array( 'entity_id' ))
+		    ->condition('entity_id' , $nodeId)
+		    ->execute();
+	    foreach ( $resultDB as $value ) {
+		$result[ ] = $value->iid;
+	    }
 	}
     }
     return $result;
+}
+
+function shoppingGuide_getTableName( $fieldName )
+{
+    $query = db_select('field_config' , 'FC');
+    $tableName = FALSE;
+    $resultDB = array( );
+    $resultDB = $query->fields('FC' , array( 'data' ))
+	    ->condition('field_name' , $fieldName)
+	    ->execute();
+    if ( $resultDB )
+	foreach ( $resultDB as $value ) {
+	    $data = unserialize($value->data);
+	    $tableKeys = array_keys($data[ 'storage' ][ 'details' ][ 'sql' ][ 'FIELD_LOAD_CURRENT' ]);
+	    $tableName = array_shift($tableKeys);
+	    break;
+	}
+    return $tableName;
 }
 
 /**
@@ -219,11 +247,4 @@ function shoppingGuide_field_widget_error( $element , $error , $form , &$form_st
 	    break;
     }
 }
-
-/**
- * Implements  hook_field_presave
- */
-//function shoppingGuide_field_presave( $entity_type , $entity , $field , $instance , $langcode , &$items )
-//{
-//}
 

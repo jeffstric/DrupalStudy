@@ -57,11 +57,12 @@ DirectoryIndex index.php index.html index.htm
   RewriteEngine on
 
     # this is for smarter imagesi
-    RewriteEngine on
-    RewriteCond %{REQUEST_FILENAME} /imagesi
-    RewriteRule ^imagesi/(.*) $1 [L]
+    RewriteCond %{REQUEST_URI} ^/imagesi/(.*)
+    RewriteCond %{DOCUMENT_ROOT}/%1 -f
+    RewriteRule \.(jpg|jpeg|png|gif)$ %1 [L]
 
-    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_URI} ^/imagesi/(.*)
+    RewriteCond %{DOCUMENT_ROOT}/%1 !-f
     RewriteRule \.(jpg|jpeg|png|gif)$ imageProcess.php [L]
 
   # Block access to "hidden" directories whose names begin with a period. This

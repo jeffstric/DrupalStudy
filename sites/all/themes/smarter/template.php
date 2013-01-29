@@ -185,16 +185,7 @@ function smarter_preprocess_node_shopping_guide_slide_show()
     drupal_add_js(drupal_get_path('theme' , 'smarter') . '/js/shopping_guide/shopping_guide.js' , array( 'type' => 'file' , 'group' => JS_THEME ));
 }
 
-function smarter_preprocess_field( $variables )
-{
-    dpm($variables);
-    $function = 'smater_preprocess_field__' . $variables[ 'element' ][ '#field_name' ];
-    dpm($function);
-    if ( function_exists($function) ) {
-	$variables = $function($variables);
-    }
-    
-}
+
 
 //field__shop_guide_slide_show
 /**

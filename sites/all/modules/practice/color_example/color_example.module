@@ -90,7 +90,7 @@ function color_example_field_formatter_view($entity_type, $entity, $field, $inst
     $element = array();
     switch ($display['type']) {
 // This formatter simply outputs the field as text and with a color.
-        case 'color_example_simple_text':
+	    case 'color_example_simple_text':
             foreach ($items as $delta => $item) {
                 $element[$delta]['#markup'] = '<p style="color: ' . $item['rgb'] . '">'
                         . t('The color for this event is @code', array('@code' => $item['rgb']))

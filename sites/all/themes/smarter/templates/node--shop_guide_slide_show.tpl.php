@@ -84,9 +84,8 @@
  */
 ?>
 <pre>
-    <?php print_r($node) ?>
+    <?php dpm($content) ?>
 </pre>
-
 
 <article class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
