@@ -25,14 +25,14 @@ class imageProcess
 
     public static function reseizeImage( $imageFrom , $widthTo = 100 , $heightTo = 100 )
     {
-
+	
 	$path = self::$path;
 	$target = $path . DIRECTORY_SEPARATOR . $imageFrom;
-
+	
 	if ( !file_exists($target) ) {
 	    // use defualt image replace imageFrom
-	    $target = self::get_name_file_create(DEFAULT_IMAGE , $widthTo , $widthTo);
-
+	    $target = self::get_name_file_create(DEFAULT_IMAGE , $widthTo , $heightTo);
+	    
 	    if ( file_exists($target) ) {
 		header("Content-type:image/png");
 		echo file_get_contents($target);
@@ -43,7 +43,7 @@ class imageProcess
 	    }
 	}
 
-	$outputFile = self::get_name_file_create($target , $widthTo , $widthTo);
+	$outputFile = self::get_name_file_create($target , $widthTo , $heightTo);
 
 	list($width , $height , $type) = getimagesize($target);
 
@@ -169,7 +169,7 @@ if ( preg_match('%^([\w_-]+)___s_(\d+)x(\d+)\.(jpg|jpeg|png|gif)$%' , $imageFile
     }
 
     $imageFrom = $imagePath . DIRECTORY_SEPARATOR . $fileName;
-
+    
     imageProcess::reseizeImage($imageFrom , $widthTo , $heightTo);
 } else {
     header("Content-type:image/jpg");

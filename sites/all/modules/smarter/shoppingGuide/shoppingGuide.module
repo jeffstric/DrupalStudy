@@ -139,24 +139,50 @@ function shoppingGuide_field_widget_form( &$form , &$form_state , $field , $inst
     return $element;
 }
 
+function shoppingGuide_transferImageUrl( $url , $width , $height )
+{
+    $url = str_replace($_SERVER[ 'HTTP_HOST' ] , $_SERVER[ 'HTTP_HOST' ] . '/imagesi' , $url);
+    $fileArr = explode('.' , $url);
+    $extent = array_pop($fileArr);
+    return join('.' , $fileArr) . '___s_' . $width . 'x' . $height . '.' . $extent;
+}
+
+function shoppingGuide_theme()
+{
+    return array(
+	'shopguide_des' => array(
+	    'variables' => array( 'items' => NULL , 'title' => NULL ) ,
+	) ,
+    );
+}
+
+function theme_shopguide_des( $info )
+{
+    $item = $info[ 'items' ][ 0 ];
+    return '<div id="' . $info[ 'title' ] . '">' . $item[ 'safe_value' ] . '</div>';
+}
+
 function shoppingGuide_getItemInfo( stdClass $info )
 {
     $title = $info->title;
 
     $body = $info->body;
-    $body = $body[ 0 ][ 'safe_value' ];
+    $body = ($body[ 0 ][ 'safe_value' ]) ? $body[ 0 ][ 'safe_value' ] : FALSE;
 
     $store = $info->field_store;
-    $store = $store[ 0 ][ 'store' ];
+    $store = ($store[ 0 ][ 'store' ]) ? $store[ 0 ][ 'store' ] : FALSE;
     $store = $store->name;
 
     $price = $info->field_price;
-    $price = $price[ 0 ][ 'value' ];
+    $price = ($price[ 0 ][ 'value' ]) ? $price[ 0 ][ 'value' ] : FALSE;
 
     $image = $info->field_shop_guide_item_img;
-    $image = file_create_url($image[ 0 ][ 'uri' ]);
+    $image = ($image[ 0 ][ 'uri' ]) ? file_create_url($image[ 0 ][ 'uri' ]) : FALSE;
 
-    return compact('title' , 'body' , 'store' , 'price' , 'image');
+    $url = $info->field_url;
+    $url = ($url[ 0 ][ 'safe_value' ]) ? $url[ 0 ][ 'safe_value' ] : FALSE;
+
+    return compact('title' , 'body' , 'store' , 'price' , 'image' , 'url');
 }
 
 function shoppingGuide_getItems( $edit_item = TRUE )
