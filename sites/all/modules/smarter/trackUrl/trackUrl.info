@@ -1,0 +1,5 @@
+name = smarter tracking url
+description = transfer outgoing url to track url
+core = 7.x
+package = smarter manage
+files[] = trackUrl.module

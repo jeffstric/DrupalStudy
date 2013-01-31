@@ -1,0 +1,22 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 14, 2012
+ *  time    :   1:38:38 PM
+ * */
+function trackUrl_convert( $url , &$outUrl = FALSE )
+{
+    if ( !$url )
+	return $url;
+    $http = (isset($_SERVER[ 'HTTPS' ]) && $_SERVER[ 'HTTPS' ]) ? 'https://' : 'http://';
+    $host = $http . $_SERVER[ 'HTTP_HOST' ];
+
+    if ( substr($url , 0 , strlen($host)) == $host ) {
+	return $url;
+    } else {
+	$outUrl = TRUE;
+	return $_SERVER[ 'HTTP_HOST' ] . '/trackUrl.php?' . $url;
+    }
+}

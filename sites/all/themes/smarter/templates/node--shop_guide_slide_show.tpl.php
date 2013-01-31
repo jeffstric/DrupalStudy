@@ -84,9 +84,10 @@
  */
 ?>
 <?php
-dpm($content);
+//dpm($content);
 //map
-$coverUrl = $content[ 'field_slide_show_cover' ][ '#items' ][ 0 ][ 'uri' ];
+$coverUrl = file_create_url($content[ 'field_slide_show_cover' ][ '#items' ][ 0 ][ 'uri' ]);
+$items_info = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_FIELD_NAME . '_detail' ];
 ?>
 <div class="main">
     <div class="maincontent">
@@ -104,18 +105,75 @@ $coverUrl = $content[ 'field_slide_show_cover' ][ '#items' ][ 0 ][ 'uri' ];
 			<div class="intro"><?php echo render($content[ 'body' ]); ?></div>
 			<div class="imgbox">
 			    <a href="#slide-1" title="<?php echo $title ?>">
-				<img src="<?php echo file_create_url($coverUrl); ?>" alt="<?php echo $title ?>" width="614" />
+				<img src="<?php echo $coverUrl; ?>" alt="<?php echo $title ?>" width="614" />
 			    </a>
 			</div>
 		    </div>
-
-		    <?php foreach ( $content[ 'field_shop_guide_item_id' ][ 'field_shop_guide_item_id_detail' ] as $key => $value ): ?>
-    		    <div class="productcontent disn" name="<?php echo $key ?>">
+		    <?php $count = 0 ?>
+		    <?php foreach ( $items_info as $key => $value ): ?>
+			<?php
+			$count++;
+			$outUrl = FALSE;
+			$url = trackUrl_convert($value[ 'url' ] , $outUrl);
+			$target = ($outUrl) ? '_blank' : '_self';
+			$imageSrc = shoppingGuide_transferImageUrl($value[ 'image' ] , 293 , 506);
+			?>
+    		    <div class="productcontent disn" name="<?php echo $count ?>">
     			<div class="imgbox">
-
+				<?php if ( $url ): ?>
+				    <a href="<?php echo $url ?>" title="<?php echo $value[ 'title' ] ?>" target="<?php echo $target ?>" rel="nofollow">
+					<img src="<?php echo $imageSrc ?>" alt="<?php echo $value[ 'title' ] ?>"/>
+				    </a>
+				<?php else: ?>
+				    <img src="<?php echo $imageSrc ?>" alt="<?php echo $value[ 'title' ] ?>"/>
+				<?php endif; ?>
     			</div>
+    			<div class="productinfo">
+				<?php if ( $url ): ?>
+				    <a href="<?php echo $url ?>" title="<?php echo $value[ 'title' ] ?>" target="<?php echo $target ?>" rel="nofollow">
+					<h3><?php echo $value[ 'title' ] ?></h3>
+				    </a>
+				    <?php if ( $value[ 'price' ] ): ?>
+	    			    <a href="<?php echo $url ?>"  target="<?php echo $target ?>" rel="nofollow">
+	    				<p class="price"><?php echo $value[ 'price' ] ?></p>
+	    			    </a>
+				    <?php endif; ?>
+				<?php else: ?>
+				    <h3><?php echo $value[ 'title' ] ?></h3>
+				    <?php if ( $value[ 'price' ] ): ?>
+	    			    <p class="price"><?php echo $value[ 'price' ] ?></p>
+				    <?php endif; ?>
+				<?php endif; ?>
+    			    <p class="desc"><?php echo $value[ 'body' ] ?></p>
+    			</div>
+    			<div class="cl"></div>
     		    </div>
 		    <?php endforeach; ?>
+
+		    <div class="slideselect">
+			<div class="prev"><a href="#"><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/slideprev.gif') ?>" width="11" height="22" /></a></div>
+			<div class="slidecontent">	
+			    <ul>
+				<li>
+				    <a href="#" name="main" class="selected" title="<?php echo $title ?>">
+					<img src="<?php echo shoppingGuide_transferImageUrl($coverUrl , 100 , 100) ?>" alt="<?php echo $title ?>" width="108" height="108" />
+				    </a>
+				</li>
+				<?php $count = 0; ?>
+				<?php foreach ( $items_info as $key => $value ): ?>
+				    <?php $count++; ?>
+    				<li>
+    				    <a href="#slide-<?php echo $count ?>" name="<?php echo $count ?>" class="normal" title="<?php echo $value[ 'title' ]; ?>">
+    					<img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , 100 , 100) ?>" alt="<?php echo $value[ 'title' ] ?>" width="108" height="108" />
+    				    </a>
+    				</li>
+				<?php endforeach; ?>
+			    </ul>
+			</div>
+			<div class="next"><a href="#slide-1"><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/slidenext.gif') ?>" width="11" height="22" /></a></div>                        
+			<div class="cl"></div>
+		    </div>
+
 		</div>
 	    </div>
 	</div>
