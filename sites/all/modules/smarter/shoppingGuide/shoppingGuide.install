@@ -9,10 +9,12 @@
 /**
  * Implements hook_field_schema().
  */
+require 'shoppingGuide.module';
+
 function shoppingGuide_field_schema( $field )
 {
     $columns = array(
-	'iid' => array(
+	SHOP_ITEM_ID_SUFFIX => array(
 	    'type' => 'int' ,
 	    'unsigned' => TRUE ,
 	    'not null' => TRUE ,

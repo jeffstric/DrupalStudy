@@ -117,21 +117,23 @@ $items_info = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_FIELD_NAME . '_detail'
 			$url = trackUrl_convert($value[ 'url' ] , $outUrl);
 			$target = ($outUrl) ? '_blank' : '_self';
 			$imageSrc = shoppingGuide_transferImageUrl($value[ 'image' ] , 293 , 506);
+			if ( !isset($value[ 'product_name' ]) )
+			    $value[ 'product_name' ] = '';
 			?>
     		    <div class="productcontent disn" name="<?php echo $count ?>">
     			<div class="imgbox">
 				<?php if ( $url ): ?>
-				    <a href="<?php echo $url ?>" title="<?php echo $value[ 'title' ] ?>" target="<?php echo $target ?>" rel="nofollow">
-					<img src="<?php echo $imageSrc ?>" alt="<?php echo $value[ 'title' ] ?>"/>
+				    <a href="<?php echo $url ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $target ?>" rel="nofollow">
+					<img src="<?php echo $imageSrc ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
 				    </a>
 				<?php else: ?>
-				    <img src="<?php echo $imageSrc ?>" alt="<?php echo $value[ 'title' ] ?>"/>
+				    <img src="<?php echo $imageSrc ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
 				<?php endif; ?>
     			</div>
     			<div class="productinfo">
 				<?php if ( $url ): ?>
-				    <a href="<?php echo $url ?>" title="<?php echo $value[ 'title' ] ?>" target="<?php echo $target ?>" rel="nofollow">
-					<h3><?php echo $value[ 'title' ] ?></h3>
+				    <a href="<?php echo $url ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $target ?>" rel="nofollow">
+					<h3><?php echo $value[ 'product_name' ] ?></h3>
 				    </a>
 				    <?php if ( $value[ 'price' ] ): ?>
 	    			    <a href="<?php echo $url ?>"  target="<?php echo $target ?>" rel="nofollow">
@@ -139,7 +141,7 @@ $items_info = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_FIELD_NAME . '_detail'
 	    			    </a>
 				    <?php endif; ?>
 				<?php else: ?>
-				    <h3><?php echo $value[ 'title' ] ?></h3>
+				    <h3><?php echo $value[ 'product_name' ] ?></h3>
 				    <?php if ( $value[ 'price' ] ): ?>
 	    			    <p class="price"><?php echo $value[ 'price' ] ?></p>
 				    <?php endif; ?>
@@ -161,10 +163,14 @@ $items_info = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_FIELD_NAME . '_detail'
 				</li>
 				<?php $count = 0; ?>
 				<?php foreach ( $items_info as $key => $value ): ?>
-				    <?php $count++; ?>
+				    <?php
+				    $count++;
+				    if ( !isset($value[ 'product_name' ]) )
+					$value[ 'product_name' ] = '';
+				    ?>
     				<li>
-    				    <a href="#slide-<?php echo $count ?>" name="<?php echo $count ?>" class="normal" title="<?php echo $value[ 'title' ]; ?>">
-    					<img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , 100 , 100) ?>" alt="<?php echo $value[ 'title' ] ?>" width="108" height="108" />
+    				    <a href="#slide-<?php echo $count ?>" name="<?php echo $count ?>" class="normal" title="<?php echo $value[ 'product_name' ]; ?>">
+    					<img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , 100 , 100) ?>" alt="<?php echo $value[ 'product_name' ] ?>" width="108" height="108" />
     				    </a>
     				</li>
 				<?php endforeach; ?>
