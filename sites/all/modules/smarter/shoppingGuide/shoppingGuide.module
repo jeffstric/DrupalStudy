@@ -147,7 +147,6 @@ function shoppingGuide_field_widget_form( &$form , &$form_state , $field , $inst
  */
 function shoppingGuide_field_widget_form_alter( &$element , &$form_state , $context )
 {
-    dpm($element);
     if ( isset($element[ '#field_name' ]) && $element[ '#field_name' ] == SHOP_ITEM_FIELD_NAME ) {
 	$element[ '#theme' ] = 'shopguide_item_select';
     }
@@ -167,17 +166,9 @@ function shoppingGuide_theme()
 	'shopguide_des' => array(
 	    'variables' => array( 'items' => NULL , 'title' => NULL ) ,
 	) ,
-	'shopguide_item_select' => array(
-	    'render element' => 'element' ,
-	) ,
     );
 }
 
-function theme_shopguide_item_select( $element )
-{
-//    dpm($element);
-    return '<div id="jeffstric">hi jeff</div>';
-}
 
 function theme_shopguide_des( $info )
 {

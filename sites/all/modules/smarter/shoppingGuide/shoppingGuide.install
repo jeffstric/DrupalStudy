@@ -9,8 +9,9 @@
 /**
  * Implements hook_field_schema().
  */
-require 'shoppingGuide.module';
-
+if ( !defined('SHOP_ITEM_ID_SUFFIX') ) {
+    require 'shoppingGuide.module';
+}
 function shoppingGuide_field_schema( $field )
 {
     $columns = array(
