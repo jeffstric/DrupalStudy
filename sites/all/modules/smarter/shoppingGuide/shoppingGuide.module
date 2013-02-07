@@ -12,138 +12,10 @@
  * 
  */
 //This is the shop guide item's field machine name in shop guide show
-define('SHOP_ITEM_FIELD_NAME' , 'field_shop_guide_item_id');
+define('SHOP_ITEM_FIELD_NAME' , 'field_shop_guide_item');
 
-//This is the shop guide item's node type machine name
-define('SHOP_ITEM_TYPE_NAME' , 'shop_guide_item');
-
-//this is the column suffix of item id
-define('SHOP_ITEM_ID_SUFFIX' , 'iid');
-
-//
+//this is key of shop guide item info
 define('SHOP_ITEM_KEY' , 'shop_guide_item');
-
-/**
- * Implements hook_field_info(). 
- * 
- * Provides the description of the field. 
- */
-function shoppingGuide_field_info()
-{
-    return array(
-	'shopGuideItemField' => array(
-	    'label' => t('shopping guide item') ,
-	    'description' => t('add  shopping guide field ') ,
-	    'default_widget' => 'shopGuideItemWidget' ,
-	    'default_formatter' => 'shopping_guide_item_list' ,
-	) ,
-    );
-}
-
-/**
- * Implements hook_field_is_empty(). 
- */
-function shoppingGuide_field_is_empty( $item , $field )
-{
-    return empty($item[ SHOP_ITEM_ID_SUFFIX ]);
-}
-
-/**
- * Implements hook_field_formatter_info(). 
- */
-function shoppingGuide_field_formatter_info()
-{
-    return array(
-	// This formatter just displays the hex value in the color indicated. 
-	'shopping_guide_item_list' => array(
-	    'label' => t('select items in this shopping guide') ,
-	    'field types' => array( 'shopGuideItemField' ) ,
-	) ,
-    );
-}
-
-/**
- * Implements hook_field_formatter_view(). 
- */
-function shoppingGuide_field_formatter_view( $entity_type , $entity , $field , $instance , $langcode , $items , $display )
-{
-    $element = array( );
-    if ( $display[ 'type' ] == 'shopping_guide_item_list' ) {
-	$nodeIds = array( );
-	foreach ( $items as $key => $value ) {
-	    $nodeIds[ $key ] = $value[ SHOP_ITEM_ID_SUFFIX ];
-	}
-	$items = node_load_multiple($nodeIds);
-
-	foreach ( $items as $delta => $item ) {
-
-	    $query = db_select('field_config_instance' , 'f');
-	    $result = $query->fields('f' , array( 'field_name' ))
-		    ->condition('bundle' , SHOP_ITEM_TYPE_NAME)
-		    ->execute();
-	    foreach ( $result as $v ) {
-		$key = $v->field_name;
-		if ( isset($item->$key) ) {
-		    $item->$key = field_get_items('node' , $item , $key);
-		}
-	    }
-
-	    // get strore information ,it's shopping guide item special
-	    $item->field_store[ 0 ][ 'store' ] = taxonomy_term_load($item->field_store[ 0 ][ 'tid' ]);
-	    $info = (shoppingGuide_getItemInfo($item) );
-	    $element[ $delta ] = $info;
-	}
-    }
-
-    $element = array( SHOP_ITEM_FIELD_NAME . '_detail' => $element );
-
-    return $element;
-}
-
-/**
- * Implements hook_field_widget_info(). 
- */
-function shoppingGuide_field_widget_info()
-{
-    return array(
-	'shopGuideItemWidget' => array(
-	    'label' => t('nomal items show') ,
-	    'field types' => array( 'shopGuideItemField' ) ,
-	) ,
-    );
-}
-
-/**
- * Implements hook_field_widget_form(). 
- */
-function shoppingGuide_field_widget_form( &$form , &$form_state , $field , $instance , $langcode , $items , $delta , $element )
-{
-
-    $node = isset($form_state[ 'node' ]) ? $form_state[ 'node' ] : FALSE;
-    $nid = (isset($node) && isset($node->nid) ) ? $node->nid : FALSE;
-    $value = isset($items[ $delta ][ SHOP_ITEM_ID_SUFFIX ]) ? $items[ $delta ][ SHOP_ITEM_ID_SUFFIX ] : '';
-    $element += array(
-	'#delta' => $delta ,
-    );
-    $element[ SHOP_ITEM_ID_SUFFIX ] = array( );
-
-    switch ( $instance[ 'widget' ][ 'type' ] ) {
-	case 'shopGuideItemWidget':
-	    //whether this widget is add or edit input
-	    $is_edit = $delta <= count($items) - 1;
-
-	    $defaultValue = shoppingGuide_getDefaultValue($nid);
-	    $default = isset($defaultValue[ $delta ]) ? $defaultValue[ $delta ] : '';
-
-	    $element[ SHOP_ITEM_ID_SUFFIX ] += array(
-		'#type' => 'select' ,
-		'#title' => t('select shopping guide item') ,
-		'#default_value' => array( $default ) ,
-		'#options' => shoppingGuide_getItems($is_edit) ,
-	    );
-    }
-    return $element;
-}
 
 function shoppingGuide_transferImageUrl( $url , $width , $height )
 {
@@ -170,124 +42,38 @@ function theme_shopguide_des( $info )
 
 function shoppingGuide_getItemInfo( stdClass $info )
 {
-    $product_name = shoppingGuide_getValue($info , 'field_product_name');
-    $product_name = ($product_name[ 0 ][ 'safe_value' ] ) ? $product_name[ 0 ][ 'safe_value' ] : FALSE;
+    $product_name = shoppingGuide_getValue($info , 'field_product_name' , 'safe_value');
 
-    $body = shoppingGuide_getValue($info , 'body');
-    $body = ($body[ 0 ][ 'safe_value' ]) ? $body[ 0 ][ 'safe_value' ] : FALSE;
+    $body = shoppingGuide_getValue($info , 'body' , 'safe_value');
 
-    $store = shoppingGuide_getValue($info , 'field_store');
-    $store = ($store[ 0 ][ 'store' ]) ? $store[ 0 ][ 'store' ] : FALSE;
-    $store = $store->name;
+    $store = shoppingGuide_getValue($info , 'field_store' , 'store');
+    $store = ( isset($store->name) ) ? $store->name : '';
 
-    $price = shoppingGuide_getValue($info , 'field_price');
-    $price = ($price[ 0 ][ 'value' ]) ? $price[ 0 ][ 'value' ] : FALSE;
+    $price = shoppingGuide_getValue($info , 'field_price' , 'value');
 
-    $image = shoppingGuide_getValue($info , 'field_shop_guide_item_img');
-    $image = ($image[ 0 ][ 'uri' ]) ? file_create_url($image[ 0 ][ 'uri' ]) : FALSE;
+    $image = shoppingGuide_getValue($info , 'field_shop_guide_item_img' , 'uri');
+    $image = ($image) ? file_create_url($image) : FALSE;
 
-    $url = shoppingGuide_getValue($info , 'field_url');
-    $url = ($url[ 0 ][ 'safe_value' ]) ? $url[ 0 ][ 'safe_value' ] : FALSE;
+    $url = shoppingGuide_getValue($info , 'field_url' , 'safe_value');
 
     return compact('product_name' , 'body' , 'store' , 'price' , 'image' , 'url');
 }
 
-function shoppingGuide_getValue( $info , $filedName )
+function shoppingGuide_getValue( $info , $filedName , $column = FALSE )
 {
     $fieldI = field_get_items('node' , $info , $filedName);
     if ( !$fieldI ) {
 	if ( isset($info->$filedName) )
 	    $fieldI = $info->$filedName;
     }
-    return $fieldI;
-}
-
-function shoppingGuide_getItems( $edit_item = TRUE )
-{
-    $query = db_select('node' , 'n');
-    $result = $query->condition('type' , SHOP_ITEM_TYPE_NAME)
-	    ->fields('n' , array( 'nid' , 'title' ))
-	    ->execute();
-
-    $choose_value = ($edit_item) ? t('delete current items') : t('chose  items');
-    $return = array( 0 => $choose_value );
-    foreach ( $result as $value ) {
-	$return[ $value->nid ] = $value->title;
-    }
-    return $return;
-}
-
-function shoppingGuide_getDefaultValue( $nodeId = FALSE )
-{
-    $result = array( );
-    if ( $nodeId ) {
-	$tableName = cache_get('shop_guide_item_id_table' , 'cache_field');
-	if ( !$tableName ) {
-	    $tableName = shoppingGuide_getTableName(SHOP_ITEM_FIELD_NAME);
-	    cache_set('shop_guide_item_id_table' , $tableName , 'cache_field' , CACHE_PERMANENT);
-	} else {
-	    $tableName = $tableName->data;
+    if ( $column ) {
+	if ( is_array($fieldI) && count($fieldI) ) {
+	    if ( isset($fieldI[ 0 ][ $column ]) )
+		return $fieldI[ 0 ][ $column ];
 	}
-	if ( $tableName ) {
-	    $query = db_select($tableName , 'ST');
-	    $query->addField('ST' , SHOP_ITEM_FIELD_NAME . '_' . SHOP_ITEM_ID_SUFFIX , SHOP_ITEM_ID_SUFFIX);
-	    $resultDB = $query->fields('ST' , array( 'entity_id' ))
-		    ->condition('entity_id' , $nodeId)
-		    ->execute();
-	    foreach ( $resultDB as $value ) {
-		$result[ ] = $value->{SHOP_ITEM_ID_SUFFIX};
-	    }
-	}
-    }
-    return $result;
-}
-
-function shoppingGuide_getTableName( $fieldName )
-{
-    $query = db_select('field_config' , 'FC');
-    $tableName = FALSE;
-    $resultDB = array( );
-    $resultDB = $query->fields('FC' , array( 'data' ))
-	    ->condition('field_name' , $fieldName)
-	    ->execute();
-    if ( $resultDB )
-	foreach ( $resultDB as $value ) {
-	    $data = unserialize($value->data);
-	    $tableKeys = array_keys($data[ 'storage' ][ 'details' ][ 'sql' ][ 'FIELD_LOAD_CURRENT' ]);
-	    $tableName = array_shift($tableKeys);
-	    break;
-	}
-    return $tableName;
-}
-
-/**
- * Implements hook_field_validate().
- *
- *
- */
-function shoppingGuide_field_validate( $entity_type , $entity , $field , $instance , $langcode , $items , &$errors )
-{
-    foreach ( $items as $delta => $item ) {
-	if ( !empty($item[ SHOP_ITEM_ID_SUFFIX ]) ) {
-	    if ( !is_numeric($item[ SHOP_ITEM_ID_SUFFIX ]) ) {
-		$errors[ $field[ 'field_name' ] ][ $langcode ][ $delta ][ ] = array(
-		    'error' => 'invalid_type_item_id' ,
-		    'message' => t('The shop item id must numeric') ,
-		);
-	    }
-	}
-    }
-}
-
-/**
- * Implements hook_field_widget_error().
- */
-function shoppingGuide_field_widget_error( $element , $error , $form , &$form_state )
-{
-    switch ( $error[ 'error' ] ) {
-	case 'invalid_type_item_id':
-	    form_error($element , $error[ 'message' ]);
-	    break;
+	return FALSE;
+    } else {
+	return $fieldI;
     }
 }
 

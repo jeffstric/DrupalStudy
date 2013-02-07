@@ -86,10 +86,8 @@
 <?php
 //map
 $coverUrl = file_create_url($content[ 'field_slide_show_cover' ][ '#items' ][ 0 ][ 'uri' ]);
-unset($content[ SHOP_ITEM_FIELD_NAME ]);
-//$items_info = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_FIELD_NAME . '_detail' ];
-$items_info = $content[ 'field_shop_guide_item' ][ SHOP_ITEM_KEY ];
-dpm($content);
+$items_info = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
+//dpm($content);
 ?>
 <div class="main">
     <div class="maincontent">

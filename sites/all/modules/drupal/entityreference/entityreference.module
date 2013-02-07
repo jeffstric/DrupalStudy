@@ -1121,11 +1121,15 @@ function entityreference_field_formatter_info()
 		'links' => TRUE ,
 	    ) ,
 	) ,
+	// this is for smarter 
+	//begin
 	'entityreference_smarter_shopguide' => array(
 	    'label' => t('smarter shopping guide') ,
 	    'description' => t('this is special for smarter.us') ,
 	    'field types' => array( 'entityreference' ) ,
 	) ,
+	    // this is for smarter 
+	    //end
     );
 }
 
@@ -1274,9 +1278,9 @@ function entityreference_field_formatter_view( $entity_type , $entity , $field ,
 		}
 	    }
 	    break;
-
+	// this is for smarter 
+	//begin
 	case 'entityreference_smarter_shopguide':
-	    dpm($items);
 	    if ( function_exists('shoppingGuide_getItemInfo') && defined('SHOP_ITEM_KEY') ) {
 		foreach ( $items as $delta => $item ) {
 		    $result[ SHOP_ITEM_KEY ][ $delta ] = shoppingGuide_getItemInfo($item[ 'entity' ]);
@@ -1284,6 +1288,8 @@ function entityreference_field_formatter_view( $entity_type , $entity , $field ,
 	    }
 
 	    break;
+	//end
+	//this is for smarter 
 	case 'entityreference_entity_id':
 	    foreach ( $items as $delta => $item ) {
 		$result[ $delta ] = array( '#markup' => check_plain($item[ 'target_id' ]) );
