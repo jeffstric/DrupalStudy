@@ -26,6 +26,7 @@ $illegalSize =
 	    array( 50 , 50 ) ,
 	    array( 100 , 100 ) ,
 	    array( 200 , 200 ) ,
-	    array( 293 , 506 ) ,
+	    array( 195 , 217 ) ,//shop guide denim
+	    array( 293 , 506 ) ,//shop guide slide show
 	    array( 400 , 400 ) ,
 );

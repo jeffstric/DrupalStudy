@@ -17,6 +17,8 @@ define('SHOP_ITEM_FIELD_NAME' , 'field_shop_guide_item');
 //this is key of shop guide item info
 define('SHOP_ITEM_KEY' , 'shop_guide_item');
 
+define('SHOP_GUIDE_COVER_FIELD_NAME' , 'field_slide_show_cover');
+
 function shoppingGuide_transferImageUrl( $url , $width , $height )
 {
     $url = str_replace($_SERVER[ 'HTTP_HOST' ] , $_SERVER[ 'HTTP_HOST' ] . '/imagesi' , $url);
@@ -55,8 +57,12 @@ function shoppingGuide_getItemInfo( stdClass $info )
     $image = ($image) ? file_create_url($image) : FALSE;
 
     $url = shoppingGuide_getValue($info , 'field_url' , 'safe_value');
+    $outUrl = FALSE;
+    $url = trackUrl_convert($url , $outUrl);
 
-    return compact('product_name' , 'body' , 'store' , 'price' , 'image' , 'url');
+    $target = ($outUrl) ? '_blank' : '_self';
+
+    return compact('product_name' , 'body' , 'store' , 'price' , 'image' , 'url' , 'outUrl' , 'target');
 }
 
 function shoppingGuide_getValue( $info , $filedName , $column = FALSE )
