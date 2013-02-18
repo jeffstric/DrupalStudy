@@ -84,10 +84,18 @@
  */
 ?>
 <?php
+$imageSize = array(
+    array( 143 , 150 ) ,
+    array( 143 , 150 ) ,
+    array( 143 , 150 ) ,
+    array( 143 , 150 ) ,
+    array( 143 , 150 ) ,
+    array( 143 , 150 ) ,
+    array( 237 , 307 ) ,
+    array( 237 , 307 ) ,
+);
 //map
 $coverSrc = file_create_url($content[ SHOP_GUIDE_COVER_FIELD_NAME ][ '#items' ][ 0 ][ 'uri' ]);
-$slogon_pre = $content[ 'field_shop_guide_slogon_pre' ][ '#items' ][ 0 ][ 'safe_value' ];
-$slogon = $content[ 'field_shop_guide_slogon' ][ '#items' ][ 0 ][ 'safe_value' ];
 $items = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 //dpm($content);
 ?>
@@ -96,56 +104,54 @@ $items = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 	<div class="guidewrapper">
 	    <div class="topimg">
 		<img src="<?php echo $coverSrc ?>" />
-		<p><strong><?php echo $slogon_pre ?></strong><?php echo $slogon ?></p>
 	    </div>
 	    <div class="intro">
 		<h1><?php echo $title ?></h1>
-		<div class="desc">
-		    <?php echo render($content[ 'body' ]) ?>
-		</div>
+		<div class="desc"><?php echo render($content[ 'body' ]) ?></div>
 	    </div>
+
 	    <?php foreach ( $items as $key => $value ): ?>
 		<?php if ( $key > 7 ) break; ?>
-
-    	    <div class="guide<?php echo $key + 1 ?>">
-    		<div class="imgbox">
-			<?php if ( $value[ 'url' ] ): ?>
-			    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , 195 , 217); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/></a>
-			<?php else: ?>
-			    <img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , 195 , 217); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
-			<?php endif; ?>
-    		</div>
-    		<div class="content">
-			<?php if ( $value[ 'url' ] ): ?>
-			    <?php if ( $value[ 'product_name' ] ): ?>
-	    		    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><h3 name="has"><?php echo $value[ 'product_name' ] ?></h3></a>
+		<?php if ( $key == 6 || $key == 7 ): ?>
+		    <div class="guide<?php echo $key + 1 ?>">
+			<div class="imgbox">
+			    <?php if ( $value[ 'url' ] ): ?>
+	    		    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , $imageSize[ $key ][ 0 ] , $imageSize[ $key ][ 1 ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/></a>
+			    <?php else: ?>
+	    		    <img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , $imageSize[ $key ][ 0 ] , $imageSize[ $key ][ 1 ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
 			    <?php endif; ?>
-			    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" class="pprice"><?php echo $value[ 'store' ]; ?><?php if ( $value[ 'price' ] ) echo '$' . $value[ 'price' ]; ?> </a>
-			<?php else: ?>
-			    <?php if ( $value[ 'product_name' ] ): ?>
-	    		    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><h3 name="has"><?php echo $value[ 'product_name' ] ?></h3></a>
-			    <?php endif; ?>
-			    <?php echo $value[ 'store' ]; ?><?php if ( $value[ 'price' ] ) echo '$' . $value[ 'price' ]; ?> 
-			<?php endif; ?>
-    		</div>
-		    <?php if ( $value[ 'body' ] ): ?>
-			<a href="javascript:;" class="linkdot"><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/denim_linkdot.gif') ?>" /></a>
-			<div class="popup disn">
-			    <div class="arrow">
-				<img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/v6/stuffers_pop_arrow.gif') ?>" />
-			    </div>
-			    <?php echo truncate_utf8($value[ 'body' ] , 440); ?>
 			</div>
-		    <?php endif; ?>
-    	    </div>
+		    </div>
+		<?php else: ?>
+		    <div class="guide<?php echo $key + 1 ?>">
+			<div class="imgbox">
+			    <?php if ( $value[ 'url' ] ): ?>
+	    		    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , $imageSize[ $key ][ 0 ] , $imageSize[ $key ][ 1 ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/></a>
+			    <?php else: ?>
+	    		    <img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , $imageSize[ $key ][ 0 ] , $imageSize[ $key ][ 1 ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
+			    <?php endif; ?>
+			</div>
+			<div class="content">
+			    <?php if ( $value[ 'url' ] ): ?>
+	    		    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow">
+	    			<h3><?php echo $value[ 'product_name' ] ?></h3>
+	    		    </a>
+	    		    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow" class="pprice">
+				    <?php if ( $value[ 'store' ] ): ?><strong><?php echo $value[ 'store' ] ?></strong> <?php endif; ?>
+				    <?php if ( $value[ 'price' ] ): ?><?php echo $value[ 'price' ] ?> <?php endif; ?>
+	    		    </a>
+			    <?php else: ?>
+	    		    <h3><?php echo $value[ 'product_name' ] ?></h3>
+				<?php if ( $value[ 'store' ] ): ?><strong><?php echo $value[ 'store' ] ?></strong> <?php endif; ?>
+				<?php if ( $value[ 'price' ] ): ?><?php echo $value[ 'price' ] ?> <?php endif; ?>
+			    <?php endif; ?>
+			</div>
+		    </div>
+		<?php endif; ?>
 	    <?php endforeach; ?>
-	    <div class="baseinfo">
-		<?php echo $submitted ?>
-	    </div>
 	</div>
-	<!--end guidewrapper -->
 	<div class="cl"></div>
     </div>
-    <!--end maincontent -->
+    <!--end maincontent -->	
 </div>
-<!-- end main -->  
+<!-- end main -->

@@ -181,7 +181,7 @@ function smarter_preprocess_node( &$variables , $hook )
 
 function smarter_preprocess_node_shop_guide_slide_show( &$variables , $hook )
 {
-    //change theme
+    //change theme 
     $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
 
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/slideshow.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
@@ -192,10 +192,47 @@ function smarter_preprocess_node_shop_guide_slide_show( &$variables , $hook )
 function smarter_preprocess_node_shop_guide_denim( &$variables , $hook )
 {
     //change theme
-	$variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
+    $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
+
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/denim.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
     drupal_add_js(drupal_get_path('theme' , 'smarter') . '/js/shopping_guide/denim.js' , array( 'type' => 'file' , 'group' => JS_THEME ));
+}
+
+function smarter_preprocess_node_shop_guide_eco_friendly( &$variables , $hook )
+{
+    //change theme
+    $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
+
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/ecofriendly.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+}
+
+function smarter_preprocess_node_shop_guide_fall_fashion( &$variables , $hook )
+{
+    //change theme
+    $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
+
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/fallfashionguide.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+}
+
+function smarter_preprocess_node_shop_guide_get_look( &$variables , $hook )
+{
+    //change theme
+    $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
+
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/getthelook.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+}
+
+function smarter_preprocess_node_shop_guide_women_essential( &$variables , $hook )
+{
+    //change theme
+    $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
+
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/women_on_the_go_essentials.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
 }
 
 //field__shop_guide_slide_show

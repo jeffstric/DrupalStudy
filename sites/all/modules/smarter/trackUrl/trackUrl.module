@@ -17,6 +17,6 @@ function trackUrl_convert( $url , &$outUrl = FALSE )
 	return $url;
     } else {
 	$outUrl = TRUE;
-	return $_SERVER[ 'HTTP_HOST' ] . '/trackUrl.php?' . $url;
+	return $host . '/trackUrl.php?' . $url;
     }
 }

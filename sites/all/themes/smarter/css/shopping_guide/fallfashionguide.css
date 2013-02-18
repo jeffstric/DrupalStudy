@@ -1,0 +1,48 @@
+/* CSS Document */
+.main{ clear:both; padding:0 2px; background:url(../../images/special/pagewrapper_bg.png) right 0 repeat-y; width:998px; }
+.main .maincontent{border:#c8c7c3 1px solid; background:#fff; padding:0px; position:relative;}
+.mainbottom{background:url(../../images/special/maincontent_bg.png) 0 bottom repeat-x; height:4px; font-size:0; margin:0 5px 15px 5px;}
+
+.allcategories{ padding-left:0; margin-left:4px;}
+
+.print{ text-align:right; padding:10px 5px 5px 0;}
+.print img{ vertical-align:middle; margin:0 3px 0 8px;}
+.print a{ color:#666; font-size:1.0em;}
+
+.guidewrapper{ position:relative; height:896px; background:url(../../images/special/fallfashiontrends_bg.gif) no-repeat 383px 24px;}
+.guidewrapper .intro{ position:absolute;  z-index:2;top:80px; right:33px; width:574px;}
+.guidewrapper .intro h1{ text-indent:-9999px; height:0; font-size:0;}
+.guidewrapper div.desc{font-size:15px;color:#000; font-style:italic; text-align:right; padding-left:85px; padding-top:15px;}
+.guidewrapper div.desc a{ color:#9D1819; font-size:12px; font-size:15px;}
+.guidewrapper .content a:link,
+.guidewrapper .content a:active,
+.guidewrapper .content a:visited,
+.guidewrapper .content a:hover{ text-decoration:none;}
+.guidewrapper a h3{ font-size:15px; color:#000; padding:5px 0 0 0; text-decoration:none; line-height:110%;}
+.guidewrapper h3 strong{ font-weight:bold; font-size:18px;}
+.guidewrapper h3 span{color:#bd1010; }
+.guidewrapper .content p{ font-size:12px; color:#666;}
+.guidewrapper .imgbox{ z-index:1; position:absolute;}
+.guidewrapper .content{ z-index:3; position:absolute; padding:5px 8px;}
+.guidewrapper .contentbg{ z-index:2; position:absolute; background:#fff; filter:alpha(opacity=50);  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);  -moz-opacity:0.5; opacity:0.5; padding:5px 8px;}
+.guidewrapper .imgbox a{ outline:none}
+.guide1 .imgbox{top:10px; left:80px;}
+.guide1 .content{  top:365px; left:45px; width:260px; height:60px;}
+.guide1 .contentbg{ top:365px; left:45px; width:260px;  height:60px;}
+.guide2 .imgbox{top:445px; left:40px;}
+.guide2 .content{  top:720px; left:40px; width:220px;  height:60px;}
+.guide2 .contentbg{ top:720px; left:40px; width:220px;  height:60px;}
+.guide3 .imgbox{bottom:0px; left:295px;}
+.guide3 .content{ top:800px; left:296px; width:290px; height:67px; }
+.guide3 .contentbg{ top:800px; left:296px; width:290px;  height:67px;}
+.guide4 .imgbox{top:340px; left:630px;}
+.guide4 .content{  top:400px; left:750px; width:220px; height:70px;}
+.guide4 .contentbg{ top:400px; left:750px; width:220px;  height:70px;}
+.guide5 .imgbox{top:520px; left:780px;}
+.guide5 .content{  top:550px; left:600px; width:200px; height:84px;}
+.guide5 .contentbg{ top:550px; left:600px; width:200px;  height:84px;}
+.guide6 .imgbox{top:665px; left:621px;}
+.guide6 .content{  top:720px; left:755px; width:220px; height:60px;}
+.guide6 .contentbg{ top:720px; left:755px; width:220px;  height:60px;}
+
+.baseinfo {position:absolute; bottom:10px; right:10px; font-size:1.2em; font-style:italic; color:#666666; }

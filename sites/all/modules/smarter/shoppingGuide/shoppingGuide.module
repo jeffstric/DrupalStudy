@@ -48,8 +48,9 @@ function shoppingGuide_getItemInfo( stdClass $info )
 
     $body = shoppingGuide_getValue($info , 'body' , 'safe_value');
 
-    $store = shoppingGuide_getValue($info , 'field_store' , 'store');
-    $store = ( isset($store->name) ) ? $store->name : '';
+    $storeId = shoppingGuide_getValue($info , 'field_store' , 'tid');
+    $store = taxonomy_term_load($storeId);
+    $store = $store->name;
 
     $price = shoppingGuide_getValue($info , 'field_price' , 'value');
 

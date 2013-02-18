@@ -1,0 +1,49 @@
+/* CSS Document */
+.main{ clear:both; padding:0 2px; background:url(../../images/special/pagewrapper_bg.png) right 0 repeat-y; width:998px; }
+.main .maincontent{border:#c8c7c3 1px solid; background:#fff; padding:0px; position:relative;}
+.mainbottom{background:url(../../images/special/maincontent_bg.png) 0 bottom repeat-x; height:4px; font-size:0; margin:0 5px 15px 5px;}
+
+.allcategories{ padding-left:0; margin-left:4px;}
+
+.print{ text-align:right; padding:10px 5px 5px 0;}
+.print img{ vertical-align:middle; margin:0 3px 0 8px;}
+.print a{ color:#666; font-size:1.0em;}
+
+.guidewrapper{ position:relative; height:880px; }
+.guidewrapper .intro{ position:absolute;  z-index:2;top:40px; left:40px;  padding-top:0px; width:592px; height:263px;}
+.guidewrapper .intro h1{ text-indent:-9999px; height:0; font-size:0;}
+.guidewrapper div.desc{ padding-top:10px; font-size:18px; color:#000; font-style:italic; line-height:21px; width:550px;}
+.guidewrapper div.desc a{ color:#9D1819; font-size:18px;}
+.guidewrapper .imgbox{ z-index:1; position:absolute;}
+.guidewrapper .content{ z-index:3; position:absolute; padding:5px 8px;}
+.guidewrapper a.pname{ font-size:18px; display:block; color:#000;}
+.guidewrapper a.mname{ font-size:18px; display:block; color:#000;}
+.guidewrapper a.pprice{ font-size:18px; color:#9d1819; display:block;}
+
+
+.guidewrapper .contentbg{ z-index:2; position:absolute; background:#fff; filter:alpha(opacity=50);  filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);  -moz-opacity:0.5; opacity:0.5; padding:5px 8px;}
+.guidewrapper .imgbox a{ outline:none}
+.guide1 .imgbox{top:330px; left:40px;}
+.guide1 .content{  top:330px; left:160px; width:244px; height:75px; text-align:right}
+.guide1 .contentbg{ top:330px; left:160px; width:244px;  height:75px;}
+.guide2 .imgbox{top:550px; left:80px;}
+.guide2 .content{  top:765px; left:40px; width:220px;  height:75px; text-align:right}
+.guide2 .contentbg{ top:765px; left:40px; width:220px;  height:75px;}
+.guide3 .imgbox{bottom:0; left:310px;}
+.guide3 .content{ bottom:140px; left:375px; width:240px; height:75px; text-align:right}
+.guide3 .contentbg{ bottom:140px; left:375px; width:240px;  height:75px;}
+.guide4 .imgbox{top:60px; left:650px;}
+.guide4 .content{  top:145px; left:780px; width:180px; height:75px; text-align:right}
+.guide4 .contentbg{ top:145px; left:780px; width:180px;  height:75px;}
+.guide5 .imgbox{top:245px; right:50px;}
+.guide5 .content{  top:225px; right:130px; width:250px; height:75px; text-align:right}
+.guide5 .contentbg{ top:225px; right:130px; width:250px;  height:75px;}
+.guide6 .imgbox{top:310px; right:210px;}
+.guide6 .content{  top:425px; right:10px; width:210px; height:75px; text-align:right}
+.guide6 .contentbg{ top:425px; right:10px; width:210px;  height:75px;}
+.guide7 .imgbox{top:510px; right:50px;}
+.guide7 .content{  top:775px; right:40px; width:240px; height:75px; text-align:right}
+.guide7 .contentbg{ top:775px; right:40px; width:240px;  height:75px;}
+.guide1 .content a,.guide2 .content a,.guide3 .content a,.guide4 .content a,.guide5 .content a,.guide6 .content a,.guide7 .content a{outline:none;}
+
+.baseinfo {position:absolute; top:10px; right:10px; font-size:1.2em; font-style:italic; }
