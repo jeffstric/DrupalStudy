@@ -235,6 +235,55 @@ function smarter_preprocess_node_shop_guide_women_essential( &$variables , $hook
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
 }
 
+function smarter_preprocess_node_shop_guide_chic_geek( &$variables , $hook )
+{
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/chicgeek.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+}
+
+function smarter_preprocess_node_shop_guide_man_tripping( &$variables , $hook )
+{
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/mantripping.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+}
+
+function smarter_preprocess_node_shop_guide_thanksgiving( &$variables , $hook )
+{
+    //change theme
+    $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
+
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/thanksgiving.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+}
+
+function smarter_preprocess_node_shop_guide_ten_stuffer( &$variables , $hook )
+{
+    //change theme
+    $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
+
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/stuffers.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_js(drupal_get_path('theme' , 'smarter') . '/js/shopping_guide/stuffer.js' , array( 'type' => 'file' , 'group' => JS_THEME ));
+}
+
+function smarter_preprocess_node_shop_guide_want_it_now( &$variables , $hook )
+{
+    //change theme
+    $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
+
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/iwantitnow.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+}
+
+function smarter_preprocess_node_shop_guide_sale_module_b( &$variables , $hook )
+{
+    //change theme
+    $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
+
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/salemodule2.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+    drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
+}
+
 //field__shop_guide_slide_show
 /**
  * Override or insert variables into the comment templates.

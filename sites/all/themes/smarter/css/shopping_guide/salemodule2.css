@@ -1,0 +1,45 @@
+/* CSS Document */
+.main{ clear:both; padding:0 2px 0 2px; background:url(../images/special/pagewrapper_bg.png) right 0 repeat-y; width:998px; }
+.main .maincontent{border:#c8c7c3 1px solid; background:#fff; padding:0px; position:relative;}
+.mainbottom{background:url(../images/special/maincontent_bg.png) 0 bottom repeat-x; height:4px; font-size:0; margin:0 5px 15px 5px;}
+
+.allcategories{ padding-left:0; margin-left:4px;}
+
+.print{ text-align:right; padding:10px 5px 5px 0;}
+.print img{ vertical-align:middle; margin:0 3px 0 8px;}
+.print a{ color:#666; font-size:1.0em;}
+
+.guidewrapper{ position:relative; height:882px; background:url(../../images/special/salemodule2_bg.gif) no-repeat 0px 0px;}
+.guidewrapper .topimg{ position:absolute; z-index:2; top:30px; left:45px;}
+.guidewrapper .intro{ position:absolute;  z-index:2;top:307px; left:717px; width:262px;}
+.guidewrapper .intro h1{ font-size:31px;color:#000;  padding-bottom:10px;text-align:center}
+.guidewrapper div.desc{ font-size:17px; color:#333; line-height:20px; text-align:center}
+.guidewrapper div.desc a{ color:#333; font-size:17px;}
+.guidewrapper .content a:link,
+.guidewrapper .content a:active,
+.guidewrapper .content a:visited,
+.guidewrapper .content a:hover{ text-decoration:none;}
+.guidewrapper a h3{ font-size:15px; color:#000; padding:10px 0; line-height:110%; text-decoration:none; }
+.guidewrapper a.pprice{ color:#666; font-size:14px; text-decoration:none; font-family:tahoma;}
+.guidewrapper a.pprice strong{ color:#661b11; font-weight:normal;}
+.guidewrapper a.pprice span{ text-decoration:underline;}
+.guidewrapper a.deal{ font-size:18px; color:#661b11; display:block; padding-top:10px; text-decoration:none;}
+.guidewrapper .content p{ background:url(../../images/special/IwantItNow_pdot.gif) no-repeat 0px 4px; text-indent:12px; color:#000; font-size:13px; padding-bottom:10px; font-family:Verdana, Arial, Helvetica, sans-serif;}
+.guidewrapper .imgbox{ z-index:1; position:absolute;}
+.guidewrapper .content{ z-index:3; position:absolute;}
+.guidewrapper .imgbox a{ outline:none}
+.guide1 .imgbox{top:188px; left:105px;}
+.guide1 .content{  top:581px; left:535px; width:210px;  }
+.guide2 .imgbox{top:407px; left:105px;}
+.guide2 .content{  top:581px; left:785px; width:210px;  }
+.guide3 .imgbox{top:630px; left:105px;}
+.guide3 .content{  top:692px; left:535px; width:210px;  }
+.guide4 .imgbox{top:30px; left:380px;}
+.guide4 .content{  top:692px; left:785px; width:210px;  }
+.guidewrapper .modbox{ width:500px; height:260px; background:url(../../images/special/salemodule2_mod_bg.png) no-repeat; position:absolute; z-index:2; left:496px; top:556px;}
+.guidewrapper .num1{ position:absolute; left:63px; top:185px; z-index:100; width:72px; height:72px; background:url(../../images/special/salemodule1_num1.png); _background:url(../../images/special/salemodule1_num1.gif);}
+.guidewrapper .num2{ position:absolute; left:283px; top:420px; z-index:100; width:71px; height:71px; background:url(../../images/special/salemodule1_num2.png); _background:url(../../images/special/salemodule1_num2.gif);}
+.guidewrapper .num3{ position:absolute; left:63px; top:625px; z-index:100; width:76px; height:76px; background:url(../../images/special/salemodule1_num3.png); _background:url(../../images/special/salemodule1_num3.gif);}
+.guidewrapper .num4{ position:absolute; left:563px; top:355px; z-index:100; width:74px; height:74px; background:url(../../images/special/salemodule1_num4.png); _background:url(../../images/special/salemodule1_num4.gif);}
+
+.baseinfo {position:absolute; top:10px; right:10px; font-size:1.2em; font-style:italic; color:#666666; }
