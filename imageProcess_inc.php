@@ -54,7 +54,7 @@ $illegalSize =
 	    array( 113 , 184 ) ,
 //	    array( 200 , 200 ) ,
 	    array( 338 , 600 ) ,
-	    array( 200 , 150 ) ,
+	    array( 198 , 142 ) ,
 	    array( 116 , 165 ) ,
 	    array( 125 , 166 ) ,
 	    array( 231 , 264 ) ,
@@ -81,7 +81,7 @@ $illegalSize =
 	    /* shop guide thanksgiving  end */
 	    array( 221 , 164 ) ,
 	    array( 134 , 130 ) ,
-	    array( 117 , 184 ) ,
+	    array( 177 , 184 ) ,
 	    array( 150 , 158 ) ,
 	    array( 147 , 155 ) ,
 	    array( 150 , 150 ) ,

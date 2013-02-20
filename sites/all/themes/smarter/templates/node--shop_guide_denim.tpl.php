@@ -120,12 +120,12 @@ $items = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 			    <?php if ( $value[ 'product_name' ] ): ?>
 	    		    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><h3 name="has"><?php echo $value[ 'product_name' ] ?></h3></a>
 			    <?php endif; ?>
-			    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" class="pprice"><?php echo $value[ 'store' ]; ?><?php if ( $value[ 'price' ] ) echo '$' . $value[ 'price' ]; ?> </a>
+			    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" class="pprice"><?php echo $value[ 'store' ]; ?>&nbsp;<?php if ( $value[ 'price' ] ) echo '$' . $value[ 'price' ]; ?> </a>
 			<?php else: ?>
 			    <?php if ( $value[ 'product_name' ] ): ?>
 	    		    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><h3 name="has"><?php echo $value[ 'product_name' ] ?></h3></a>
 			    <?php endif; ?>
-			    <?php echo $value[ 'store' ]; ?><?php if ( $value[ 'price' ] ) echo '$' . $value[ 'price' ]; ?> 
+			    <?php echo $value[ 'store' ]; ?>&nbsp;<?php if ( $value[ 'price' ] ) echo '$' . $value[ 'price' ]; ?> 
 			<?php endif; ?>
     		</div>
 		    <?php if ( $value[ 'body' ] ): ?>

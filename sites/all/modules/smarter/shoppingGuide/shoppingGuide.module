@@ -46,11 +46,11 @@ function shoppingGuide_getItemInfo( stdClass $info )
 {
     $product_name = shoppingGuide_getValue($info , 'field_product_name' , 'safe_value');
 
-    $body = shoppingGuide_getValue($info , 'body' , 'safe_value');
+    $body = shoppingGuide_getValue($info , 'body' , 'value');
 
     $storeId = shoppingGuide_getValue($info , 'field_store' , 'tid');
     $store = taxonomy_term_load($storeId);
-    $store = $store->name;
+    $store = (isset($store->name)) ? $store->name : '';
 
     $price = shoppingGuide_getValue($info , 'field_price' , 'value');
 

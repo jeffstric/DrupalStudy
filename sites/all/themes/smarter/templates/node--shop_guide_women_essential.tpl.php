@@ -88,7 +88,7 @@ $imageSize = array(
     array( 113 , 184 ) ,
     array( 200 , 200 ) ,
     array( 338 , 600 ) ,
-    array( 200 , 150 ) ,
+    array( 198 , 142 ) ,
     array( 116 , 165 ) ,
     array( 125 , 166 ) ,
     array( 231 , 264 ) ,
@@ -130,7 +130,7 @@ $items = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 	    			<a  href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow"  class="mname"><?php echo $value[ 'store' ] ?></a>
 				<?php endif; ?>
 				<?php if ( $value[ 'price' ] ): ?>
-	    			<a  href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow"  class="pprice"><?php echo $value[ 'price' ] ?></a>
+	    			<a  href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow"  class="pprice">$<?php echo $value[ 'price' ] ?></a>
 				<?php endif; ?>
 			    <?php else: ?>
 				<?php if ( $value[ 'product_name' ] ): ?>
@@ -140,7 +140,7 @@ $items = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 				    <?php echo $value[ 'store' ] ?>
 				<?php endif; ?>
 				<?php if ( $value[ 'price' ] ): ?>
-				    <?php echo $value[ 'price' ] ?>
+				    $<?php echo $value[ 'price' ] ?>
 				<?php endif; ?>
 			    <?php endif; ?>
     		    </div>

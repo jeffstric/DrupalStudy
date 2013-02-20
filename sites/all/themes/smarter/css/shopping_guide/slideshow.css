@@ -31,6 +31,7 @@
 .slidebox .slidecontent{ padding:0 5px; float:left; width:610px; height:122px; overflow:hidden;}
 .slidebox .slidecontent ul{ width:3000px;}
 .slidebox ul li{ float:left; margin:0;}
+.slidebox ul li a img{display: block}
 .slidebox ul li a.normal{ border:#fff 6px solid; display:block;}
 .slidebox ul li a.normal img{border:#c8c5be 1px solid;}
 .slidebox ul li a.selected{ border:#a82828 6px solid; display:block;}

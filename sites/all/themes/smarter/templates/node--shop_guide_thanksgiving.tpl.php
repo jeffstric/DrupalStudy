@@ -87,7 +87,7 @@
 $imageSize = array(
     array( 221 , 164 ) ,
     array( 134 , 130 ) ,
-    array( 117 , 184 ) ,
+    array( 177 , 184 ) ,
     array( 150 , 158 ) ,
     array( 147 , 155 ) ,
     array( 150 , 150 ) ,

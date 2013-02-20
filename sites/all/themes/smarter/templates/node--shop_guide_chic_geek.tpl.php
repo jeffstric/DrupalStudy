@@ -96,7 +96,7 @@ $imageSize = array(
 //map
 $coverSrc = file_create_url($content[ SHOP_GUIDE_COVER_FIELD_NAME ][ '#items' ][ 0 ][ 'uri' ]);
 $items = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
-//dpm($content);
+dpm($content);
 ?>
 <div class="main">
     <div class="maincontent">
