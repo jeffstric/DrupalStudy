@@ -1,0 +1,5 @@
+name = smarter CDN
+description = transfer www to files
+core = 7.x
+package = smarter manage
+files[] = trackUrl.module

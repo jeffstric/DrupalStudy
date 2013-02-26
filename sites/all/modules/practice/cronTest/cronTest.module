@@ -1,0 +1,19 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Nov 5, 2012
+ *  time    :   2:54:18 PM
+ * */
+function cronTest_cron()
+{
+    /*
+      $dsn = 'mysql:dbname=test;host=127.0.0.1';
+      $user = 'root';
+      $password = '***';
+      $db = new PDO($dsn , $username , $passwd);
+      $time = date(DATE_W3C);
+      $db->query("insert cron (content)  VALUES ('$time')");
+     */
+}

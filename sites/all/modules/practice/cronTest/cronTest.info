@@ -1,0 +1,5 @@
+name = cronTest
+description = cronTest
+package = Pro Drupal Development
+core = 7.x
+files[]=cronTest.module
