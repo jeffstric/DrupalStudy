@@ -1,5 +1,0 @@
-name = distribute upload image
-description = create shopguideSnapeshot
-package = smarter shopguide manage
-core = 7.x
-files[] = shopguideSnapshot.module

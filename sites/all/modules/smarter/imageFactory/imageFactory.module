@@ -1,0 +1,70 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   2012-12-12
+ *  time    :   20:01:31
+ * */
+
+/**
+ * Implementation of hook_permission() 
+ */
+function imageFactory_permission()
+{
+    return array(
+	'imageFactory image upload' => array(
+	    'title' => t('image imageFactory upload') ,
+	    'description' => t('Allow users upload image to imageFactory') ,
+	) ,
+    );
+}
+
+function imageFactory_menu()
+{
+    $items[ 'imageFactory/upload' ] = array(
+	'title' => 'upload image' ,
+	'page callback' => 'drupal_get_form' ,
+	'page arguments' => array( 'imageFactory_fileUploadForm' ) ,
+	'access callback' => 'user_access' ,
+	'access arguments' => array( 'imageFactory image upload' ) ,
+	'type' => MENU_NORMAL_ITEM ,
+	'weight' => 1
+    );
+    return $items;
+}
+
+
+/**
+ * Define a form. 
+ */
+function imageFactory_fileUploadForm()
+{
+    $form[ '#method' ] = 'post';
+    $form[ '#attributes' ][ 'enctype' ] = 'multipart/form-data';
+    $form[ 'picture' ] = array(
+	'#type' => 'file' ,
+	'#title' => t('Upload picture') ,
+	'#size' => 48 ,
+	'#required' => TRUE ,
+	'#description' => t('The picture you want upload.')
+    );
+    $form[ 'submit' ] = array(
+	'#type' => 'submit' ,
+	'#value' => t('Submit')
+    );
+    return $form;
+}
+
+function imageFactory_fileUploadForm_validate( $form , &$form_state )
+{
+    dpm($form);
+    dpm($form_state);
+    form_set_error('picture' , t('test.'));
+}
+
+//function imageFactory_fileUploadForm_submit( $form , &$form_state )
+//{
+//     drupal_set_message(t('test submit '));
+//}
+
