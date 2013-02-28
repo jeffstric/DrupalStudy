@@ -6,6 +6,8 @@
  *  date    :   2012-12-12
  *  time    :   20:01:31
  * */
+define('IMAGEFACTORYKEY' , 'picture');
+define('IMAGEFACTORYTABLENAME' , 'image_factory');
 
 /**
  * Implementation of hook_permission() 
@@ -22,7 +24,7 @@ function imageFactory_permission()
 
 function imageFactory_menu()
 {
-    $items[ 'imageFactory/upload' ] = array(
+    $items[ 'admin/imageFactory/upload' ] = array(
 	'title' => 'upload image' ,
 	'page callback' => 'drupal_get_form' ,
 	'page arguments' => array( 'imageFactory_fileUploadForm' ) ,
@@ -31,9 +33,15 @@ function imageFactory_menu()
 	'type' => MENU_NORMAL_ITEM ,
 	'weight' => 1
     );
+    $items[ 'admin/imageFactory/test' ] = array(
+	'title' => 'upload image test' ,
+	'page callback' => 'imageFactory_test' ,
+	'access callback' => TRUE ,
+	'type' => MENU_NORMAL_ITEM ,
+	'weight' => 1
+    );
     return $items;
 }
-
 
 /**
  * Define a form. 
@@ -42,12 +50,11 @@ function imageFactory_fileUploadForm()
 {
     $form[ '#method' ] = 'post';
     $form[ '#attributes' ][ 'enctype' ] = 'multipart/form-data';
-    $form[ 'picture' ] = array(
+    $form[ IMAGEFACTORYKEY ] = array(
 	'#type' => 'file' ,
 	'#title' => t('Upload picture') ,
 	'#size' => 48 ,
-	'#required' => TRUE ,
-	'#description' => t('The picture you want upload.')
+	'#description' => t('The picture you want upload.') ,
     );
     $form[ 'submit' ] = array(
 	'#type' => 'submit' ,
@@ -56,15 +63,45 @@ function imageFactory_fileUploadForm()
     return $form;
 }
 
-function imageFactory_fileUploadForm_validate( $form , &$form_state )
+function imageFactory_fileUploadForm_submit( $form , &$form_state )
 {
-    dpm($form);
-    dpm($form_state);
-    form_set_error('picture' , t('test.'));
+    $validators = array(
+	'file_validate_extensions' => array( 'jpg png gif' ) ,
+    );
+    $year = date('Y');
+    $month = date('m');
+    $day = date('d');
+    $destinationPath = 'public://' . 'imageFactory' . '/' . $year . '/' . $month . '/' . $day . '/' . rand(0 , 9999);
+
+    if ( !is_dir($destinationPath) ) {
+	drupal_mkdir($destinationPath , 0777 , TRUE);
+    }
+
+    $file = file_save_upload(IMAGEFACTORYKEY , $validators , $destinationPath);
+    if ( $file ) {
+	$file->status = 1;
+	file_save($file);
+	drupal_set_message(t('load file success!'));
+	dpm($file);
+
+	$record = new stdClass();
+	$record->fid = $file->fid;
+	try {
+	    $message = drupal_write_record(IMAGEFACTORYTABLENAME , $record);
+	} catch ( Exception $e ) {
+	    $message = $e->getMessage();
+	}
+    }
 }
 
-//function imageFactory_fileUploadForm_submit( $form , &$form_state )
-//{
-//     drupal_set_message(t('test submit '));
-//}
-
+function imageFactory_test()
+{
+    $record = new stdClass();
+    $record->fid = 1;
+    try {
+	$message = drupal_write_record(IMAGEFACTORYTABLENAME , $record);
+    } catch ( Exception $e ) {
+	$message = $e->getMessage();
+    }
+    return $message;
+}
