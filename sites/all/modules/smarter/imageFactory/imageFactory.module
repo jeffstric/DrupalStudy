@@ -16,7 +16,7 @@ function imageFactory_permission()
 {
     return array(
 	'imageFactory image upload' => array(
-	    'title' => t('image imageFactory upload') ,
+	    'title' => t('image imageFactory upload and list') ,
 	    'description' => t('Allow users upload image to imageFactory') ,
 	) ,
     );
@@ -30,14 +30,38 @@ function imageFactory_menu()
 	'page arguments' => array( 'imageFactory_fileUploadForm' ) ,
 	'access callback' => 'user_access' ,
 	'access arguments' => array( 'imageFactory image upload' ) ,
-	'type' => MENU_NORMAL_ITEM ,
+	'type' => MENU_SUGGESTED_ITEM ,
+	'weight' => 1
+    );
+    $items[ 'admin/imageFactory/list' ] = array(
+	'title' => 'upload image' ,
+	'page callback' => 'imageFactory_imageList' ,
+	'access callback' => 'user_access' ,
+	'access arguments' => array( 'image imageFactory upload and list' ) ,
+	'type' => MENU_SUGGESTED_ITEM ,
+	'weight' => 1
+    );
+    $items[ 'admin/imageFactory/edit/%' ] = array(
+	'title' => 'upload image' ,
+	'page callback' => 'imageFactory_imageEdit' ,
+	'page arguments' => array( 3 ) ,
+	'access callback' => 'user_access' ,
+	'access arguments' => array( 'image imageFactory upload and list' ) ,
+	'type' => MENU_SUGGESTED_ITEM ,
+	'weight' => 1
+    );
+    $items[ 'admin/imageFactory/resizeAjax' ] = array(
+	'title' => 'upload image test' ,
+	'page callback' => 'imageFactoryResizeAjax' ,
+	'access callback' => TRUE ,
+	'type' => MENU_CALLBACK ,
 	'weight' => 1
     );
     $items[ 'admin/imageFactory/test' ] = array(
 	'title' => 'upload image test' ,
 	'page callback' => 'imageFactory_test' ,
 	'access callback' => TRUE ,
-	'type' => MENU_NORMAL_ITEM ,
+	'type' => MENU_SUGGESTED_ITEM ,
 	'weight' => 1
     );
     return $items;
@@ -63,26 +87,121 @@ function imageFactory_fileUploadForm()
     return $form;
 }
 
+function imageFactory_imageList()
+{
+    $query = db_select(IMAGEFACTORYTABLENAME , 'IMF');
+    $query->join('file_managed' , 'FM' , 'IMF.fid = FM.fid');
+    $query->fields('IMF' , array( 'fid' ))
+	    ->fields('FM' , array( 'filename' , 'uri' , 'timestamp' ))
+	    ->orderBy('timestamp' , 'DESC');
+    $result = $query->execute();
+
+    $rowsArray = array( );
+    foreach ( $result as $key => $value ) {
+	$rowsArray[ $key ][ 'filename' ] = $value->filename;
+	$rowsArray[ $key ][ 'img' ] = '<img src="' . file_create_url($value->uri) . '"/>';
+	$rowsArray[ $key ][ 'timestamp' ] = date('Y-m-d H:i:s' , $value->timestamp);
+	$rowsArray[ $key ][ 'operate' ] = '<a href="' . base_path() . 'admin/imageFactory/edit/' . $value->fid . '">' . t('use') . '</a>';
+    }
+
+    $tableHeader = array(
+	'filename' => array(
+	    'data' => 'file name' ,
+	) ,
+	'img' => array(
+	    'data' => 'image' ,
+	) ,
+	'upload' => array(
+	    'data' => 'upload time' ,
+	) ,
+    );
+    $tableInfo = array(
+	'header' => $tableHeader ,
+	'rows' => $rowsArray ,
+	'attributes' => array( 'width' => '100%' ) ,
+	'caption' => '<h2>image factory</h2>' ,
+	'colgroups' => array( ) ,
+	'sticky' => TRUE ,
+	'empty' => 'no item return' ,
+    );
+
+    return theme_table($tableInfo);
+}
+
+function imageFactory_imageEdit( $id )
+{
+    if ( $id ) {
+	$row = imageFactory_getFile($id);
+	$imageSrc = file_create_url($row->uri);
+	$imageInfo = getimagesize($imageSrc);
+	$imageRoute = imageFactory_routerRep($row->uri);
+	drupal_add_css(drupal_get_path('module' , 'imageFactory') . '/' . 'edit.css');
+	return theme('imageFactory' , array( 'image' => $imageSrc , 'imageRoute' => $imageRoute , 'fid' => $id , 'imageInfo' => $imageInfo ));
+    }
+}
+
+function imageFactoryResizeAjax()
+{
+    //test 
+    $_POST = array(
+	'height' => 75 ,
+	'width' => 75 ,
+	'top' => 0 ,
+	'left' => 0 ,
+	'fid' => 4573 ,
+	'src' => 'C:/wamp/www/DrupalStudy/files/public/imageFactory/2013/03/01/5788/women_men.jpg'
+    );
+
+    try {
+	$parms = array( 'width' , 'height' , 'top' , 'left' , 'src' , 'fid' );
+	foreach ( $parms as $p ) {
+	    if ( !isset($_POST[ $p ]) ) {
+		throw new Exception('parm error: ' . $p);
+	    }
+	}
+
+	$path = imageFactory_getDir('tmp');
+	$path = imageFactory_routerRep($path);
+	$output = array_pop(explode('/' , $_POST[ 'src' ]));
+
+	require 'imageJeff.php';
+	$image = new imageJeff($output , $path);
+	$image->fill(255 , 255 , 255);
+	$result = $image->reseizeImage($_POST[ 'src' ] , $_POST[ 'width' ] , $_POST[ 'height' ] , $_POST[ 'top' ] , $_POST[ 'left' ]);
+	if ( $result ) {
+	    echo json_encode(array( 'info' => 'success' , 'src' => $path . '/' . $output ));
+	} else {
+	    throw new Exception('resize fail');
+	}
+    } catch ( Exception $e ) {
+	echo json_encode(array( 'info' => 'error' , 'error' => $e->getMessage() ));
+    }
+}
+
+function imageFactory_getFile( $id )
+{
+    $query = db_select('file_managed' , 'FM');
+    $query->condition('FM.fid' , $id);
+    $query->fields('FM' , array( 'filename' , 'uri' , 'timestamp' ))
+	    ->orderBy('timestamp' , 'DESC');
+    $result = $query->execute();
+    $row = $result->fetch();
+
+    return $row;
+}
+
 function imageFactory_fileUploadForm_submit( $form , &$form_state )
 {
     $validators = array(
 	'file_validate_extensions' => array( 'jpg png gif' ) ,
     );
-    $year = date('Y');
-    $month = date('m');
-    $day = date('d');
-    $destinationPath = 'public://' . 'imageFactory' . '/' . $year . '/' . $month . '/' . $day . '/' . rand(0 , 9999);
-
-    if ( !is_dir($destinationPath) ) {
-	drupal_mkdir($destinationPath , 0777 , TRUE);
-    }
+    $destinationPath = imageFactory_getDir();
 
     $file = file_save_upload(IMAGEFACTORYKEY , $validators , $destinationPath);
     if ( $file ) {
 	$file->status = 1;
 	file_save($file);
 	drupal_set_message(t('load file success!'));
-	dpm($file);
 
 	$record = new stdClass();
 	$record->fid = $file->fid;
@@ -92,6 +211,37 @@ function imageFactory_fileUploadForm_submit( $form , &$form_state )
 	    $message = $e->getMessage();
 	}
     }
+}
+
+function imageFactory_theme()
+{
+    return array(
+	'imageFactory' => array(
+	    'variables' => array( 'image' => NULL , 'imageRoute' => NULL , 'fid' => NULL , 'imageInfo' => NULL ) ,
+	    'template' => 'imageFactoryResize' ,
+	    'path' => drupal_get_path('module' , 'imageFactory') ,
+	) ,
+    );
+}
+
+function imageFactory_getDir( $dir = '' )
+{
+    $year = date('Y');
+    $month = date('m');
+    $day = date('d');
+    $dir = ($dir) ? '/' . $dir : '';
+    $destinationPath = 'public://' . 'imageFactory' . $dir . '/' . $year . '/' . $month . '/' . $day . '/' . rand(0 , 9999);
+
+    if ( !is_dir($destinationPath) ) {
+	drupal_mkdir($destinationPath , 0777 , TRUE);
+    }
+
+    return $destinationPath;
+}
+
+function imageFactory_routerRep( $publicRouter )
+{
+    return str_replace('\\' , '/' , str_replace('public://' , DRUPAL_ROOT . '/' . variable_get('file_public_path') . '/' , $publicRouter));
 }
 
 function imageFactory_test()
