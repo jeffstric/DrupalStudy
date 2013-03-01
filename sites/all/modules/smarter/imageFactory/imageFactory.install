@@ -1,0 +1,31 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Feb 28, 2013
+ *  time    :   2:34:14 PM
+ * */
+function imageFactory_schema()
+{
+    if ( !defined('IMAGEFACTORYTABLENAME') ) {
+	require 'imageFactory.module';
+    }
+    $schema[ IMAGEFACTORYTABLENAME ] = array(
+	// Table description. 
+	'description' => t('store file id for image factory') ,
+	'fields' => array(
+	    // Field definition. 
+	    'fid' => array(
+		'type' => 'int' ,
+		'unsigned' => TRUE ,
+		'not null' => TRUE ,
+		'description' => t('same to file manage fid') ,
+	    ) ,
+	) ,
+	// Index declarations. 
+	'primary key' => array( 'fid' ) ,
+    );
+
+    return $schema;
+}
