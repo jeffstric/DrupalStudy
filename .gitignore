@@ -7,3 +7,5 @@ files/
 nbproject/*
 DrupalStudy/*
 /sites/all/modules/drupal/schema/LICENSE.txt
+.gitignore
+testPhp/*

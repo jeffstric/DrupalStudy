@@ -7,6 +7,26 @@
     </div>
 </div>
 
+<div id="textEditArea" style="display:none">
+    <h5>content</h5>
+    <input id="imTextContent" type="text"/>
+    <h5>size</h5>
+    <input id="imTextSize" type="text"/>
+    <h5>angle</h5>
+    <input id="imAngle" type="text"/>
+    <h5>color</h5>
+    <input id="imColor" type="text" />
+
+    <h5>font family</h5>
+    <select id="imFont">
+	<option value="0">default</option>
+    </select>
+
+    <div id="IMFontEdit">
+	<input type="button" value="resize image" style="width:150px" class="form-autocomplete"/>
+    </div>
+</div>
+
 <div id="IMresize">
     <input type="button" value="resize image" style="width:150px" class="form-autocomplete"/>
 </div>
@@ -119,9 +139,30 @@
 	    ImResult['fid'] = IMfid;
 	    ImResult['src'] = ImImageRoute;
 	    $(this).addClass('throbbing');
-	    $.post('<?php echo base_path() . "admin/imageFactory/resizeAjax/" ?>'+IMfid, ImResult, function(){
+	    $.post('/admin/imageFactory/resizeAjax/'+IMfid, ImResult, function(data){
 		$('#IMresize input').removeClass('throbbing');
+		$('#imgContainer').after('<div id="newImage"><img src="'+data['src']+'"/></div>').remove();
+		document.onmouseup = function(){}// ubbind onmouseup event 
+		$('#textEditArea').show();
+		$('#IMresize input').remove();
 		
+		$('#imColor').ColorPicker({
+		    onSubmit: function(hsb, hex, rgb, el) {
+			$(el).val(hex);
+			$(el).ColorPickerHide();
+		    },
+		    onBeforeShow: function () {
+			$(this).ColorPickerSetColor(this.value);
+		    }
+		})
+		
+		
+		$('#IMFontEdit input').click(function(){
+		    var con = $('#imTextContent').val();
+		    var size = $('#imTextSize').val();
+		    var ang = $('#imAngle').val();
+		    var font = $('#font').val();
+		})
 	    }, 'json');
 	})
     })(jQuery);

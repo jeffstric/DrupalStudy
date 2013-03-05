@@ -57,6 +57,13 @@ function imageFactory_menu()
 	'type' => MENU_CALLBACK ,
 	'weight' => 1
     );
+    $items[ 'admin/imageFactory/show' ] = array(
+	'title' => 'upload image test' ,
+	'page callback' => 'imageFactoryShow' ,
+	'access callback' => TRUE ,
+	'type' => MENU_CALLBACK ,
+	'weight' => 1
+    );
     $items[ 'admin/imageFactory/test' ] = array(
 	'title' => 'upload image test' ,
 	'page callback' => 'imageFactory_test' ,
@@ -136,26 +143,21 @@ function imageFactory_imageEdit( $id )
 	$imageInfo = getimagesize($imageSrc);
 	$imageRoute = $row->uri;
 	drupal_add_css(drupal_get_path('module' , 'imageFactory') . '/' . 'edit.css');
+	drupal_add_css(drupal_get_path('module' , 'imageFactory') . '/colorpicker/css/' . 'colorpicker.css');
+	drupal_add_js(drupal_get_path('module' , 'imageFactory') . '/colorpicker/js/' . 'colorpicker.js');
+	drupal_add_js(drupal_get_path('module' , 'imageFactory') . '/colorpicker/js/' . 'eye.js');
+	
 	return theme('imageFactory' , array( 'image' => $imageSrc , 'imageRoute' => $imageRoute , 'fid' => $id , 'imageInfo' => $imageInfo ));
     }
 }
 
 function imageFactoryResizeAjax()
 {
-    $_POST[ 'src' ] = imageFactory_pathPublicToServerPathimageFactory_pathPublicToSer($_POST[ 'src' ]);
-
+    $_POST[ 'src' ] = imageFactory_pathPublicToSer($_POST[ 'src' ]);
     //test 
     /*
-    $_POST = array(
-	'height' => 75 ,
-	'width' => 75 ,
-	'top' => 0 ,
-	'left' => 0 ,
-	'fid' => 4569 ,
-	'src' => 'C:\wamp\www\DrupalStudy\files\public\imageFactory\2013\03\05\6574\image.jpg'
-    );
+      $_POST = array('height' => 75 ,'width' => 75 ,'top' => 0 ,'left' => 0 ,'fid' => 4569 ,'src' => '');
      */
-
     try {
 	$parms = array( 'width' , 'height' , 'top' , 'left' , 'src' , 'fid' );
 	foreach ( $parms as $p ) {
@@ -240,7 +242,7 @@ function imageFactory_getDir( $dir = '' , $absolutePath = FALSE )
     return $destinationPath;
 }
 
-function imageFactory_pathPublicToServerPathimageFactory_pathPublicToSer( $publicRouter )
+function imageFactory_pathPublicToSer( $publicRouter )
 {
     return str_replace('\\' , '/' , str_replace('public://' , DRUPAL_ROOT . '/' . variable_get('file_public_path') . '/' , $publicRouter));
 }
@@ -261,4 +263,13 @@ function imageFactory_test()
 	$message = $e->getMessage();
     }
     return $message;
+}
+
+function imageFactoryShow()
+{
+    header('Content-Type: image/png');
+    $mainM = imagecreatetruecolor(600 , 300);
+    $white = imagecolorallocate($mainM , 255 , 255 , 255);
+    imagefill($mainM , 0 , 0 , $white);
+    imagepng($mainM);
 }
