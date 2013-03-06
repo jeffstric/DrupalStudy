@@ -57,11 +57,10 @@ function imageFactory_menu()
 	'type' => MENU_CALLBACK ,
 	'weight' => 1
     );
-    $items[ 'admin/imageFactory/show' ] = array(
+    $items[ 'admin/imageFactory/addText' ] = array(
 	'title' => 'upload image' ,
-	'page callback' => 'imageFactoryShow' ,
-	'access callback' => 'user_access' ,
-	'access arguments' => array( 'image imageFactory upload and list' ) ,
+	'page callback' => 'imageFactoryAddText' ,
+	'access callback' => TRUE ,
 	'type' => MENU_CALLBACK ,
 	'weight' => 1
     );
@@ -244,48 +243,59 @@ function imageFactory_getDir( $dir = '' , $absolutePath = FALSE )
     return $destinationPath;
 }
 
-function imageFactoryShow()
+function imageFactoryAddText()
 {
-    if ( isset($_GET[ 'B' ]) ) {
-	$_GET[ 'B' ] = preg_replace('|http(s)?\:\/\/[^\/]+|' , DRUPAL_ROOT , $_GET[ 'B' ]);
-	if ( file_exists($_GET[ 'B' ]) ) {
+    $errorMsg = '';
+    if ( isset($_POST[ 'B' ]) ) {
+	$_POST[ 'B' ] = imageFactory_webUrlToSer($_POST[ 'B' ]);
+	if ( file_exists($_POST[ 'B' ]) ) {
+	    $pathTo = imageFactory_getDir('tmp' , TRUE);
+	    $filename = $pathTo . DIRECTORY_SEPARATOR . time() . '.png';
 	    require 'drawMultiText.php';
-	    die();
+	    if ( drawTextOnPic($filename) ) {
+		echo json_encode(array( 'result' => 'success' , 'src' => imageFactory_pathSerToWeb($filename) ));
+		die();
+	    } else {
+		$errorMsg = 'Draw text fail';
+	    }
+	} else {
+	    $errorMsg = 'Image doesn\'t exists';
 	}
+    } else {
+	$errorMsg = 'Parm B is empty';
     }
-
-    header('Content-Type: image/png');
-    $errorPic = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'image/error.jpg';
-    echo file_get_contents($errorPic);
+    echo json_encode(array( 'result' => 'fail' , 'error' => $errorMsg ));
 }
 
 function imageFactorySave()
 {
+    //test
+    $_POST[ 'file' ] = 'http%3A%2F%2F127.0.0.7%2Fadmin%2FimageFactory%2Fshow%3FN%3D1%26B%3Dhttp%3A%2F%2F127.0.0.7%2Ffiles%2Fpublic%2FimageFactory%2Ftmp%2F2013%2F03%2F06%2F4449%2F1362570515.png%26T0%3Dtiny+i+love+you%26S0%3D40%26A0%3D0%26C0%3Dfa0afa%26F0%3D0%26X0%3D40%26Y0%3D50%26';
+
+    global $user;
+
     if ( isset($_POST[ 'file' ]) ) {
-	$file = $_POST[ 'file' ];
-	$extA = array( 'gif' , 'jpg' , 'png' );
-	$path = imageFactory_getDir('create');
-
-	if ( file_exists($file) ) {
-
-	    global $user;
-
-	    list($width , $height , $type) = getimagesize($file);
-	    $filemine = image_type_to_mime_type($type);
+	$oldFile = imageFactory_webUrlToSer(urldecode($_POST[ 'file' ]));
+	if ( file_exists($oldFile) ) {
+	    $path = imageFactory_getDir('create' , TRUE);
 	    $time = time();
-	    $filename = $time . '.' . $extA[ $type ];
-	    $filesize = getimagesize($file);
+	    $newFile = $path . DIRECTORY_SEPARATOR . $time . '.png';
+
+	    rename($oldFile , $newFile);
+
+	    $filemine = 'image/png';
+	    $filesize = getimagesize($newFile);
 
 	    $data = array(
 		'uid' => $user->uid ,
-		'filename' => $filename ,
-		'uri' => $path . '/' . $filename ,
+		'filename' => $time . '.png' ,
+		'uri' => imageFactory_pathSerToWeb($newFile) ,
 		'filemime' => $filemine ,
 		'filesize' => $filesize ,
 		'status' => 1 ,
 		'timestamp' => $time ,
 	    );
-
+	    
 	    var_dump($data);
 	}
     }
@@ -300,5 +310,10 @@ function imageFactory_pathSerToWeb( $serverPath )
 {
     $publicPath = str_replace(DRUPAL_ROOT . '/' . variable_get('file_public_path') . '/' , 'public://' , $serverPath);
     return file_create_url($publicPath);
+}
+
+function imageFactory_webUrlToSer( $url )
+{
+    return preg_replace('|http(s)?\:\/\/[^\/]+|' , DRUPAL_ROOT , $url);
 }
 

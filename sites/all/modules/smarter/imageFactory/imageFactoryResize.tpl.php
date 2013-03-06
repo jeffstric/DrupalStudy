@@ -44,7 +44,7 @@
     <div id="ImImgShow">
 
     </div>
-    <input type="button" value="save" id="ImSave"/>
+    <input type="button" value="save" id="ImSave" style="width:50px" class="form-autocomplete"/>
 </div>
 
 
@@ -187,13 +187,12 @@
 		removeSingleTextEdit();
 		
 		$('#IMFontEdit input').click(function(){
-		    
+		    $(this).attr('disabled','disabled');
 		    var textNum = $('.singleTextEdit').length;
 		    if(!textNum){
 			console.log('without text parm input');
 			return false;
 		    }
-
 		    var showP = {
 			N:textNum,
 			B:data['src']
@@ -206,35 +205,43 @@
 			    var valid = $(sel).attr('valid');
 			    if(!checkValid(val,valid)){
 				alert( $(domJq).attr('msg') );
+				$(this).attr('disabled','');
 				return false;
 			    }
 			    showP[n+i] = $(domJq).val();
 			}
 		    }
-		    showP['T'] = encodeURIComponent(showP['T']);
-		    
 		    $(this).addClass('throbbing');
-		    $('#ImShowSave').show();
-		    
 		    var getParm = '?';
-		    for(var i in showP){
-			getParm +=i+'='+showP[i] + '&';
-		    }
-		    var imgSrc = poHost+'/admin/imageFactory/show'+getParm;
-		    var img = document.createElement('img');
-		    img.src=imgSrc;
-		    img.onload = function(){
+		    
+		    $.post(poHost+'/admin/imageFactory/addText',showP,function(data){
+			$('#IMFontEdit input').attr('disabled','');
+			$('#ImShowSave').show();
 			$('#IMFontEdit input').removeClass('throbbing');
-			$('#ImSave').click(function(){
-			    $('#ImSave').attr('disabled',"disabled");
-			    $.post(poHost+'/admin/imageFactory/save', {'file':imgSrc}, function(data){
-				$('#ImSave').attr('disabled','');
-				console.log(data);
-			    })
-			});
-		    }
-		    $('#ImImgShow').empty();
-		    $(img).appendTo($('#ImImgShow'));
+			
+			if(data.result == 'success'){
+			    $('#ImImgShow').empty().append('<img src="'+data.src+'"/>');
+			    $('#ImSave').click(function(){
+				$(this).addClass('throbbing');
+				$('#ImSave').attr('disabled',"disabled");
+				$.post(poHost+'/admin/imageFactory/save', {'file':data.src}, function(data){
+				    $(this).removeClass('throbbing');
+				    $('#ImSave').attr('disabled','');
+				    if(data.result == 'success'){
+					alert('save success');
+				    }else{
+					var msg = (data.error)? data.error : 'tranfser info error';
+					alert(msg);
+					return false;
+				    }
+				},'json');
+			    });
+			}else{
+			    var msg = (data.error)? data.error : 'tranfser info error';
+			    alert(msg);
+			    return false;
+			}
+		    },'json');
 		    
 		})
 	    }, 'json');
