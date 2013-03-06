@@ -58,17 +58,19 @@ function imageFactory_menu()
 	'weight' => 1
     );
     $items[ 'admin/imageFactory/show' ] = array(
-	'title' => 'upload image test' ,
+	'title' => 'upload image' ,
 	'page callback' => 'imageFactoryShow' ,
-	'access callback' => TRUE ,
+	'access callback' => 'user_access' ,
+	'access arguments' => array( 'image imageFactory upload and list' ) ,
 	'type' => MENU_CALLBACK ,
 	'weight' => 1
     );
-    $items[ 'admin/imageFactory/test' ] = array(
-	'title' => 'upload image test' ,
-	'page callback' => 'imageFactory_test' ,
-	'access callback' => TRUE ,
-	'type' => MENU_SUGGESTED_ITEM ,
+    $items[ 'admin/imageFactory/save' ] = array(
+	'title' => 'save image' ,
+	'page callback' => 'imageFactorySave' ,
+	'access callback' => 'user_access' ,
+	'access arguments' => array( 'image imageFactory upload and list' ) ,
+	'type' => MENU_CALLBACK ,
 	'weight' => 1
     );
     return $items;
@@ -146,7 +148,7 @@ function imageFactory_imageEdit( $id )
 	drupal_add_css(drupal_get_path('module' , 'imageFactory') . '/colorpicker/css/' . 'colorpicker.css');
 	drupal_add_js(drupal_get_path('module' , 'imageFactory') . '/colorpicker/js/' . 'colorpicker.js');
 	drupal_add_js(drupal_get_path('module' , 'imageFactory') . '/colorpicker/js/' . 'eye.js');
-	
+
 	return theme('imageFactory' , array( 'image' => $imageSrc , 'imageRoute' => $imageRoute , 'fid' => $id , 'imageInfo' => $imageInfo ));
     }
 }
@@ -242,6 +244,53 @@ function imageFactory_getDir( $dir = '' , $absolutePath = FALSE )
     return $destinationPath;
 }
 
+function imageFactoryShow()
+{
+    if ( isset($_GET[ 'B' ]) ) {
+	$_GET[ 'B' ] = preg_replace('|http(s)?\:\/\/[^\/]+|' , DRUPAL_ROOT , $_GET[ 'B' ]);
+	if ( file_exists($_GET[ 'B' ]) ) {
+	    require 'drawMultiText.php';
+	    die();
+	}
+    }
+
+    header('Content-Type: image/png');
+    $errorPic = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'image/error.jpg';
+    echo file_get_contents($errorPic);
+}
+
+function imageFactorySave()
+{
+    if ( isset($_POST[ 'file' ]) ) {
+	$file = $_POST[ 'file' ];
+	$extA = array( 'gif' , 'jpg' , 'png' );
+	$path = imageFactory_getDir('create');
+
+	if ( file_exists($file) ) {
+
+	    global $user;
+
+	    list($width , $height , $type) = getimagesize($file);
+	    $filemine = image_type_to_mime_type($type);
+	    $time = time();
+	    $filename = $time . '.' . $extA[ $type ];
+	    $filesize = getimagesize($file);
+
+	    $data = array(
+		'uid' => $user->uid ,
+		'filename' => $filename ,
+		'uri' => $path . '/' . $filename ,
+		'filemime' => $filemine ,
+		'filesize' => $filesize ,
+		'status' => 1 ,
+		'timestamp' => $time ,
+	    );
+
+	    var_dump($data);
+	}
+    }
+}
+
 function imageFactory_pathPublicToSer( $publicRouter )
 {
     return str_replace('\\' , '/' , str_replace('public://' , DRUPAL_ROOT . '/' . variable_get('file_public_path') . '/' , $publicRouter));
@@ -253,23 +302,3 @@ function imageFactory_pathSerToWeb( $serverPath )
     return file_create_url($publicPath);
 }
 
-function imageFactory_test()
-{
-    $record = new stdClass();
-    $record->fid = 1;
-    try {
-	$message = drupal_write_record(IMAGEFACTORYTABLENAME , $record);
-    } catch ( Exception $e ) {
-	$message = $e->getMessage();
-    }
-    return $message;
-}
-
-function imageFactoryShow()
-{
-    header('Content-Type: image/png');
-    $mainM = imagecreatetruecolor(600 , 300);
-    $white = imagecolorallocate($mainM , 255 , 255 , 255);
-    imagefill($mainM , 0 , 0 , $white);
-    imagepng($mainM);
-}

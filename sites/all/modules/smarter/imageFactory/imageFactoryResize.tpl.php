@@ -7,29 +7,46 @@
     </div>
 </div>
 
-<div id="textEditArea" style="display:none">
-    <h5>content</h5>
-    <input id="imTextContent" type="text"/>
-    <h5>size</h5>
-    <input id="imTextSize" type="text"/>
-    <h5>angle</h5>
-    <input id="imAngle" type="text"/>
-    <h5>color</h5>
-    <input id="imColor" type="text" />
-
-    <h5>font family</h5>
-    <select id="imFont">
-	<option value="0">default</option>
-    </select>
-
-    <div id="IMFontEdit">
-	<input type="button" value="resize image" style="width:150px" class="form-autocomplete"/>
-    </div>
-</div>
-
 <div id="IMresize">
     <input type="button" value="resize image" style="width:150px" class="form-autocomplete"/>
 </div>
+
+<!-- this is for image text edit-->
+<div id="textEditArea" style="display:none">
+    <input type="button" value="add another text" id="ImTextAdd"/>
+    <fieldset class="singleTextEdit">
+	<legend>text add</legend>
+	<input type="button" value="remove this  text" class="ImTextRemove"/>
+	<h5>content</h5>
+	<input class="imTextContent" name="content" type="text" msg="content must be input" valid="free"/>
+	<h5>size</h5>
+	<input class="imTextSize" name="size" type="text" msg="size must be numeric" valid="num"/>
+	<h5>angle</h5>
+	<input class="imAngle" name="angle" type="text" msg="angle must be numeric" valid="num"/>
+	<h5>color</h5>
+	<input class="imColor" name="color" type="text" msg="color must be string" valid="str" readonly />
+	<h5>x</h5>
+	<input class="imPosX" name ="x" type="text" msg="position of x must be numeric" valid="num"/>
+	<h5>y</h5>
+	<input class="imPosY" name="y" type="text" msg="position of y must be numeric" valid="num"/>
+	<h5>font family</h5>
+	<select class="imFont" msg="please select font type" valid="num">
+	    <option value="0">default</option>
+	</select>
+    </fieldset>
+
+    <div id="IMFontEdit">
+	<input type="button" value="add text to image" style="width:250px" class="form-autocomplete"/>
+    </div>
+</div>
+<!--image text edit area end-->
+<div id="ImShowSave" style="display:none">
+    <div id="ImImgShow">
+
+    </div>
+    <input type="button" value="save" id="ImSave"/>
+</div>
+
 
 
 <script type="text/javascript">
@@ -92,6 +109,8 @@
 	    if(switchMS){
 		var height = event.clientY - imDist2[1] - parseInt(s.style.top);
 		var width = event.clientX -imDist2[0] - parseInt(s.style.left);
+		height = (height<10) ? 10 : height;
+		width = (width<10)? 10 : width;
 		width = ( (posSel[0] + width) > imageWidth ) ? (imageWidth - posSel[0]) : width ;
 		height = ( (posSel[1] + height ) > imageHeight ) ? (imageHeight - posSel[1]) : height ;
 		s.style.width = width + 'px';
@@ -135,36 +154,135 @@
 
 <script>
     (function ($) {
+	var poHost = window.location.protocol+'//'+window.location.host;
 	$('#IMresize input').click(function(){
 	    ImResult['fid'] = IMfid;
 	    ImResult['src'] = ImImageRoute;
 	    $(this).addClass('throbbing');
-	    $.post('/admin/imageFactory/resizeAjax/'+IMfid, ImResult, function(data){
+	    $.post(poHost+'/admin/imageFactory/resizeAjax/'+IMfid, ImResult, function(data){
 		$('#IMresize input').removeClass('throbbing');
 		$('#imgContainer').after('<div id="newImage"><img src="'+data['src']+'"/></div>').remove();
 		document.onmouseup = function(){}// ubbind onmouseup event 
 		$('#textEditArea').show();
 		$('#IMresize input').remove();
 		
-		$('#imColor').ColorPicker({
-		    onSubmit: function(hsb, hex, rgb, el) {
-			$(el).val(hex);
-			$(el).ColorPickerHide();
-		    },
-		    onBeforeShow: function () {
-			$(this).ColorPickerSetColor(this.value);
-		    }
-		})
+		var textEditMap = {
+		    T:'imTextContent',
+		    S : 'imTextSize',
+		    A : 'imAngle',
+		    C : 'imColor',
+		    F : 'imFont',
+		    X:'imPosX',
+		    Y:'imPosY'
+		};
 		
+		bindColorPick();
+		$('#ImTextAdd').click(function(){
+		    var te =  $('.singleTextEdit');
+		    var teL = $(te[te.length-1]);
+		    teL.after( teL.clone() );
+		    removeSingleTextEdit();
+		    bindColorPick();
+		})
+		removeSingleTextEdit();
 		
 		$('#IMFontEdit input').click(function(){
-		    var con = $('#imTextContent').val();
-		    var size = $('#imTextSize').val();
-		    var ang = $('#imAngle').val();
-		    var font = $('#font').val();
+		    
+		    var textNum = $('.singleTextEdit').length;
+		    if(!textNum){
+			console.log('without text parm input');
+			return false;
+		    }
+
+		    var showP = {
+			N:textNum,
+			B:data['src']
+		    };
+		    for(var i = 0 ; i < textNum ; i++){
+			for(var n in textEditMap){
+			    var sel = '.'+textEditMap[n];
+			    var val = $(sel).val();
+			    var domJq = $(sel)[i];
+			    var valid = $(sel).attr('valid');
+			    if(!checkValid(val,valid)){
+				alert( $(domJq).attr('msg') );
+				return false;
+			    }
+			    showP[n+i] = $(domJq).val();
+			}
+		    }
+		    showP['T'] = encodeURIComponent(showP['T']);
+		    
+		    $(this).addClass('throbbing');
+		    $('#ImShowSave').show();
+		    
+		    var getParm = '?';
+		    for(var i in showP){
+			getParm +=i+'='+showP[i] + '&';
+		    }
+		    var imgSrc = poHost+'/admin/imageFactory/show'+getParm;
+		    var img = document.createElement('img');
+		    img.src=imgSrc;
+		    img.onload = function(){
+			$('#IMFontEdit input').removeClass('throbbing');
+			$('#ImSave').click(function(){
+			    $('#ImSave').attr('disabled',"disabled");
+			    $.post(poHost+'/admin/imageFactory/save', {'file':imgSrc}, function(data){
+				$('#ImSave').attr('disabled','');
+				console.log(data);
+			    })
+			});
+		    }
+		    $('#ImImgShow').empty();
+		    $(img).appendTo($('#ImImgShow'));
+		    
 		})
 	    }, 'json');
 	})
     })(jQuery);
  
+ 
+    function removeSingleTextEdit(){
+	jQuery('.ImTextRemove').click(function(){
+	    if(jQuery('.singleTextEdit').length >1){
+		jQuery(this).parent().remove();
+	    }
+	})
+    }
+    
+    function bindColorPick(){
+	(function($){
+	    $('.imColor').ColorPicker({
+		onSubmit: function(hsb, hex, rgb, el) {
+		    $(el).val(hex);
+		    $(el).ColorPickerHide();
+		},
+		onBeforeShow: function () {
+		    $(this).ColorPickerSetColor(this.value);
+		}
+	    })
+	})(jQuery);
+    }
+    
+    function checkValid(str,valid){
+	if(str==''){
+	    return false;
+	}
+    
+	switch(valid){
+	    case 'str':
+		var pattern = new RegExp('\\W+');
+		return !pattern.test(str);
+		break;
+	    case 'num':
+		var pattern = new RegExp('\\D+');
+		return !pattern.test(str);
+		break;
+	    case 'free':
+		return true;
+		break;
+	    default:
+		return false;
+	}
+    }
 </script>
