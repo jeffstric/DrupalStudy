@@ -6,10 +6,22 @@
 	<div id = "divReseize" ></div>
     </div>
 </div>
+<fieldset>
+    <div>
+	<h5>width</h5>
+	<input type="text" id="selectWidth"/>
+	<h5>height</h5>
+	<input type="text" id="selectHeight"/>
+	<input type="button" id="selectCustom" value="cumstom now"/>
+    </div>
+</fieldset>
+<fieldset>
+    <legend>resize picture</legend>
+    <div id="IMresize">
+	<input type="button" value="resize image" style="width:150px" class="form-autocomplete"/>
+    </div>
+</fieldset>
 
-<div id="IMresize">
-    <input type="button" value="resize image" style="width:150px" class="form-autocomplete"/>
-</div>
 
 <!-- this is for image text edit-->
 <div id="textEditArea" style="display:none">
@@ -70,16 +82,17 @@
     var switchMS = false;
     
     window.onload = function(){
-	
 	var e = document.getElementById('imgContainer');
 	var f = document.getElementById('imageResize');
 	var s = document.getElementById('selectSection');
 	var d = document.getElementById('divReseize');
+	var w = document.getElementById('selectWidth');
+	var h = document.getElementById('selectWidth');
 	f.style.background = 'url('+ ImImageSrc +') no-repeat 0px 0px';
 	f.style.width = imageWidth+'px';
 	f.style.height=imageHeight+'px';
 	s.style.background = 'url('+ ImImageSrc +') no-repeat 0px 0px';
-		
+	
 	s.onmousedown = function(event){
 	    if(!switchMS){
 		if(!event) event = window.event;
@@ -138,7 +151,8 @@
 		} 
 	    }
 	}
-
+	
+	var sc = document.getElementById('selectCustom');
     }
     function getReseizeResult(){
 	var s = document.getElementById('selectSection');
@@ -152,7 +166,7 @@
  
 </script>
 
-<script>
+<script type="text/javascript">
     (function ($) {
 	var poHost = window.location.protocol+'//'+window.location.host;
 	$('#IMresize input').click(function(){
@@ -225,13 +239,13 @@
 				$(this).addClass('throbbing');
 				$('#ImSave').attr('disabled',"disabled");
 				$.post(poHost+'/admin/imageFactory/save', {'file':data.src}, function(data){
-				    $(this).removeClass('throbbing');
-				    $('#ImSave').attr('disabled','');
+				    $('#ImSave').removeClass('throbbing').attr('disabled','');
 				    if(data.result == 'success'){
-					alert('save success');
+					if(confirm('save success, goto list page?')){
+					    window.location = poHost + '/admin/imageFactory/list';
+					}
 				    }else{
 					var msg = (data.error)? data.error : 'tranfser info error';
-					alert(msg);
 					return false;
 				    }
 				},'json');
