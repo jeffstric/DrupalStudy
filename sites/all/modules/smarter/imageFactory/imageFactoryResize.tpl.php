@@ -44,7 +44,7 @@
     <div id="ImImgShow">
 
     </div>
-    <input type="button" value="save" id="ImSave" style="width:50px" class="form-autocomplete"/>
+    <input type="button" value="save" id="ImSave" style="width:100px" class="form-autocomplete"/>
 </div>
 
 

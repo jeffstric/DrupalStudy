@@ -2,10 +2,9 @@
 sites/*/settings*.php
 
 # Ignore paths that contain user-generated content.
+sites/*/files
+sites/*/private
 files/
 *.bak
 nbproject/*
 DrupalStudy/*
-/sites/all/modules/drupal/schema/LICENSE.txt
-.gitignore
-testPhp/*

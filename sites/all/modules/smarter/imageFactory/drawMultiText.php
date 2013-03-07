@@ -37,30 +37,32 @@ function transferColor( $color )
     }
 }
 
-// test input 
-/*
-  $_POST[ 'N' ] = 3;
-  $_POST[ 'B' ] = 'C:\wamp\www\DrupalStudy\files\public\imageFactory\tmp\2013\03\05\4365\1362454152.jpg';
-
-  $_POST[ 'X0' ] = 30;
-  $_POST[ 'Y0' ] = 50;
-  $_POST[ 'S0' ] = 20;
-  $_POST[ 'A0' ] = 0;
-  $_POST[ 'C0' ] = 'FFFFFF';
-  $_POST[ 'F0' ] = 0;
-  $_POST[ 'T0' ] = 'one';
-
-  $_POST[ 'X1' ] = 100;
-  $_POST[ 'Y1' ] = 100;
-  $_POST[ 'S1' ] = 20;
-  $_POST[ 'A1' ] = 0;
-  $_POST[ 'C1' ] = '00FF00';
-  $_POST[ 'F1' ] = 0;
-  $_POST[ 'T1' ] = 'two';
-
- */
 function drawTextOnPic( $outputPic )
 {
+
+    // test input 
+    /*
+      $_POST[ 'N' ] = 3;
+      $_POST[ 'B' ] = 'C:\wamp\www\DrupalStudy\files\public\imageFactory\tmp\2013\03\05\4365\1362454152.jpg';
+
+      $_POST[ 'X0' ] = 30;
+      $_POST[ 'Y0' ] = 50;
+      $_POST[ 'S0' ] = 20;
+      $_POST[ 'A0' ] = 0;
+      $_POST[ 'C0' ] = 'FFFFFF';
+      $_POST[ 'F0' ] = 0;
+      $_POST[ 'T0' ] = 'one';
+
+      $_POST[ 'X1' ] = 100;
+      $_POST[ 'Y1' ] = 100;
+      $_POST[ 'S1' ] = 20;
+      $_POST[ 'A1' ] = 0;
+      $_POST[ 'C1' ] = '00FF00';
+      $_POST[ 'F1' ] = 0;
+      $_POST[ 'T1' ] = 'two';
+
+     */
+
     $fonts = array( 'KASNAKE_' );
     $checkParmBasic = array(
 	'B' => 'background image' ,

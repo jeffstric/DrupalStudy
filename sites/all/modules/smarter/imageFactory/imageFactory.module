@@ -269,9 +269,6 @@ function imageFactoryAddText()
 
 function imageFactorySave()
 {
-    //test
-    $_POST[ 'file' ] = 'http%3A%2F%2F127.0.0.7%2Fadmin%2FimageFactory%2Fshow%3FN%3D1%26B%3Dhttp%3A%2F%2F127.0.0.7%2Ffiles%2Fpublic%2FimageFactory%2Ftmp%2F2013%2F03%2F06%2F4449%2F1362570515.png%26T0%3Dtiny+i+love+you%26S0%3D40%26A0%3D0%26C0%3Dfa0afa%26F0%3D0%26X0%3D40%26Y0%3D50%26';
-
     global $user;
 
     if ( isset($_POST[ 'file' ]) ) {
@@ -284,7 +281,7 @@ function imageFactorySave()
 	    rename($oldFile , $newFile);
 
 	    $filemine = 'image/png';
-	    $filesize = getimagesize($newFile);
+	    $filesize = filesize($newFile);
 
 	    $data = array(
 		'uid' => $user->uid ,
@@ -296,7 +293,8 @@ function imageFactorySave()
 		'timestamp' => $time ,
 	    );
 	    
-	    var_dump($data);
+	    $fid = drupal_write_record('file_managed', $data);
+	    var_dump($fid);
 	}
     }
 }
