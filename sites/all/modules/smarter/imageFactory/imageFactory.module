@@ -72,6 +72,14 @@ function imageFactory_menu()
 	'type' => MENU_CALLBACK ,
 	'weight' => 1
     );
+    $items[ 'admin/imageFactory/test' ] = array(
+	'title' => 'test image' ,
+	'page callback' => 'imageFactoryTest' ,
+	'access callback' => 'user_access' ,
+	'access arguments' => array( 'image imageFactory upload and list' ) ,
+	'type' => MENU_CALLBACK ,
+	'weight' => 1
+    );
     return $items;
 }
 
@@ -134,6 +142,35 @@ function imageFactory_imageList()
     );
 
     return theme_table($tableInfo);
+}
+
+function imageFactoryTest()
+{
+    $count = db_query("SELECT COUNT(*) FROM {file_managed}")->fetchField();
+    $pageNum = pager_default_initialize($count , 10);
+    $pagerHtml = theme('pager' , array( 'quantity' => $count ));
+    $result = db_select('file_managed' , 'fm')->fields('fm')->orderBy('timestamp' , 'desc')
+		    ->range($pageNum * 10 , 10)->execute()->fetchAll(PDO::FETCH_ASSOC);
+    $fileHtml = theme_imageFactory_file_formatter_table(array( 'items' => $result ));
+    return $pagerHtml . $fileHtml . $pagerHtml;
+}
+
+function theme_imageFactory_file_formatter_table( $variables )
+{
+    global $base_url;
+    $header = array( t('Attachment') , t('time') , t('Size') , t('thumb') , t('operate') );
+    $rows = array( );
+    foreach ( $variables[ 'items' ] as $delta => $item ) {
+	$rows[ ] = array(
+	    theme('file_link' , array( 'file' => (object) $item )) ,
+	    date('Y-m-d H:i:s' , $item[ 'timestamp' ]) . '&nbsp;&nbsp;' ,
+	    format_size($item[ 'filesize' ]) ,
+	    '<img  height="100" width="100" src="' . file_create_url($item[ 'uri' ]) . '">' ,
+	    '<a href="' . $base_url . '/admin/imageFactory/edit/' . $item[ 'fid' ] . '">edit</a>'
+	);
+    }
+
+    return empty($rows) ? '' : theme('table' , array( 'header' => $header , 'rows' => $rows ));
 }
 
 function imageFactory_imageEdit( $id )
@@ -292,8 +329,8 @@ function imageFactorySave()
 		'status' => 1 ,
 		'timestamp' => $time ,
 	    );
-	    
-	    $fid = drupal_write_record('file_managed', $data);
+
+	    $fid = drupal_write_record('file_managed' , $data);
 	    var_dump($fid);
 	}
     }
