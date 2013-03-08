@@ -1,3 +1,7 @@
+<div class="imagFactory_goto_list">
+    <a href="/admin/imageFactory/list">go back to list</a>
+</div>
+
 <div id = "imgContainer">
     <div id = "imageResize">
 
@@ -58,6 +62,9 @@
     </div>
     <input type="button" value="save" id="ImSave" style="width:100px" class="form-autocomplete"/>
 </div>
+<div class="imagFactory_goto_list">
+    <a href="/admin/imageFactory/list">go back to list</a>
+</div>
 
 
 
@@ -88,6 +95,9 @@
 	var d = document.getElementById('divReseize');
 	var w = document.getElementById('selectWidth');
 	var h = document.getElementById('selectWidth');
+	var sc = document.getElementById('selectCustom');
+	var sw = document.getElementById('selectWidth');
+	var sh = document.getElementById('selectHeight');
 	f.style.background = 'url('+ ImImageSrc +') no-repeat 0px 0px';
 	f.style.width = imageWidth+'px';
 	f.style.height=imageHeight+'px';
@@ -129,6 +139,9 @@
 		s.style.width = width + 'px';
 		s.style.height = height  + 'px';
 		d.style.top = (height - 10) + 'px';
+		//set width and height visable
+		sw.value = width;
+		sh.value = height;
 	    }else{
 		if(switchMO){
 		    var left = event.clientX - imDist[0];
@@ -152,7 +165,23 @@
 	    }
 	}
 	
-	var sc = document.getElementById('selectCustom');
+	addEventListener(sc,'click',function(){
+	    var w = sw.value;
+	    var h = sh.value;
+	    //check valid is ignore for test
+	    w = ( (parseInt(s.style.left) + parseInt(w)) > imageWidth ) ? (imageWidth - parseInt(s.style.left)) : w ;
+	    h = ( (parseInt(s.style.top) + parseInt(h) ) > imageHeight ) ? (imageHeight - parseInt(s.style.top)) : h ;
+	    //set  width and height
+	    s.style.height = h+'px';
+	    s.style.width = w+'px';
+	    d.style.top = h-10 + 'px';
+	    //set the value back
+	    sw.value = w;
+	    sh.value =h ;
+	})
+	
+	sw.value = parseInt(s.style.width);
+	sh.value = parseInt(s.style.height);
     }
     function getReseizeResult(){
 	var s = document.getElementById('selectSection');
@@ -163,6 +192,17 @@
 	    'top'       : parseInt(s.style.top)
 	}
     }
+    function addEventListener(oTarget,sEventType,fnHandler)
+    {
+	if(oTarget.addEventListener){
+	    oTarget.addEventListener(sEventType,fnHandler,false);
+	} 
+	else if(oTarget.attachEvent){
+	    oTarget.attachEvent('on'+sEventType,fnHandler);
+	} else{
+	    oTarget['on'+sEventType] = fnHandler;
+	}
+    };
  
 </script>
 
@@ -173,8 +213,14 @@
 	    ImResult['fid'] = IMfid;
 	    ImResult['src'] = ImImageRoute;
 	    $(this).addClass('throbbing');
-	    $.post(poHost+'/admin/imageFactory/resizeAjax/'+IMfid, ImResult, function(data){
+	    $.post(poHost+'/admin/imageFactory/resizeAjax/', ImResult, function(data){
 		$('#IMresize input').removeClass('throbbing');
+		if(!data.result=='success'){
+		    var error = (data.error)?data.error:'transfer error';
+		    alert(error);
+		    return false;
+		}
+		
 		$('#imgContainer').after('<div id="newImage"><img src="'+data['src']+'"/></div>').remove();
 		document.onmouseup = function(){}// ubbind onmouseup event 
 		$('#textEditArea').show();
@@ -236,9 +282,15 @@
 			if(data.result == 'success'){
 			    $('#ImImgShow').empty().append('<img src="'+data.src+'"/>');
 			    $('#ImSave').click(function(){
+				var fileCreate ;
+				var time = new Date;
+				var reg = new RegExp('(?:\\W|^$)');
+				do{
+				    fileCreate  = window.prompt("please enter file name, only character is allow.",time.getTime());
+				}while(reg.test(fileCreate));
 				$(this).addClass('throbbing');
 				$('#ImSave').attr('disabled',"disabled");
-				$.post(poHost+'/admin/imageFactory/save', {'file':data.src}, function(data){
+				$.post(poHost+'/admin/imageFactory/save', {'file':data.src,'name':fileCreate}, function(data){
 				    $('#ImSave').removeClass('throbbing').attr('disabled','');
 				    if(data.result == 'success'){
 					if(confirm('save success, goto list page?')){

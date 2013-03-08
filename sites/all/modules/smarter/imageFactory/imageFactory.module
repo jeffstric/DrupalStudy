@@ -23,6 +23,14 @@ function imageFactory_permission()
 
 function imageFactory_menu()
 {
+    $items[ 'admin/config/media/imageFactory' ] = array(
+	'title' => 'image factory' ,
+	'description' => 'Image Factory help you resize image and add text on it' ,
+	'page callback' => 'imageFactory_imageList' ,
+	'access callback' => 'user_access' ,
+	'access arguments' => array( 'image imageFactory upload and list' ) ,
+	'weight' => 1
+    );
     $items[ 'admin/imageFactory/upload' ] = array(
 	'title' => 'upload image' ,
 	'page callback' => 'drupal_get_form' ,
@@ -33,7 +41,7 @@ function imageFactory_menu()
 	'weight' => 1
     );
     $items[ 'admin/imageFactory/list' ] = array(
-	'title' => 'upload image' ,
+	'title' => 'image factory' ,
 	'page callback' => 'imageFactory_imageList' ,
 	'access callback' => 'user_access' ,
 	'access arguments' => array( 'image imageFactory upload and list' ) ,
@@ -50,8 +58,8 @@ function imageFactory_menu()
 	'weight' => 1
     );
     $items[ 'admin/imageFactory/resizeAjax' ] = array(
-	'title' => 'upload image test' ,
-	'page callback' => 'imageFactoryResizeAjax' ,
+	'title' => 'resize image' ,
+	'page callback' => 'imageFactory_ResizeAjax' ,
 	'access callback' => TRUE ,
 	'type' => MENU_CALLBACK ,
 	'weight' => 1
@@ -96,13 +104,16 @@ function imageFactory_fileUploadForm()
 
 function imageFactory_imageList()
 {
-    $count = db_query("SELECT COUNT(*) FROM {file_managed}")->fetchField();
+    global $base_path;
+    $aHtml = '<div class="imageFactory_goto_upload"><a href="' . $base_path . 'admin/imageFactory/upload' . '" >upload image</a></div>';
+    $count = db_query("SELECT COUNT(*) FROM {file_managed} fm where  fm.filemime like 'image/%'")->fetchField();
     $pageNum = pager_default_initialize($count , 10);
     $pagerHtml = theme('pager' , array( 'quantity' => $count ));
-    $result = db_select('file_managed' , 'fm')->fields('fm')->orderBy('timestamp' , 'desc')
-		    ->range($pageNum * 10 , 10)->execute()->fetchAll(PDO::FETCH_ASSOC);
+    $query = db_query_range("select * from {file_managed} fm where fm.filemime like 'image/%' order by fm.timestamp desc " , $pageNum * 10 , 10);
+    $query->execute();
+    $result = $query->fetchAllAssoc('fid' , PDO::FETCH_ASSOC);
     $fileHtml = theme_imageFactory_file_formatter_table(array( 'items' => $result ));
-    return $pagerHtml . $fileHtml . $pagerHtml;
+    return $aHtml . $pagerHtml . $fileHtml . $pagerHtml;
 }
 
 function theme_imageFactory_file_formatter_table( $variables )
@@ -139,13 +150,15 @@ function imageFactory_imageEdit( $id )
     }
 }
 
-function imageFactoryResizeAjax()
+function imageFactory_ResizeAjax()
 {
-    $_POST[ 'src' ] = imageFactory_pathPublicToSer($_POST[ 'src' ]);
     //test 
     /*
-      $_POST = array('height' => 75 ,'width' => 75 ,'top' => 0 ,'left' => 0 ,'fid' => 4569 ,'src' => '');
+      $_POST = array( 'height' => 75 , 'width' => 75 , 'top' => 0 , 'left' => 0 , 'fid' => 4577 ,
+      'src' => 'http://xxx/imageFactory/create/2013/03/08/5261/qq.png' );
      */
+
+    $_POST[ 'src' ] = imageFactory_webUrlToSer($_POST[ 'src' ]);
     try {
 	$parms = array( 'width' , 'height' , 'top' , 'left' , 'src' , 'fid' );
 	foreach ( $parms as $p ) {
@@ -157,11 +170,12 @@ function imageFactoryResizeAjax()
 	$pathTo = imageFactory_getDir('tmp' , TRUE);
 
 	require 'imageResize.php';
-	$result = imageJeff::reseizeImage($_POST[ 'src' ] , $pathTo , $_POST[ 'width' ] , $_POST[ 'height' ] , $_POST[ 'top' ] , $_POST[ 'left' ]);
+	$msg = '';
+	$result = imageJeff::reseizeImage($_POST[ 'src' ] , $pathTo , $_POST[ 'width' ] , $_POST[ 'height' ] , $_POST[ 'top' ] , $_POST[ 'left' ] , $msg);
 	if ( $result ) {
 	    echo json_encode(array( 'info' => 'success' , 'src' => imageFactory_pathSerToWeb($result) ));
 	} else {
-	    throw new Exception('resize fail');
+	    throw new Exception('Resize fail:' . $msg);
 	}
     } catch ( Exception $e ) {
 	echo json_encode(array( 'info' => 'error' , 'error' => $e->getMessage() ));
@@ -185,7 +199,7 @@ function imageFactory_fileUploadForm_submit( $form , &$form_state )
     $validators = array(
 	'file_validate_extensions' => array( 'jpg png gif' ) ,
     );
-    $destinationPath = imageFactory_getDir();
+    $destinationPath = imageFactory_getDir('upload');
 
     $file = file_save_upload(IMAGEFACTORYKEY , $validators , $destinationPath);
     if ( $file ) {
@@ -196,6 +210,8 @@ function imageFactory_fileUploadForm_submit( $form , &$form_state )
 	$record = new stdClass();
 	$record->fid = $file->fid;
     }
+
+    drupal_goto('admin/imageFactory/list');
 }
 
 function imageFactory_theme()
@@ -207,22 +223,6 @@ function imageFactory_theme()
 	    'path' => drupal_get_path('module' , 'imageFactory') ,
 	) ,
     );
-}
-
-function imageFactory_getDir( $dir = '' , $absolutePath = FALSE )
-{
-    $year = date('Y');
-    $month = date('m');
-    $day = date('d');
-    $dir = ($dir) ? '/' . $dir : '';
-    $destinationPath = ($absolutePath) ? DRUPAL_ROOT . '/' . variable_get('file_public_path') . '/' : 'public://';
-    $destinationPath .= 'imageFactory' . $dir . '/' . $year . '/' . $month . '/' . $day . '/' . rand(0 , 9999);
-
-    if ( !is_dir($destinationPath) ) {
-	drupal_mkdir($destinationPath , 0777 , TRUE);
-    }
-
-    return $destinationPath;
 }
 
 function imageFactoryAddText()
@@ -254,12 +254,11 @@ function imageFactorySave()
     global $user;
     $msg = '';
 
-    if ( isset($_POST[ 'file' ]) ) {
+    if ( isset($_POST[ 'file' ]) && isset($_POST[ 'name' ]) && $_POST[ 'name' ] ) {
 	$oldFile = imageFactory_webUrlToSer(urldecode($_POST[ 'file' ]));
 	if ( file_exists($oldFile) ) {
 	    $path = imageFactory_getDir('create' , TRUE);
-	    $time = time();
-	    $newFile = $path . DIRECTORY_SEPARATOR . $time . '.png';
+	    $newFile = $path . DIRECTORY_SEPARATOR . $_POST[ 'name' ] . '.png';
 
 	    rename($oldFile , $newFile);
 
@@ -268,12 +267,12 @@ function imageFactorySave()
 
 	    $data = array(
 		'uid' => $user->uid ,
-		'filename' => $time . '.png' ,
+		'filename' => $_POST[ 'name' ] . '.png' ,
 		'uri' => imageFactory_pathSerToWeb($newFile) ,
 		'filemime' => $filemine ,
 		'filesize' => $filesize ,
 		'status' => 1 ,
-		'timestamp' => $time ,
+		'timestamp' => time() ,
 	    );
 
 	    if ( drupal_write_record('file_managed' , $data) ) {
@@ -286,7 +285,7 @@ function imageFactorySave()
 	    $msg = 'file dosent\'t exist';
 	}
     } else {
-	$msg = 'no post parm';
+	$msg = 'Miss post parm !';
     }
     echo json_encode(array( 'result' => 'fail' , 'error' => $msg ));
 }
@@ -307,3 +306,40 @@ function imageFactory_webUrlToSer( $url )
     return preg_replace('|http(s)?\:\/\/[^\/]+|' , DRUPAL_ROOT , $url);
 }
 
+function imageFactory_getDir( $dir = '' , $absolutePath = FALSE , $timeAndRandom = TRUE )
+{
+    $year = date('Y');
+    $month = date('m');
+    $day = date('d');
+    $dir = ($dir) ? '/' . $dir : '';
+    $destinationPath = ($absolutePath) ? DRUPAL_ROOT . '/' . variable_get('file_public_path') . '/' : 'public://';
+    $destinationPath .= 'imageFactory' . $dir;
+    if ( $timeAndRandom ) {
+	$destinationPath.='/' . $year . '/' . $month . '/' . $day . '/' . rand(0 , 9999);
+    }
+
+    if ( !is_dir($destinationPath) ) {
+	drupal_mkdir($destinationPath , 0777 , TRUE);
+    }
+
+    return $destinationPath;
+}
+
+function imageFactory_cron()
+{
+    $clearTimeLast = variable_get('imageFactory');
+    if ( !$clearTimeLast ) {
+	variable_set('imageFactory' , time());
+    }
+//    43200 = 60*60*12 
+    if ( time() - $clearTimeLast < 43200 ) {
+	watchdog(WATCHDOG_INFO , 'image factory cron job needn\'t clear tmp file');
+	return FALSE;
+    }
+    //be careful to use this dangerous func
+    if ( file_unmanaged_delete_recursive(imageFactory_getDir('tmp' , TRUE , FALSE)) ) {
+	watchdog(WATCHDOG_INFO , 'image factory cron job success clear tmp file');
+    } else {
+	watchdog(WATCHDOG_CRITICAL , 'image factory cron job clear tmp file fail!!');
+    }
+}

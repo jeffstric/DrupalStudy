@@ -13,9 +13,8 @@ class imageJeff
     private static $c2 = 255;
     private static $c3 = 255;
 
-    public static function reseizeImage( $imageFrom , $imageToPath , $widthTo , $heightTo , $top , $left )
+    public static function reseizeImage( $imageFrom , $imageToPath , $widthTo , $heightTo , $top , $left , &$error = '' )
     {
-	$target = $imageFrom;
 	if ( !preg_match('|[\\\/]|' , substr($imageToPath , -1 , 0)) ) {
 	    $imageToPath .= '/';
 	}
@@ -23,21 +22,21 @@ class imageJeff
 	$fileNameSrc = explode('.' , $imageFrom);
 	$extName = array_pop($fileNameSrc);
 	$fileOutput = $imageToPath . time() . '.' . $extName;
-
-	if ( file_exists($target) ) {
-	    list($width , $height , $type) = getimagesize($target);
+	
+	if ( file_exists($imageFrom) ) {
+	    list($width , $height , $type) = getimagesize($imageFrom);
 
 	    $imFrom = false;
 
 	    switch ( $type ) {
 		case 1:
-		    $imFrom = @imagecreatefromgif($target);
+		    $imFrom = @imagecreatefromgif($imageFrom);
 		    break;
 		case 2:
-		    $imFrom = @imagecreatefromjpeg($target);
+		    $imFrom = @imagecreatefromjpeg($imageFrom);
 		    break;
 		case 3:
-		    $imFrom = @imagecreatefrompng($target);
+		    $imFrom = @imagecreatefrompng($imageFrom);
 		    break;
 		default:
 		    throw new Exception('wrong type image');
@@ -53,7 +52,6 @@ class imageJeff
 		$copyResult = imagecopyresampled($imTo , $imFrom , 0 , 0 , $left , $top , $widthTo , $heightTo , $widthTo , $heightTo);
 
 		if ( $copyResult ) {
-
 		    $return = false;
 		    switch ( $type ) {
 			case 1:
@@ -73,11 +71,22 @@ class imageJeff
 		    imagedestroy($imFrom);
 		    imagedestroy($imTo);
 
-		    $return = ($return) ? $fileOutput : FALSE;
-		    return $return;
+		    if ( $return ) {
+			return $fileOutput;
+		    } else {
+			$error = 'create image fail';
+		    }
+		} else {
+		    $error = 'copy image fail';
 		}
+	    } else {
+		$error = 'create im image fail';
 	    }
+	} else {
+	    $error = 'Target file dosen\'t exist';
 	}
+
+	return FALSE;
     }
 
     private function getRadio( $widthFrom , $heightFrom , $widthTo , $heightTo , &$whichRadio = '' )
