@@ -10,7 +10,7 @@
 	<div id = "divReseize" ></div>
     </div>
 </div>
-<fieldset>
+<fieldset id="ImSelectWH">
     <div>
 	<h5>width</h5>
 	<input type="text" id="selectWidth"/>
@@ -45,9 +45,14 @@
 	<input class="imPosX" name ="x" type="text" msg="position of x must be numeric" valid="num"/>
 	<h5>y</h5>
 	<input class="imPosY" name="y" type="text" msg="position of y must be numeric" valid="num"/>
+	<h5>shadow</h5>
+	<select class="imShadow" name="shadow" msg="please select shadow type"  valid="num">
+	    <option value="0">no</option>
+	    <option value="1">yes</option>
+	</select>
 	<h5>font family</h5>
 	<select class="imFont" msg="please select font type" valid="num">
-	    <option value="0">default</option>
+	    <option value="0">No fonts file ,please upload ttf!</option>
 	</select>
     </fieldset>
 
@@ -61,10 +66,11 @@
 
     </div>
     <input type="button" value="save" id="ImSave" style="width:100px" class="form-autocomplete"/>
+    <div class="imagFactory_goto_list">
+	<a href="/admin/imageFactory/list">go back to list</a>
+    </div>
 </div>
-<div class="imagFactory_goto_list">
-    <a href="/admin/imageFactory/list">go back to list</a>
-</div>
+
 
 
 
@@ -73,6 +79,7 @@
     var ImImageRoute = '<?php echo $imageRoute ?>';
     var imageWidth = <?php echo $imageInfo[ 0 ]; ?>;//图像宽度
     var imageHeight =<?php echo $imageInfo[ 1 ]; ?>;//图像高度
+    var fonts = <?php echo json_encode($fontsInfo); ?>;
     var IMfid = <?php echo $fid; ?>;
     var imDist = [];
     var imDist2 = [];
@@ -178,6 +185,7 @@
 	    //set the value back
 	    sw.value = w;
 	    sh.value =h ;
+	    getReseizeResult();
 	})
 	
 	sw.value = parseInt(s.style.width);
@@ -215,7 +223,7 @@
 	    $(this).addClass('throbbing');
 	    $.post(poHost+'/admin/imageFactory/resizeAjax/', ImResult, function(data){
 		$('#IMresize input').removeClass('throbbing');
-		if(!data.result=='success'){
+		if(data.result!='success'){
 		    var error = (data.error)?data.error:'transfer error';
 		    alert(error);
 		    return false;
@@ -224,7 +232,15 @@
 		$('#imgContainer').after('<div id="newImage"><img src="'+data['src']+'"/></div>').remove();
 		document.onmouseup = function(){}// ubbind onmouseup event 
 		$('#textEditArea').show();
+		//set fonts family
+		var fontsHtml = '';
+		for(var i in fonts.family){
+		    fontsHtml +='<option value="'+i+'">'+fonts.family[i]+'</option>';
+		}
+		$('.imFont option').replaceWith(fontsHtml);
+		
 		$('#IMresize input').remove();
+		$('#ImSelectWH').remove();
 		
 		var textEditMap = {
 		    T:'imTextContent',
@@ -233,11 +249,12 @@
 		    C : 'imColor',
 		    F : 'imFont',
 		    X:'imPosX',
-		    Y:'imPosY'
+		    Y:'imPosY',
+		    H:'imShadow'
 		};
 		
 		bindColorPick();
-		$('#ImTextAdd').click(function(){
+		$('#ImTextAdd').unbind('click').click(function(){
 		    var te =  $('.singleTextEdit');
 		    var teL = $(te[te.length-1]);
 		    teL.after( teL.clone() );
@@ -246,11 +263,11 @@
 		})
 		removeSingleTextEdit();
 		
-		$('#IMFontEdit input').click(function(){
+		$('#IMFontEdit input').unbind('click').click(function(){
 		    $(this).attr('disabled','disabled');
 		    var textNum = $('.singleTextEdit').length;
 		    if(!textNum){
-			console.log('without text parm input');
+			alert('please choose right font');
 			return false;
 		    }
 		    var showP = {
@@ -260,7 +277,7 @@
 		    for(var i = 0 ; i < textNum ; i++){
 			for(var n in textEditMap){
 			    var sel = '.'+textEditMap[n];
-			    var val = $(sel).val();
+			    var val =  $(sel).val();
 			    var domJq = $(sel)[i];
 			    var valid = $(sel).attr('valid');
 			    if(!checkValid(val,valid)){
@@ -271,8 +288,8 @@
 			    showP[n+i] = $(domJq).val();
 			}
 		    }
+		    
 		    $(this).addClass('throbbing');
-		    var getParm = '?';
 		    
 		    $.post(poHost+'/admin/imageFactory/addText',showP,function(data){
 			$('#IMFontEdit input').attr('disabled','');
@@ -281,12 +298,15 @@
 			
 			if(data.result == 'success'){
 			    $('#ImImgShow').empty().append('<img src="'+data.src+'"/>');
-			    $('#ImSave').click(function(){
+			    $('#ImSave').unbind('click').click(function(){
 				var fileCreate ;
 				var time = new Date;
 				var reg = new RegExp('(?:\\W|^$)');
 				do{
 				    fileCreate  = window.prompt("please enter file name, only character is allow.",time.getTime());
+				    if(fileCreate == null){
+					return false;
+				    }
 				}while(reg.test(fileCreate));
 				$(this).addClass('throbbing');
 				$('#ImSave').attr('disabled',"disabled");
@@ -313,10 +333,10 @@
 	    }, 'json');
 	})
     })(jQuery);
- 
+    
  
     function removeSingleTextEdit(){
-	jQuery('.ImTextRemove').click(function(){
+    jQuery('.ImTextRemove').unbind('click').click(function(){
 	    if(jQuery('.singleTextEdit').length >1){
 		jQuery(this).parent().remove();
 	    }

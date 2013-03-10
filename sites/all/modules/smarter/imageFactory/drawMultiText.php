@@ -37,20 +37,21 @@ function transferColor( $color )
     }
 }
 
-function drawTextOnPic( $outputPic )
+function drawTextOnPic( $outputPic , $fonts , $fontsPath , &$msg = '' )
 {
 
     // test input 
     /*
-      $_POST[ 'N' ] = 3;
+      $_POST[ 'N' ] = 2;
       $_POST[ 'B' ] = 'C:\wamp\www\DrupalStudy\files\public\imageFactory\tmp\2013\03\05\4365\1362454152.jpg';
 
       $_POST[ 'X0' ] = 30;
       $_POST[ 'Y0' ] = 50;
       $_POST[ 'S0' ] = 20;
       $_POST[ 'A0' ] = 0;
-      $_POST[ 'C0' ] = 'FFFFFF';
-      $_POST[ 'F0' ] = 0;
+      $_POST[ 'C0' ] = 'de14de';
+      $_POST[ 'F0' ] = 1;
+      $_POST[ 'H0' ] = 1;
       $_POST[ 'T0' ] = 'one';
 
       $_POST[ 'X1' ] = 100;
@@ -59,11 +60,11 @@ function drawTextOnPic( $outputPic )
       $_POST[ 'A1' ] = 0;
       $_POST[ 'C1' ] = '00FF00';
       $_POST[ 'F1' ] = 0;
+      $_POST[ 'H0' ] = 1;
       $_POST[ 'T1' ] = 'two';
-
      */
 
-    $fonts = array( 'KASNAKE_' );
+//    $fonts = array( 'KASNAKE_' , 'Ubuntu-R' );
     $checkParmBasic = array(
 	'B' => 'background image' ,
 	'N' => 'num of text' ,
@@ -75,7 +76,8 @@ function drawTextOnPic( $outputPic )
 	'A' => 'font angle' ,
 	'C' => 'font color' ,
 	'F' => 'font family' ,
-	'T' => 'the text to draw'
+	'T' => 'the text to draw' ,
+	'H' => 'the text shadow'
     );
     try {
 //check basic param
@@ -128,10 +130,12 @@ function drawTextOnPic( $outputPic )
 		$fontColor = imagecolorallocate($im , $fontColorArray[ 0 ] , $fontColorArray[ 1 ] , $fontColorArray[ 2 ]);
 
 		// Replace path by your own font path
-		$font = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'font/' . $fonts[ $_POST[ 'F' . $i ] ] . '.ttf';
+		$font = $fontsPath . DIRECTORY_SEPARATOR . $fonts[ $_POST[ 'F' . $i ] ] . '.ttf';
 		if ( file_exists($font) ) {
 		    // Add some shadow to the text
-		    imagettftext($im , $_POST[ 'S' . $i ] , $_POST[ 'A' . $i ] , $_POST[ 'X' . $i ] + 2 , $_POST[ 'Y' . $i ] + 2 , $grey , $font , $_POST[ 'T' . $i ]);
+		    if ( $_POST[ 'H' . $i ] ) {
+			imagettftext($im , $_POST[ 'S' . $i ] , $_POST[ 'A' . $i ] , $_POST[ 'X' . $i ] + 1 , $_POST[ 'Y' . $i ] + 1 , $grey , $font , $_POST[ 'T' . $i ]);
+		    }
 		    // Add the text
 		    imagettftext($im , $_POST[ 'S' . $i ] , $_POST[ 'A' . $i ] , $_POST[ 'X' . $i ] , $_POST[ 'Y' . $i ] , $fontColor , $font , $_POST[ 'T' . $i ]);
 		} else {
@@ -145,6 +149,7 @@ function drawTextOnPic( $outputPic )
 	imagedestroy($im);
 	return $result;
     } catch ( Exception $e ) {
-	echo $e->getMessage();
+	$msg = $e->getMessage();
+	return FALSE;
     }
 }
