@@ -75,10 +75,10 @@
 
 
 <script type="text/javascript">
-  var ImImageSrc = '<?php echo $image ?>';//图像地址
+  var ImImageSrc = '<?php echo $image ?>';//image src
   var ImImageRoute = '<?php echo $imageRoute ?>';
-  var imageWidth = <?php echo $imageInfo[ 0 ]; ?>;//图像宽度
-  var imageHeight =<?php echo $imageInfo[ 1 ]; ?>;//图像高度
+  var imageWidth = <?php echo $imageInfo[ 0 ]; ?>;//image width
+  var imageHeight =<?php echo $imageInfo[ 1 ]; ?>;//image height
   var fonts = <?php echo json_encode($fontsInfo); ?>;
   var IMfid = <?php echo $fid; ?>;
   var imDist = [];

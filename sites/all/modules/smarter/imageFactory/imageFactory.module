@@ -6,7 +6,7 @@
  *  date    :   2012-12-12
  *  time    :   20:01:31
  * */
-define('IMAGEFACTORYKEY' , 'picture');
+define('IMAGEFACTORY_FORMKEY' , 'picture');
 
 /**
  * Implementation of hook_permission() 
@@ -14,10 +14,12 @@ define('IMAGEFACTORYKEY' , 'picture');
 function imageFactory_permission()
 {
   return array(
+      //manage image factory
       'imageFactory image upload' => array(
           'title' => t('imageFactory image manage') ,
           'description' => t('Allow users use imageFactory function') ,
       ) ,
+      //manage image factory fonts
       'imageFactory fonts manage' => array(
           'title' => t('imageFactory fonts manage') ,
           'description' => t('Allow users manage imageFactory\' fonts') ,
@@ -27,6 +29,7 @@ function imageFactory_permission()
 
 function imageFactory_menu()
 {
+  //image factory entry
   $items[ 'admin/config/media/imageFactory' ] = array(
       'title' => 'image factory' ,
       'description' => 'Image Factory help you resize image and add text on it' ,
@@ -35,24 +38,31 @@ function imageFactory_menu()
       'access arguments' => array( 'imageFactory image manage' ) ,
       'weight' => 1
   );
+  //upload image file
   $items[ 'admin/imageFactory/upload' ] = array(
       'title' => 'upload image' ,
       'page callback' => 'drupal_get_form' ,
       'page arguments' => array( 'imageFactory_fileUploadForm' ) ,
       'access callback' => 'user_access' ,
       'access arguments' => array( 'imageFactory image upload' ) ,
+      'file' => 'imageFactory_form.inc' ,
+      'file path' => drupal_get_path('module' , 'imageFactory') ,
       'type' => MENU_SUGGESTED_ITEM ,
       'weight' => 1
   );
+  //upload fonts file
   $items[ 'admin/imageFactory/fonts/upload' ] = array(
       'title' => 'upload ttf fonts' ,
       'page callback' => 'drupal_get_form' ,
       'page arguments' => array( 'imageFactory_fontsUploadForm' ) ,
       'access callback' => 'user_access' ,
       'access arguments' => array( 'imageFactory fonts manage' ) ,
+      'file' => 'imageFactory_form.inc' ,
+      'file path' => drupal_get_path('module' , 'imageFactory') ,
       'type' => MENU_SUGGESTED_ITEM ,
       'weight' => 1
   );
+  //manage fonts
   $items[ 'admin/imageFactory/fonts' ] = array(
       'title' => 'fonts list' ,
       'page callback' => 'imageFactory_fontList' ,
@@ -61,6 +71,7 @@ function imageFactory_menu()
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
+  //delete fonts
   $items[ 'admin/imageFactory/fonts/del/%' ] = array(
       'title' => 'fonts list' ,
       'page callback' => 'imageFactory_fontDel' ,
@@ -70,6 +81,7 @@ function imageFactory_menu()
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
+  //manage file in file_managed
   $items[ 'admin/imageFactory/list' ] = array(
       'title' => 'image factory' ,
       'page callback' => 'imageFactory_imageList' ,
@@ -78,6 +90,7 @@ function imageFactory_menu()
       'type' => MENU_SUGGESTED_ITEM ,
       'weight' => 1
   );
+  //edit image
   $items[ 'admin/imageFactory/edit/%' ] = array(
       'title' => 'upload image' ,
       'page callback' => 'imageFactory_imageEdit' ,
@@ -87,6 +100,7 @@ function imageFactory_menu()
       'type' => MENU_SUGGESTED_ITEM ,
       'weight' => 1
   );
+  //resize image
   $items[ 'admin/imageFactory/resizeAjax' ] = array(
       'title' => 'resize image' ,
       'page callback' => 'imageFactory_ResizeAjax' ,
@@ -94,6 +108,7 @@ function imageFactory_menu()
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
+  //add text to image
   $items[ 'admin/imageFactory/addText' ] = array(
       'title' => 'upload image' ,
       'page callback' => 'imageFactory_addText' ,
@@ -101,6 +116,7 @@ function imageFactory_menu()
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
+  //save image and add record to db
   $items[ 'admin/imageFactory/save' ] = array(
       'title' => 'save image' ,
       'page callback' => 'imageFactory_save' ,
@@ -110,6 +126,40 @@ function imageFactory_menu()
       'weight' => 1
   );
   return $items;
+}
+
+function imageFactory_fileUploadForm()
+{
+  $form[ '#method' ] = 'post';
+  $form[ '#attributes' ][ 'enctype' ] = 'multipart/form-data';
+  $form[ IMAGEFACTORY_FORMKEY ] = array(
+      '#type' => 'file' ,
+      '#title' => t('Upload picture') ,
+      '#size' => 48 ,
+      '#description' => t('The picture you want upload.') ,
+  );
+  $form[ 'submit' ] = array(
+      '#type' => 'submit' ,
+      '#value' => t('Submit')
+  );
+  return $form;
+}
+
+function imageFactory_fontsUploadForm()
+{
+  $form[ '#method' ] = 'post';
+  $form[ '#attributes' ][ 'enctype' ] = 'multipart/form-data';
+  $form[ IMAGEFACTORY_FORMKEY ] = array(
+      '#type' => 'file' ,
+      '#title' => t('Upload fonts') ,
+      '#size' => 48 ,
+      '#description' => t('The fonts you want upload.') ,
+  );
+  $form[ 'submit' ] = array(
+      '#type' => 'submit' ,
+      '#value' => t('Submit')
+  );
+  return $form;
 }
 
 function imageFactory_help( $path , $arg )
@@ -130,86 +180,6 @@ function imageFactory_help( $path , $arg )
       return $output;
       break;
   }
-}
-
-function imageFactory_fileUploadForm()
-{
-  $form[ '#method' ] = 'post';
-  $form[ '#attributes' ][ 'enctype' ] = 'multipart/form-data';
-  $form[ IMAGEFACTORYKEY ] = array(
-      '#type' => 'file' ,
-      '#title' => t('Upload picture') ,
-      '#size' => 48 ,
-      '#description' => t('The picture you want upload.') ,
-  );
-  $form[ 'submit' ] = array(
-      '#type' => 'submit' ,
-      '#value' => t('Submit')
-  );
-  return $form;
-}
-
-function imageFactory_fileUploadForm_submit( $form , &$form_state )
-{
-  $validators = array(
-      'file_validate_extensions' => array( 'jpg png gif' ) ,
-  );
-  $destinationPath = imageFactory_getDir('upload');
-
-  $file = file_save_upload(IMAGEFACTORYKEY , $validators , $destinationPath);
-  if ( $file ) {
-    $file->status = 1;
-    try {
-      file_save($file);
-      drupal_set_message(t('upload file success!'));
-    } catch ( Exception $e ) {
-      drupal_set_message($e->getMessage());
-    }
-  }
-
-  drupal_goto('admin/imageFactory/list');
-}
-
-function imageFactory_fontsUploadForm()
-{
-  $form[ '#method' ] = 'post';
-  $form[ '#attributes' ][ 'enctype' ] = 'multipart/form-data';
-  $form[ IMAGEFACTORYKEY ] = array(
-      '#type' => 'file' ,
-      '#title' => t('Upload fonts') ,
-      '#size' => 48 ,
-      '#description' => t('The fonts you want upload.') ,
-  );
-  $form[ 'submit' ] = array(
-      '#type' => 'submit' ,
-      '#value' => t('Submit')
-  );
-  return $form;
-}
-
-function imageFactory_fontsUploadForm_submit( $form , &$form_state )
-{
-  $validators = array(
-      'file_validate_extensions' => array( 'ttf' ) ,
-  );
-  $destinationPath = imageFactory_getDir('fonts' , FALSE , FALSE);
-
-  $file = file_save_upload(IMAGEFACTORYKEY , $validators , $destinationPath);
-  if ( $file ) {
-    try {
-      file_save($file);
-      drupal_set_message(t('upload fonts success!'));
-    } catch ( Exception $e ) {
-      drupal_set_message($e->getMessage());
-    }
-  }
-
-  //create fonts picture
-  if ( imageFacory_fontsImageCreate() ) {
-    drupal_set_message('fonts pic create success');
-  }
-
-  drupal_goto('admin/imageFactory/fonts');
 }
 
 function imageFacory_fontsImageCreate()
@@ -335,7 +305,7 @@ function theme_imageFactory_file_formatter_table( $variables )
         date('Y-m-d H:i:s' , $item[ 'timestamp' ]) . '&nbsp;&nbsp;' ,
         format_size($item[ 'filesize' ]) ,
         '<img  height="100" width="100" src="' . file_create_url($item[ 'uri' ]) . '">' ,
-        '<a href="' . url('/admin/imageFactory/edit/') . $item[ 'fid' ] . '">edit</a>'
+        l('edit' , 'admin/imageFactory/edit/' . $item[ 'fid' ] , array( 'absolute' => true ))
     );
   }
 
@@ -373,18 +343,13 @@ function imageFactory_imageEdit( $id )
 
 function imageFactory_ResizeAjax()
 {
-  //test 
-  /*
-    $_POST = array( 'height' => 75 , 'width' => 75 , 'top' => 0 , 'left' => 0 , 'fid' => 4577 ,
-    'src' => 'http://xxx/imageFactory/create/2013/03/08/5261/qq.png' );
-   */
 
   $_POST[ 'src' ] = imageFactory_webUrlToSer($_POST[ 'src' ]);
   try {
     $parms = array( 'width' , 'height' , 'top' , 'left' , 'src' , 'fid' );
     foreach ( $parms as $p ) {
       if ( !isset($_POST[ $p ]) ) {
-        throw new Exception('parm error: ' . $p);
+        throw new Exception('Miss parm error: ' . $p);
       }
     }
 
@@ -509,7 +474,7 @@ function imageFactory_pathSerToWeb( $serverPath )
 
 function imageFactory_webUrlToSer( $url )
 {
-  return preg_replace('^|http(s)?\:\/\/[^\/]+|i' , DRUPAL_ROOT , $url);
+  return preg_replace('|^http(s)?\:\/\/[^\/]+|i' , DRUPAL_ROOT , $url);
 }
 
 function imageFactory_getDir( $dir = '' , $absolutePath = FALSE , $timeAndRandom = TRUE )
