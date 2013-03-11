@@ -2,3 +2,4 @@ files/
 nbproject/
 sites/default/files/*
 sites/*/*settings.php
+*.bak

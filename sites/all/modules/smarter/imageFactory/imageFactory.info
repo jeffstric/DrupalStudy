@@ -1,5 +1,5 @@
 name = smarter image factory
-description = powerful image factory
+description = helpful image factory
 package = smarter image manage
 core = 7.x
 files[] = imageFactory.module
