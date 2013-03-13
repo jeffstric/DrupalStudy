@@ -8,8 +8,9 @@
  * */
 function imageFactory_fileUploadForm_validate( $form , &$form_state )
 {
-  if ( !imageFactory_checkFileName($_FILES[ 'files' ][ 'name' ][ IMAGEFACTORY_FORMKEY ]) )
-    form_set_error(IMAGEFACTORY_FORMKEY , t('File name should only allow character or \'_\''));
+  if ( preg_match('|[^\w\_\-\.]|i' , $_FILES[ 'files' ][ 'name' ][ 'picture' ]) ) {
+    form_set_error('picture' , t('File name should only allow character , \' -\' and \'_\''));
+  }
 }
 
 function imageFactory_fileUploadForm_submit( $form , &$form_state )
@@ -19,7 +20,7 @@ function imageFactory_fileUploadForm_submit( $form , &$form_state )
   );
   $destinationPath = imageFactory_getDir('upload');
 
-  $file = file_save_upload(IMAGEFACTORY_FORMKEY , $validators , $destinationPath);
+  $file = file_save_upload('picture' , $validators , $destinationPath);
   if ( $file ) {
     $file->status = 1;
     try {
@@ -35,8 +36,10 @@ function imageFactory_fileUploadForm_submit( $form , &$form_state )
 
 function imageFactory_fontsUploadForm_validate( $form , &$form_state )
 {
-  if ( !imageFactory_checkFileName($_FILES[ 'files' ][ 'name' ][ IMAGEFACTORY_FORMKEY ]) )
-    form_set_error(IMAGEFACTORY_FORMKEY , t('File name should only allow character or \'_\''));
+  if ( preg_match('|[^\w\_\-\.]|i' , $_FILES[ 'files' ][ 'name' ][ 'fonts' ]) ) {
+    form_set_error('fonts' , t('File name should only allow character \'-\' and \'_\''));
+  }
+  $_FILES[ 'files' ][ 'name' ][ 'fonts' ] = strtolower($_FILES[ 'files' ][ 'name' ][ 'fonts' ]);
 }
 
 function imageFactory_fontsUploadForm_submit( $form , &$form_state )
@@ -46,7 +49,7 @@ function imageFactory_fontsUploadForm_submit( $form , &$form_state )
   );
   $destinationPath = imageFactory_getDir('fonts' , FALSE , FALSE);
 
-  $file = file_save_upload(IMAGEFACTORY_FORMKEY , $validators , $destinationPath);
+  $file = file_save_upload('fonts' , $validators , $destinationPath);
   if ( $file ) {
     try {
       file_save($file);
@@ -62,9 +65,4 @@ function imageFactory_fontsUploadForm_submit( $form , &$form_state )
   }
 
   drupal_goto('admin/imageFactory/fonts');
-}
-
-function imageFactory_checkFileName( $fileName )
-{
-  return !preg_match('{[^\w\_]\.(?:jpg|jpeg|png|gif)$}i' , $fileName);
 }
