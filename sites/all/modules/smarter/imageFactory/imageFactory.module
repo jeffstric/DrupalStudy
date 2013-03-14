@@ -177,13 +177,15 @@ function imageFactory_help( $path , $arg )
     case 'admin/help#imageFactory';
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('The imagefactory module can be used to create image with cumstom fonts text and background .It will save picture on \'public://imageFactory\' and add record to file_managed table ,  then you can render picture by module \'IMCE for File Field\' .See the online handbook entry for the <a href="@imgfactoryDocument">imgfactory module</a>.' , array( '@imgfactoryDocument' => 'http://drupal.org/sandbox/jeffstric/1937132' )) . '</p>';
+      $output .= '<p>' . t('The imagefactory module can be used to resize image and add infinite text with cumstom fonts .It will save picture on in public file path and add record to file_managed table.') . '</p>';
       $output .= '<h3>' . t('Uses') . '</h3>';
       $output .= '<dl>';
       $output .= '<dt>' . t('First use') . '</dt>';
-      $output .= '<dd>' . t('You should upload ttf font file to server.<a href="@imgfactoryFontsUpload">upload fonts</a>' , array( '@imgfactoryFontsUpload' => url('admin/imageFactory/fonts/upload') )) . '</dd>';
+      $output .= '<dd>' . t('You should <a href="@imgfactoryFontsUpload">upload ttf fonts</a> to server.' , array( '@imgfactoryFontsUpload' => url('admin/imageFactory/fonts/upload') )) . '</dd>';
       $output .= '<dt>' . t('The tmp picture remove') . '</dt>';
-      $output .= '<dd>' . t('When you create picture by imageFactory, module will create temporary file. You can remove that by call <a href="@cronUrl">cron</a>' , array( '@cronUrl' => url('admin/config/system/cron') ));
+      $output .= '<dd>' . t('When you create picture by imageFactory, module will create temporary file in public://imagefactory/tmp , the cron job will automatic remove them. You can manually remove by call <a href="@cronUrl">cron</a>' , array( '@cronUrl' => url('admin/config/system/cron') ));
+      $output .= '<dt>' . t('How to choose the image you create') . '</dt>';
+      $output .= '<dd>' . t(' You can use \'IMCE for File Field\' or \'entity reference\'.');
       $output .= '</dl>';
       return $output;
       break;

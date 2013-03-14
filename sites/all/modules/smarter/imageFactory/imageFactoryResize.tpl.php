@@ -20,9 +20,8 @@
   </div>
 </fieldset>
 <fieldset>
-  <legend>resize picture</legend>
   <div id="IMresize">
-    <input type="button" value="resize image" style="width:150px" class="form-autocomplete h18"/>
+    <input type="button" value="resize image" style="width:150px" class="form-autocomplete zero_mp"/>
   </div>
 </fieldset>
 
@@ -31,8 +30,7 @@
 <div id="textEditArea" style="display:none">
   <input type="button" value="add another text" id="ImTextAdd"/>
   <fieldset class="singleTextEdit">
-    <legend>text add</legend>
-    <input type="button" value="remove this  text" class="ImTextRemove"/>
+    <input type="button" value="remove this  text" class="ImTextRemove"  />
     <h5>content</h5>
     <input class="imTextContent" name="content" type="text" msg="content must be input" valid="free"/>
     <h5>size</h5>
@@ -57,7 +55,7 @@
   </fieldset>
 
   <div id="IMFontEdit">
-    <input type="button" value="add text to image" style="width:250px" class="form-autocomplete h18"/>
+    <input type="button" value="add text to image" style="width:250px" class="form-autocomplete zero_mp"/>
   </div>
 </div>
 <!--image text edit area end-->
@@ -65,7 +63,7 @@
   <div id="ImImgShow">
 
   </div>
-  <input type="button" value="save" id="ImSave" style="width:100px" class="form-autocomplete h18"/>
+  <input type="button" value="save" id="ImSave" style="width:100px" class="form-autocomplete zero_mp"/>
   <div class="imagFactory_goto_list">
     <a href="<?php echo url('admin/imageFactory/list') ?>">go back to list</a>
   </div>

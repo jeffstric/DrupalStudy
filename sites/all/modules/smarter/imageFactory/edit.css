@@ -29,7 +29,8 @@
   background: url("image/divResize.png") no-repeat;
   cursor:pointer;
 }
-.h18{
-  height:18px;
+.zero_mp{
+  margin:0px!important;
+  padding: 0px!important;
 }
 
