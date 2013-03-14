@@ -15,13 +15,20 @@ function imageFactory_permission()
   return array(
       //manage image factory
       'imageFactory image upload' => array(
-          'title' => t('imageFactory image manage') ,
-          'description' => t('Allow users use imageFactory function') ,
+          'title' => t('imageFactory image upload') ,
+          'description' => t('Allow users upload image in imageFactory') ,
+      ) ,
+      //manage image factory
+      'imageFactory image edit' => array(
+          'title' => t('imageFactory image edit') ,
+          'description' => t('Allow users edit image in imageFactory') ,
       ) ,
       //manage image factory fonts
-      'imageFactory fonts manage' => array(
-          'title' => t('imageFactory fonts manage') ,
-          'description' => t('Allow users manage imageFactory\' fonts') ,
+      'imageFactory fonts upload' => array(
+          'title' => t('Allow user upload fonts') ,
+      ) ,
+      'imageFactory fonts del' => array(
+          'title' => t('Allow user delete fonts') ,
       ) ,
   );
 }
@@ -34,7 +41,7 @@ function imageFactory_menu()
       'description' => 'Image Factory help you resize image and add text on it' ,
       'page callback' => 'imageFactory_imageList' ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory image manage' ) ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'weight' => 1
   );
   //upload image file
@@ -55,7 +62,7 @@ function imageFactory_menu()
       'page callback' => 'drupal_get_form' ,
       'page arguments' => array( 'imageFactory_fontsUploadForm' ) ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory fonts manage' ) ,
+      'access arguments' => array( 'imageFactory fonts upload' ) ,
       'file' => 'imageFactory_form.inc' ,
       'file path' => drupal_get_path('module' , 'imageFactory') ,
       'type' => MENU_SUGGESTED_ITEM ,
@@ -66,7 +73,7 @@ function imageFactory_menu()
       'title' => 'fonts list' ,
       'page callback' => 'imageFactory_fontList' ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory fonts manage' ) ,
+      'access arguments' => array( 'imageFactory fonts del' ) ,
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
@@ -76,7 +83,7 @@ function imageFactory_menu()
       'page callback' => 'imageFactory_fontDel' ,
       'page arguments' => array( 4 ) ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory fonts manage' ) ,
+      'access arguments' => array( 'imageFactory fonts del' ) ,
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
@@ -85,7 +92,7 @@ function imageFactory_menu()
       'title' => 'image factory' ,
       'page callback' => 'imageFactory_imageList' ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory image manage' ) ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'type' => MENU_SUGGESTED_ITEM ,
       'weight' => 1
   );
@@ -95,7 +102,7 @@ function imageFactory_menu()
       'page callback' => 'imageFactory_imageEdit' ,
       'page arguments' => array( 3 ) ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory image manage' ) ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'type' => MENU_SUGGESTED_ITEM ,
       'weight' => 1
   );
@@ -103,7 +110,8 @@ function imageFactory_menu()
   $items[ 'admin/imageFactory/resizeAjax' ] = array(
       'title' => 'resize image' ,
       'page callback' => 'imageFactory_ResizeAjax' ,
-      'access callback' => TRUE ,
+      'access callback' => 'user_access' ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
@@ -111,7 +119,8 @@ function imageFactory_menu()
   $items[ 'admin/imageFactory/addText' ] = array(
       'title' => 'upload image' ,
       'page callback' => 'imageFactory_addText' ,
-      'access callback' => TRUE ,
+      'access callback' => 'user_access' ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
@@ -120,7 +129,7 @@ function imageFactory_menu()
       'title' => 'save image' ,
       'page callback' => 'imageFactory_save' ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory image manage' ) ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
