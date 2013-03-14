@@ -313,6 +313,7 @@ function theme_imageFactory_file_formatter_table( $variables )
 
 function imageFactory_imageEdit( $id )
 {
+  global $base_path;
   if ( $id ) {
     $row = imageFactory_getFile($id);
     $imageSrc = file_create_url($row->uri);
@@ -334,6 +335,7 @@ function imageFactory_imageEdit( $id )
                 'image' => $imageSrc ,
                 'imageRoute' => $imageRoute ,
                 'fid' => $id ,
+                'basePath' => $base_path ,
                 'imageInfo' => $imageInfo ,
                 'fontsInfo' => array( 'family' => $fontFamily , 'src' => $fontSrc )
             ));
@@ -342,7 +344,6 @@ function imageFactory_imageEdit( $id )
 
 function imageFactory_ResizeAjax()
 {
-
   $_POST[ 'src' ] = imageFactory_webUrlToSer($_POST[ 'src' ]);
   try {
     $parms = array( 'width' , 'height' , 'top' , 'left' , 'src' , 'fid' );
@@ -385,7 +386,7 @@ function imageFactory_theme()
       'imageFactory' => array(
           'variables' => array(
               'image' => NULL , 'imageRoute' => NULL , 'fid' => NULL ,
-              'imageInfo' => NULL , 'fontsFamily' => NULL
+              'basePath' => '/' , 'imageInfo' => NULL , 'fontsFamily' => NULL
           ) ,
           'template' => 'imageFactoryResize' ,
           'path' => drupal_get_path('module' , 'imageFactory') ,
@@ -473,7 +474,12 @@ function imageFactory_pathSerToWeb( $serverPath )
 
 function imageFactory_webUrlToSer( $url )
 {
-  return preg_replace('|^http(s)?\:\/\/[^\/]+|i' , DRUPAL_ROOT , $url);
+  global $base_path;
+  $url = preg_replace('|^http(s)?\:\/\/[^\/]+|i' , '' , $url);
+  if ( $base_path != '/' ) {
+    $url = substr($url , strlen($base_path) - 1);
+  }
+  return DRUPAL_ROOT . $url;
 }
 
 function imageFactory_getDir( $dir = '' , $absolutePath = FALSE , $timeAndRandom = TRUE )

@@ -22,7 +22,7 @@
 <fieldset>
   <legend>resize picture</legend>
   <div id="IMresize">
-    <input type="button" value="resize image" style="width:150px" class="form-autocomplete"/>
+    <input type="button" value="resize image" style="width:150px" class="form-autocomplete h18"/>
   </div>
 </fieldset>
 
@@ -57,7 +57,7 @@
   </fieldset>
 
   <div id="IMFontEdit">
-    <input type="button" value="add text to image" style="width:250px" class="form-autocomplete"/>
+    <input type="button" value="add text to image" style="width:250px" class="form-autocomplete h18"/>
   </div>
 </div>
 <!--image text edit area end-->
@@ -65,7 +65,7 @@
   <div id="ImImgShow">
 
   </div>
-  <input type="button" value="save" id="ImSave" style="width:100px" class="form-autocomplete"/>
+  <input type="button" value="save" id="ImSave" style="width:100px" class="form-autocomplete h18"/>
   <div class="imagFactory_goto_list">
     <a href="<?php echo url('admin/imageFactory/list') ?>">go back to list</a>
   </div>
@@ -76,7 +76,6 @@
 
 <script type="text/javascript">
   var ImImageSrc = '<?php echo $image ?>';//image src
-  var ImImageRoute = '<?php echo $imageRoute ?>';
   var imageWidth = <?php echo $imageInfo[ 0 ]; ?>;//image width
   var imageHeight =<?php echo $imageInfo[ 1 ]; ?>;//image height
   var fonts = <?php echo json_encode($fontsInfo); ?>;
@@ -216,12 +215,12 @@
 
 <script type="text/javascript">
   (function ($) {
-    var poHost = window.location.protocol+'//'+window.location.host;
+    var poHost = window.location.protocol+'//'+window.location.host+'<?php echo $basePath; ?>';
     $('#IMresize input').click(function(){
       ImResult['fid'] = IMfid;
-      ImResult['src'] = ImImageRoute;
+      ImResult['src'] = ImImageSrc;
       $(this).addClass('throbbing');
-      $.post(poHost+'/admin/imageFactory/resizeAjax/', ImResult, function(data){
+      $.post(poHost+'admin/imageFactory/resizeAjax/', ImResult, function(data){
         $('#IMresize input').removeClass('throbbing');
         if(data.result!='success'){
           var error = (data.error)?data.error:'transfer error';
@@ -291,7 +290,7 @@
 		    
           $(this).addClass('throbbing');
 		    
-          $.post(poHost+'/admin/imageFactory/addText',showP,function(data){
+          $.post(poHost+'admin/imageFactory/addText',showP,function(data){
             $('#IMFontEdit input').attr('disabled','');
             $('#ImShowSave').show();
             $('#IMFontEdit input').removeClass('throbbing');
@@ -310,11 +309,11 @@
                 }while(reg.test(fileCreate));
                 $(this).addClass('throbbing');
                 $('#ImSave').attr('disabled',"disabled");
-                $.post(poHost+'/admin/imageFactory/save', {'file':data.src,'name':fileCreate}, function(data){
+                $.post(poHost+'admin/imageFactory/save', {'file':data.src,'name':fileCreate}, function(data){
                   $('#ImSave').removeClass('throbbing').attr('disabled','');
                   if(data.result == 'success'){
                     if(confirm('save success, goto list page?')){
-                      window.location = poHost + '/admin/imageFactory/list';
+                      window.location = poHost + 'admin/imageFactory/list';
                     }
                   }else{
                     var msg = (data.error)? data.error : 'tranfser info error';
