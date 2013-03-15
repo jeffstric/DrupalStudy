@@ -6,39 +6,35 @@
  *  date    :   Feb 26, 2013
  *  time    :   4:27:46 PM
  * */
-function checkGet( $checkParm )
-{
+function checkGet( $checkParm ){
   $keys = array_keys($checkParm);
-  foreach ( $keys as $k ) {
-    if ( checkSet($k) === FALSE ) {
+  foreach ($keys as $k) {
+    if (checkSet($k) === FALSE) {
       throw new Exception('wrong param: ' . $checkParm[ $k ] . '; key: ' . $k);
     }
   }
 }
 
-function checkSet( $input )
-{
+function checkSet( $input ){
   return isset($_POST[ $input ]) ? $_POST[ $input ] : FALSE;
 }
 
-function transferColor( $color )
-{
+function transferColor( $color ){
   try {
-    if ( strlen($color) == 6 ) {
+    if (strlen($color) == 6) {
       $red = hexdec(substr($color , 0 , 2));
       $green = hexdec(substr($color , 2 , 2));
       $blue = hexdec(substr($color , 4 , 2));
-      return array( $red , $green , $blue );
+      return array($red , $green , $blue);
     } else {
       throw new Exception('color param length illegal');
     }
-  } catch ( Exception $e ) {
+  } catch (Exception $e) {
     throw new Exception('color param illegal; C: ' . $color);
   }
 }
 
-function drawTextOnPic( $outputPic , $fonts , $fontsPath , &$msg = '' )
-{
+function drawTextOnPic( $outputPic , $fonts , $fontsPath , &$msg = '' ){
 
   // test input 
   /*
@@ -84,7 +80,7 @@ function drawTextOnPic( $outputPic , $fonts , $fontsPath , &$msg = '' )
     checkGet($checkParmBasic);
 //check image exist
     $fileName = $_POST[ 'B' ];
-    if ( !file_exists($fileName) ) {
+    if (!file_exists($fileName)) {
       throw new Exception('image doesn\'t exist');
     }
 
@@ -92,7 +88,7 @@ function drawTextOnPic( $outputPic , $fonts , $fontsPath , &$msg = '' )
      * draw background now 
      */
     list($width , $height , $type) = getimagesize($fileName);
-    switch ( $type ) {
+    switch ($type) {
       case 1:
         $im = imagecreatefromgif($fileName);
         break;
@@ -111,17 +107,17 @@ function drawTextOnPic( $outputPic , $fonts , $fontsPath , &$msg = '' )
 
 //get the number of texts
     $textNum = $_POST[ 'N' ];
-    if ( count($textNum) ) {
-      for ( $i = 0; $i < $textNum; $i++ ) {
+    if (count($textNum)) {
+      for ($i = 0; $i < $textNum; $i++) {
         //prepare checkParm to check the text param 
-        $checkParms = array( );
-        foreach ( $checkParmText as $key => $value ) {
+        $checkParms = array();
+        foreach ($checkParmText as $key => $value) {
           $checkParms[ $key . $i ] = $value;
         }
         //check text param
         checkGet($checkParms);
         //check text font family 
-        if ( $_POST[ 'F' . $i ] > count($fonts) - 1 ) {
+        if ($_POST[ 'F' . $i ] > count($fonts) - 1) {
           throw new Exception('illegal font param: ' . $checkParms[ 'F' . $i ] . '; key: ' . 'F' . $i);
         }
 
@@ -131,9 +127,9 @@ function drawTextOnPic( $outputPic , $fonts , $fontsPath , &$msg = '' )
 
         // Replace path by your own font path
         $font = $fontsPath . DIRECTORY_SEPARATOR . $fonts[ $_POST[ 'F' . $i ] ] . '.ttf';
-        if ( file_exists($font) ) {
+        if (file_exists($font)) {
           // Add some shadow to the text
-          if ( $_POST[ 'H' . $i ] ) {
+          if ($_POST[ 'H' . $i ]) {
             imagettftext($im , $_POST[ 'S' . $i ] , $_POST[ 'A' . $i ] , $_POST[ 'X' . $i ] + 1 , $_POST[ 'Y' . $i ] + 1 , $grey , $font , $_POST[ 'T' . $i ]);
           }
           // Add the text
@@ -148,7 +144,7 @@ function drawTextOnPic( $outputPic , $fonts , $fontsPath , &$msg = '' )
     $result = imagepng($im , $outputPic);
     imagedestroy($im);
     return $result;
-  } catch ( Exception $e ) {
+  } catch (Exception $e) {
     $msg = $e->getMessage();
     return FALSE;
   }

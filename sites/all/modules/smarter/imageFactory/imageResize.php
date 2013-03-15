@@ -13,9 +13,8 @@ class imageJeff
   private static $c2 = 255;
   private static $c3 = 255;
 
-  public static function reseizeImage( $imageFrom , $imageToPath , $widthTo , $heightTo , $top , $left , &$error = '' )
-  {
-    if ( !preg_match('|[\\\/]|' , substr($imageToPath , -1 , 0)) ) {
+  public static function reseizeImage( $imageFrom , $imageToPath , $widthTo , $heightTo , $top , $left , &$error = '' ){
+    if (!preg_match('|[\\\/]|' , substr($imageToPath , -1 , 0))) {
       $imageToPath .= '/';
     }
 
@@ -23,12 +22,12 @@ class imageJeff
     $extName = array_pop($fileNameSrc);
     $fileOutput = $imageToPath . time() . '.' . $extName;
 
-    if ( file_exists($imageFrom) ) {
+    if (file_exists($imageFrom)) {
       list($width , $height , $type) = getimagesize($imageFrom);
 
       $imFrom = false;
 
-      switch ( $type ) {
+      switch ($type) {
         case 1:
           $imFrom = @imagecreatefromgif($imageFrom);
           break;
@@ -43,7 +42,7 @@ class imageJeff
           break;
       }
 
-      if ( $imFrom ) {
+      if ($imFrom) {
         $imTo = imagecreatetruecolor($widthTo , $heightTo);
         $color = imagecolorallocate($imTo , self::$c1 , self::$c2 , self::$c3);
         imagefill($imTo , 0 , 0 , $color);
@@ -51,9 +50,9 @@ class imageJeff
 //                 echo 'width:'.$widthTo." height:".$heightTo.' top:'.$top.' left:'.$left;
         $copyResult = imagecopyresampled($imTo , $imFrom , 0 , 0 , $left , $top , $widthTo , $heightTo , $widthTo , $heightTo);
 
-        if ( $copyResult ) {
+        if ($copyResult) {
           $return = false;
-          switch ( $type ) {
+          switch ($type) {
             case 1:
               $return = imagegif($imTo , $fileOutput);
               break;
@@ -71,7 +70,7 @@ class imageJeff
           imagedestroy($imFrom);
           imagedestroy($imTo);
 
-          if ( $return ) {
+          if ($return) {
             return $fileOutput;
           } else {
             $error = 'create image fail';
@@ -89,17 +88,16 @@ class imageJeff
     return FALSE;
   }
 
-  private function getRadio( $widthFrom , $heightFrom , $widthTo , $heightTo , &$whichRadio = '' )
-  {
+  private function getRadio( $widthFrom , $heightFrom , $widthTo , $heightTo , &$whichRadio = '' ){
     $radioWidth = $widthTo / $widthFrom;
     $radioHeigt = $heightTo / $heightFrom;
 
     $radio = false;
     $whichRadio = false;
 
-    if ( ($heightFrom > $heightTo) || ($widthFrom > $widthTo) ) {
+    if (($heightFrom > $heightTo) || ($widthFrom > $widthTo)) {
 
-      if ( $radioWidth < $radioHeigt ) {
+      if ($radioWidth < $radioHeigt) {
         $radio = $radioWidth;
         $whichRadio = 'w';
       } else {
@@ -112,5 +110,3 @@ class imageJeff
   }
 
 }
-
-?>

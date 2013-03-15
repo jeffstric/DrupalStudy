@@ -1,4 +1,4 @@
 name = smarter image factory
-description = helpful image factory
-package = smarter image manage
+description = helpful image factory,rely on GD library
+package = image manage
 core = 7.x
