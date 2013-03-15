@@ -297,7 +297,7 @@ function imageFactory_imageList()
 		</ul></div>';
   $count = db_query("SELECT COUNT(*) FROM {file_managed} fm where  fm.filemime like 'image/%'")->fetchField();
   $pageNum = pager_default_initialize($count , 10);
-  $pagerHtml = theme('pager' , array( 'quantity' => $count ));
+  $pagerHtml = theme('pager' , array( 'quantity' => 8 ));
   $query = db_query_range("select * from {file_managed} fm where fm.filemime like 'image/%' order by fm.timestamp desc " , $pageNum * 10 , 10);
   $query->execute();
   $result = $query->fetchAllAssoc('fid' , PDO::FETCH_ASSOC);
