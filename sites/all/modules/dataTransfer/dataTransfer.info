@@ -1,0 +1,4 @@
+name = smarter dataTransfer
+description = "Do not enable,This is import module,only in develop environment!"
+package = smarter dataTransfer
+core = 7.x

@@ -115,9 +115,9 @@ $slogon = $content[ 'field_shop_guide_slogon' ][ '#items' ][ 0 ][ 'safe_value' ]
     	    <div class="guide<?php echo $key + 1 ?>">
     		<div class="imgbox">
 			<?php if ( $value[ 'url' ] ): ?>
-			    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , $imageSize[ $key ][ 0 ] , $imageSize[ $key ][ 1 ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/></a>
+			    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><img src="<?php echo image_style_url( $imageSize[ $key ][ 0 ] .'_'. $imageSize[ $key ][ 1 ],$value[ 'image' ] ); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/></a>
 			<?php else: ?>
-			    <img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , $imageSize[ $key ][ 0 ] , $imageSize[ $key ][ 1 ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
+			    <img src="<?php echo image_style_url( $imageSize[ $key ][ 0 ] .'_'. $imageSize[ $key ][ 1 ],$value[ 'image' ] ); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
 			<?php endif; ?>
     		</div>
     		<div class="content">

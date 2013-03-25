@@ -1,0 +1,409 @@
+<?php
+
+/**
+ *  author  :   jeffstric
+ *  email   :   jeffstricg@gmail.com
+ *  date    :   Mar 19, 2013
+ *  time    :   2:08:26 PM
+ * */
+function dataTransfer_menu()
+{
+    $items[ 'dataTransfer' ] = array(
+        'page callback' => 'dataTransfer_import' ,
+        'access callback' => TRUE ,
+        'type' => MENU_SUGGESTED_ITEM ,
+    );
+    $items[ 'file_usage_add' ] = array(
+        'page callback' => 'dataTransfer_addFileUsged' ,
+        'access callback' => TRUE ,
+        'type' => MENU_SUGGESTED_ITEM ,
+    );
+    $items[ 'addChannel' ] = array(
+        'page callback' => 'dataTransfer_addChannel' ,
+        'access callback' => TRUE ,
+        'type' => MENU_SUGGESTED_ITEM ,
+    );
+    $items[ 'addItems' ] = array(
+        'page callback' => 'dataTransfer_addItems' ,
+        'access callback' => TRUE ,
+        'type' => MENU_SUGGESTED_ITEM ,
+    );
+    $items[ 'updateItems' ] = array(
+        'page callback' => 'dataTransfer_updateItems' ,
+        'access callback' => TRUE ,
+        'type' => MENU_SUGGESTED_ITEM ,
+    );
+
+    return $items;
+}
+
+function dataTransfer_addItems()
+{
+    set_time_limit(0);
+    $con = dataTransfer_getDb();
+    $result = $con->query('select nid,title,link,price,body,fid,tid from items');
+    $sth = $con->prepare('update items set nid = :nid where title=:title');
+    foreach ( $result->fetchAll(PDO::FETCH_ASSOC) as $value ) {
+        if ( !$value[ 'nid' ] ) {
+            $node = dataTransfer_getNode();
+            $node->type = 'shop_guide_item';
+            $node->status = 0;
+            $node->title = $value[ 'title' ];
+            $node->field_product_name = array(
+                'und' => array(
+                    array(
+                        'value' => $value[ 'title' ] ,
+                        'format' => 'full_html' ,
+                    )
+                ) ,
+            );
+            $node->body = array(
+                'und' => array(
+                    array(
+                        'value' => $value[ 'body' ] ,
+                        'format' => 'full_html' ,
+                    ) ,
+                ) ,
+            );
+            $node->field_shop_guide_item_img = array(
+                'und' => array(
+                    array(
+                        'fid' => $value[ 'fid' ] ,
+                    ) ,
+                ) ,
+            );
+            $node->field_price = array(
+                'und' => array(
+                    array(
+                        'value' => $value[ 'price' ] ,
+                    ) ,
+                ) ,
+            );
+            $node->field_store = array(
+                'und' => array(
+                    array(
+                        'tid' => $value[ 'tid' ] ,
+                    ) ,
+                ) ,
+            );
+            $node->field_url = array(
+                'und' => array(
+                    array(
+                        'tid' => $value[ 'link' ] ,
+                    ) ,
+                ) ,
+            );
+
+            node_save($node);
+            $id = $node->nid;
+            if ( $id ) {
+                if ( $sth->execute(array( ':nid' => $id , ':title' => $value[ 'title' ] )) ) {
+                    echo 'success,id:' . $id . '<br/>title:' . $value[ 'title' ] . '<br/><br/>';
+                    continue;
+                }
+            }
+            die('update items fail,id:' . $id . '<br/>title:' . $value[ 'title' ]);
+        }
+    }
+}
+
+function dataTransfer_updateItems()
+{
+    set_time_limit(0);
+    $con = dataTransfer_getDb();
+    $result = $con->query('select nid,title,link,price,body,fid,tid from items');
+    foreach ( $result->fetchAll(PDO::FETCH_ASSOC) as $value ) {
+
+        $node = node_load($value[ 'nid' ]);
+
+        $node->field_url = array(
+            'und' => array(
+                array(
+                    'value' => $value[ 'link' ] ,
+                ) ,
+            ) ,
+        );
+        node_save($node);
+    }
+}
+
+function dataTransfer_import()
+{
+    die('success!');
+    set_time_limit(0);
+    $channelKeyValue = dateTransfer_return_channel_node_id();
+    $channelKey = array_keys($channelKeyValue);
+    $shopguides = dataTransfer_getShopguides();
+    $itemsKeyByS = dataTransfer_getItemId();
+    $node_types = dateTransfer_return_tplid_node_type();
+    $keysOfTpl = array_keys($node_types);
+
+    $conTest = dataTransfer_getDb();
+    $sth = $conTest->prepare('update special_page_config_list set node_id = :node_id where id = :id');
+
+    try {
+        foreach ( $shopguides as $value ) {
+
+            echo 'special_id:' . $value[ 'id' ] . '<br/>';
+
+            $newNode = dataTransfer_getNode();
+            $newNode->created = strtotime($value[ 'add_time' ]);
+
+            //node type
+            if ( in_array($value[ 'tplid' ] , $keysOfTpl) ) {
+                $newNode->type = $node_types[ $value[ 'tplid' ] ];
+            } else {
+                throw new Exception('the tplid is illegal:' . $value[ 'tplid' ]);
+            }
+            //title 
+            $newNode->title = $value[ 'name' ];
+            //shop_guide_title
+            $newNode->field_shop_guide_title = array(
+                'und' => array(
+                    array(
+                        'value' => $value[ 'h1' ] ,
+                        'format' => 'full_html' ,
+                    ) ,
+                ) ,
+            );
+            
+            //slogon_pre
+            $newNode->field_shop_guide_slogon_pre = array(
+                'und' => array(
+                    array(
+                        'value' => $value[ 'subHeading1' ] ,
+                        'format' => 'full_html' ,
+                    ) ,
+                ) ,
+            );
+            //slogon
+            $newNode->field_shop_guide_slogon = array(
+                'und' => array(
+                    array(
+                        'value' => $value[ 'subHeading2' ] ,
+                        'format' => 'full_html' ,
+                    ) ,
+                ) ,
+            );
+            //body
+            $newNode->body = array(
+                'und' => array(
+                    array(
+                        'summary' => '' ,
+                        'value' => $value[ 'page_intro' ] ,
+                        'format' => 'full_html' ,
+                    ) ) );
+            //field_shop_guide_item
+            $newNode->field_shop_guide_item = array(
+                'und' => $itemsKeyByS[ $value[ 'id' ] ]
+            );
+            //field_slide_show_cover
+            $newNode->field_slide_show_cover = array(
+                'und' => array(
+                    array(
+                        'fid' => $value[ 'cover_fid' ]
+                    )
+                )
+            );
+
+            //field_shop_guide_channel
+            $channelArray = explode(',' , $value[ 'chids' ]);
+            $channelInput = array( );
+            foreach ( $channelArray as $V ) {
+                if ( in_array($V , $channelKey) ) {
+                    $channelInput[ ] = array( 'target_id' => $channelKeyValue[ $V ] );
+                } else {
+                    throw new Exception('the channel no value to corresponde.Input channel:' . $V);
+                }
+            }
+
+            if ( $value[ 'chids' ] ) {
+                $newNode->field_shop_guide_channel = array(
+                    'und' => $channelInput
+                );
+            }
+            //author
+            $newNode->field_shop_guide_author = array(
+                'und' => array(
+                    array(
+                        'tid' => $value[ 'author_id' ] ,
+                    ) ,
+                ) ,
+            );
+            //field_shop_guide_snapshot
+            $newNode->field_shop_guide_snapshot = array(
+                'und' => array(
+                    array(
+                        'fid' => $value[ 'snap_fid' ] ,
+                    ) ,
+                ) ,
+            );
+            //metatags
+            $newNode->metatags = array(
+                'title' => array(
+                    'value' => $value[ 'meta_title' ] ) ,
+                'description' => array(
+                    'value' => $value[ 'meta_desc' ] ) ,
+            );
+            //path
+            $newNode->path = array(
+                'alias' => $value[ 'url_alias' ] ,
+            );
+
+            node_save($newNode);
+
+            $sth->execute(array(
+                ':node_id' => $newNode->nid ,
+                ':id' => $value[ 'id' ] ,
+            ));
+
+            echo 'node_id:' . $newNode->nid . '<br/>';
+            echo 'update affected row ' . $sth->rowCount() . '<br/>';
+            echo 'end' . '<br/><br/>';
+//            die();
+        }
+    } catch ( Exception $e ) {
+        echo $e->getMessage();
+        die();
+    }
+}
+
+
+function dataTransfer_getNode()
+{
+    $newNode = new stdClass();
+    $newNode->uid = 1;
+    $newNode->changed = $newNode->created = time();
+    $newNode->status = 1;
+    $newNode->comment = 1;
+    $newNode->promote = 0;
+    $newNode->sticky = 0;
+    $newNode->language = 'und';
+    $newNode->is_new = TRUE;
+    return $newNode;
+}
+
+//function dataTransfer_node_presave( $node )
+//{
+//    dpm($node);
+//}
+
+function dataTransfer_getDb()
+{
+    try {
+        $con = new PDO('mysql:host=localhost;dbname=test' , 'root' , '2126823');
+        return $con;
+    } catch ( Exception $e ) {
+        throw new Exception($e->getMessage());
+    }
+}
+
+function dataTransfer_getItemId()
+{
+    $con = dataTransfer_getDb();
+    if ( $con ) {
+        $result = $con->query('select  nid,s_id from items');
+        $output = array( );
+        foreach ( $result->fetchAll(PDO::FETCH_ASSOC) as $value ) {
+            $output[ $value[ 's_id' ] ][ ] = array( 'target_id' => $value[ 'nid' ] );
+        }
+        return $output;
+    } else {
+        throw new Exception('error db test');
+    }
+}
+
+function dataTransfer_getShopguides()
+{
+    $con = dataTransfer_getDb();
+    if ( $con ) {
+        $result = $con->query('select id,tplid,chids,name,h1,meta_title,meta_desc,add_time,page_intro,subHeading1,subHeading2,cover_fid,url_alias,author_id,snap_fid from special_page_config_list where status = 5 and node_id is NULL');
+        return $result->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        throw new Exception('error db test');
+    }
+}
+
+function dateTransfer_return_channel_node_id()
+{
+    return array(
+        1 => 906 ,
+        2 => 907 ,
+        3 => 908 ,
+        4 => 909 ,
+        5 => 910 ,
+        6 => 911 ,
+        7 => 912 ,
+        8 => 913 ,
+        10 => 914 ,
+        30 => 915 ,
+        32 => 916 ,
+        33 => 917 ,
+        34 => 918 ,
+        35 => 919 ,
+        36 => 920 ,
+        37 => 921 ,
+        39 => 922 ,
+        40 => 923 ,
+        41 => 924 ,
+        42 => 925 ,
+        43 => 926 ,
+        44 => 927 ,
+        45 => 928 ,
+        46 => 929 ,
+        47 => 930 ,
+        48 => 931 ,
+        51 => 932 ,
+    );
+}
+
+function dateTransfer_return_tplid_node_type()
+{
+    return array(
+        1 => 'shop_guide_women_essential' ,
+        2 => 'shop_guide_chic_geek' ,
+        3 => 'shop_guide_eco_friendly' ,
+        4 => 'shop_guide_fall_fashion' ,
+        5 => 'shop_guide_man_tripping' ,
+        6 => 'shop_guide_thanksgiving' ,
+        7 => 'shop_guide_ten_stuffer' ,
+        9 => 'shop_guide_denim' ,
+        10 => 'shop_guide_get_look' ,
+        11 => 'shop_guide_want_it_now' ,
+        13 => 'shop_guide_sale_module_b' ,
+        16 => 'shop_guide_slide_show' ,
+    );
+}
+
+function dataTransfer_addChannel()
+{
+    die('import success!');
+    set_time_limit(0);
+    $channelIds = array(
+        39 , 30 , 35 , 1 , 3 , 46 , 32 , 36 , 2 , 41 , 6 , 44 , 47 , 37 , 48 , 34 , 4 , 42 , 45 , 8 , 51 , 5 , 10 , 40 , 43 , 7 , 33
+    );
+    sort($channelIds);
+    foreach ( $channelIds as $value ) {
+        echo $value . '=>';
+        $newNode = new stdClass();
+        $newNode->type = 'smarter_channel';
+        $newNode->uid = 1;
+        $newNode->changed = time();
+        $newNode->created = time();
+        $newNode->status = 1;
+        $newNode->comment = 0;
+        $newNode->promote = 0;
+        $newNode->sticky = 0;
+        $newNode->language = 'und';
+        $newNode->title = 'smarter channel id:' . $value;
+        $newNode = node_submit($newNode);
+        if ( $newNode ) {
+//            echo $value . '<br/>';
+            node_save($newNode);
+            echo $newNode->nid . ',<br/>';
+        }
+    }
+
+
+    echo 'ok';
+}

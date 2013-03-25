@@ -116,7 +116,7 @@ $items_info = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 			$outUrl = $value[ 'outUrl' ];
 			$url = $value[ 'url' ];
 			$target = $value[ 'target' ];
-			$imageSrc = shoppingGuide_transferImageUrl($value[ 'image' ] , 293 , 506);
+			$imageSrc = image_style_url( 293 .'_'. 506,$value[ 'image' ] );
 			if ( !isset($value[ 'product_name' ]) )
 			    $value[ 'product_name' ] = '';
 			?>
@@ -158,7 +158,7 @@ $items_info = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 			    <ul>
 				<li>
 				    <a href="#" name="main" class="selected" title="<?php echo $title ?>">
-					<img src="<?php echo shoppingGuide_transferImageUrl($coverUrl , 100 , 100) ?>" alt="<?php echo $title ?>" width="108" height="108" />
+					<img src="<?php echo image_style_url( 100 .'_'. 100,$coverUrl ) ?>" alt="<?php echo $title ?>" width="108" height="108" />
 				    </a>
 				</li>
 				<?php $count = 0; ?>
@@ -170,7 +170,7 @@ $items_info = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 				    ?>
     				<li>
     				    <a href="#slide-<?php echo $count ?>" name="<?php echo $count ?>" class="normal" title="<?php echo $value[ 'product_name' ]; ?>">
-    					<img src="<?php echo shoppingGuide_transferImageUrl($value[ 'image' ] , 100 , 100) ?>" alt="<?php echo $value[ 'product_name' ] ?>" width="108" height="108" />
+    					<img src="<?php echo image_style_url( 100 .'_'. 100,$value[ 'image' ] ) ?>" alt="<?php echo $value[ 'product_name' ] ?>" width="108" height="108" />
     				    </a>
     				</li>
 				<?php endforeach; ?>

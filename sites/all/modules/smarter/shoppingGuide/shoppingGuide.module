@@ -19,6 +19,15 @@ define('SHOP_ITEM_KEY' , 'shop_guide_item');
 
 define('SHOP_GUIDE_COVER_FIELD_NAME' , 'field_slide_show_cover');
 
+function shoppingGuide_menu()
+{
+    $items[ 'add_image_style' ] = array(
+        'page callback' => 'shopguide_add_image_style' ,
+        'access callback' => TRUE ,
+        'type' => MENU_SUGGESTED_ITEM ,
+    );
+    return $items;
+}
 function shoppingGuide_transferImageUrl( $url , $width , $height )
 {
     $url = str_replace($_SERVER[ 'HTTP_HOST' ] , $_SERVER[ 'HTTP_HOST' ] . '/imagesi' , $url);
@@ -30,9 +39,9 @@ function shoppingGuide_transferImageUrl( $url , $width , $height )
 function shoppingGuide_theme()
 {
     return array(
-	'shopguide_des' => array(
-	    'variables' => array( 'items' => NULL , 'title' => NULL ) ,
-	) ,
+        'shopguide_des' => array(
+            'variables' => array( 'items' => NULL , 'title' => NULL ) ,
+        ) ,
     );
 }
 
@@ -55,7 +64,7 @@ function shoppingGuide_getItemInfo( stdClass $info )
     $price = shoppingGuide_getValue($info , 'field_price' , 'value');
 
     $image = shoppingGuide_getValue($info , 'field_shop_guide_item_img' , 'uri');
-    $image = ($image) ? file_create_url($image) : FALSE;
+    $image = ($image) ? $image : FALSE;
 
     $url = shoppingGuide_getValue($info , 'field_url' , 'safe_value');
     $outUrl = FALSE;
@@ -70,17 +79,17 @@ function shoppingGuide_getValue( $info , $filedName , $column = FALSE )
 {
     $fieldI = field_get_items('node' , $info , $filedName);
     if ( !$fieldI ) {
-	if ( isset($info->$filedName) )
-	    $fieldI = $info->$filedName;
+        if ( isset($info->$filedName) )
+            $fieldI = $info->$filedName;
     }
     if ( $column ) {
-	if ( is_array($fieldI) && count($fieldI) ) {
-	    if ( isset($fieldI[ 0 ][ $column ]) )
-		return $fieldI[ 0 ][ $column ];
-	}
-	return FALSE;
+        if ( is_array($fieldI) && count($fieldI) ) {
+            if ( isset($fieldI[ 0 ][ $column ]) )
+                return $fieldI[ 0 ][ $column ];
+        }
+        return FALSE;
     } else {
-	return $fieldI;
+        return $fieldI;
     }
 }
 
