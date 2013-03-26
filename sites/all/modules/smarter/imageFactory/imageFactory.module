@@ -15,13 +15,20 @@ function imageFactory_permission()
   return array(
       //manage image factory
       'imageFactory image upload' => array(
-          'title' => t('imageFactory image manage') ,
-          'description' => t('Allow users use imageFactory function') ,
+          'title' => t('imageFactory image upload') ,
+          'description' => t('Allow users upload image in imageFactory') ,
+      ) ,
+      //manage image factory
+      'imageFactory image edit' => array(
+          'title' => t('imageFactory image edit') ,
+          'description' => t('Allow users edit image in imageFactory') ,
       ) ,
       //manage image factory fonts
-      'imageFactory fonts manage' => array(
-          'title' => t('imageFactory fonts manage') ,
-          'description' => t('Allow users manage imageFactory\' fonts') ,
+      'imageFactory fonts upload' => array(
+          'title' => t('Allow user upload fonts') ,
+      ) ,
+      'imageFactory fonts del' => array(
+          'title' => t('Allow user delete fonts') ,
       ) ,
   );
 }
@@ -34,7 +41,7 @@ function imageFactory_menu()
       'description' => 'Image Factory help you resize image and add text on it' ,
       'page callback' => 'imageFactory_imageList' ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory image manage' ) ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'weight' => 1
   );
   //upload image file
@@ -55,7 +62,7 @@ function imageFactory_menu()
       'page callback' => 'drupal_get_form' ,
       'page arguments' => array( 'imageFactory_fontsUploadForm' ) ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory fonts manage' ) ,
+      'access arguments' => array( 'imageFactory fonts upload' ) ,
       'file' => 'imageFactory_form.inc' ,
       'file path' => drupal_get_path('module' , 'imageFactory') ,
       'type' => MENU_SUGGESTED_ITEM ,
@@ -66,7 +73,7 @@ function imageFactory_menu()
       'title' => 'fonts list' ,
       'page callback' => 'imageFactory_fontList' ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory fonts manage' ) ,
+      'access arguments' => array( 'imageFactory fonts del' ) ,
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
@@ -76,7 +83,7 @@ function imageFactory_menu()
       'page callback' => 'imageFactory_fontDel' ,
       'page arguments' => array( 4 ) ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory fonts manage' ) ,
+      'access arguments' => array( 'imageFactory fonts del' ) ,
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
@@ -85,7 +92,7 @@ function imageFactory_menu()
       'title' => 'image factory' ,
       'page callback' => 'imageFactory_imageList' ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory image manage' ) ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'type' => MENU_SUGGESTED_ITEM ,
       'weight' => 1
   );
@@ -95,7 +102,7 @@ function imageFactory_menu()
       'page callback' => 'imageFactory_imageEdit' ,
       'page arguments' => array( 3 ) ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory image manage' ) ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'type' => MENU_SUGGESTED_ITEM ,
       'weight' => 1
   );
@@ -103,7 +110,8 @@ function imageFactory_menu()
   $items[ 'admin/imageFactory/resizeAjax' ] = array(
       'title' => 'resize image' ,
       'page callback' => 'imageFactory_ResizeAjax' ,
-      'access callback' => TRUE ,
+      'access callback' => 'user_access' ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
@@ -111,7 +119,8 @@ function imageFactory_menu()
   $items[ 'admin/imageFactory/addText' ] = array(
       'title' => 'upload image' ,
       'page callback' => 'imageFactory_addText' ,
-      'access callback' => TRUE ,
+      'access callback' => 'user_access' ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
@@ -120,7 +129,7 @@ function imageFactory_menu()
       'title' => 'save image' ,
       'page callback' => 'imageFactory_save' ,
       'access callback' => 'user_access' ,
-      'access arguments' => array( 'imageFactory image manage' ) ,
+      'access arguments' => array( 'imageFactory image edit' ) ,
       'type' => MENU_CALLBACK ,
       'weight' => 1
   );
@@ -168,13 +177,15 @@ function imageFactory_help( $path , $arg )
     case 'admin/help#imageFactory';
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('The imagefactory module can be used to create image with cumstom fonts text and background .It will save picture on \'public://imageFactory\' and add record to file_managed table ,  then you can render picture by module \'IMCE for File Field\' .See the online handbook entry for the <a href="@imgfactoryDocument">imgfactory module</a>.' , array( '@imgfactoryDocument' => 'http://drupal.org/sandbox/jeffstric/1937132' )) . '</p>';
+      $output .= '<p>' . t('The imagefactory module can be used to resize image and add infinite text with cumstom fonts .It will save picture on in public file path and add record to file_managed table.') . '</p>';
       $output .= '<h3>' . t('Uses') . '</h3>';
       $output .= '<dl>';
       $output .= '<dt>' . t('First use') . '</dt>';
-      $output .= '<dd>' . t('You should upload ttf font file to server.<a href="@imgfactoryFontsUpload">upload fonts</a>' , array( '@imgfactoryFontsUpload' => url('admin/imageFactory/fonts/upload') )) . '</dd>';
+      $output .= '<dd>' . t('You should <a href="@imgfactoryFontsUpload">upload ttf fonts</a> to server.' , array( '@imgfactoryFontsUpload' => url('admin/imageFactory/fonts/upload') )) . '</dd>';
       $output .= '<dt>' . t('The tmp picture remove') . '</dt>';
-      $output .= '<dd>' . t('When you create picture by imageFactory, module will create temporary file. You can remove that by call <a href="@cronUrl">cron</a>' , array( '@cronUrl' => url('admin/config/system/cron') ));
+      $output .= '<dd>' . t('When you create picture by imageFactory, module will create temporary file in public://imagefactory/tmp , the cron job will automatic remove them. You can manually remove by call <a href="@cronUrl">cron</a>' , array( '@cronUrl' => url('admin/config/system/cron') ));
+      $output .= '<dt>' . t('How to choose the image you create') . '</dt>';
+      $output .= '<dd>' . t(' You can use \'IMCE for File Field\' or \'entity reference\'.');
       $output .= '</dl>';
       return $output;
       break;
@@ -286,7 +297,7 @@ function imageFactory_imageList()
 		</ul></div>';
   $count = db_query("SELECT COUNT(*) FROM {file_managed} fm where  fm.filemime like 'image/%'")->fetchField();
   $pageNum = pager_default_initialize($count , 10);
-  $pagerHtml = theme('pager' , array( 'quantity' => $count ));
+  $pagerHtml = theme('pager' , array( 'quantity' => 8 ));
   $query = db_query_range("select * from {file_managed} fm where fm.filemime like 'image/%' order by fm.timestamp desc " , $pageNum * 10 , 10);
   $query->execute();
   $result = $query->fetchAllAssoc('fid' , PDO::FETCH_ASSOC);
@@ -313,6 +324,7 @@ function theme_imageFactory_file_formatter_table( $variables )
 
 function imageFactory_imageEdit( $id )
 {
+  global $base_path;
   if ( $id ) {
     $row = imageFactory_getFile($id);
     $imageSrc = file_create_url($row->uri);
@@ -334,6 +346,7 @@ function imageFactory_imageEdit( $id )
                 'image' => $imageSrc ,
                 'imageRoute' => $imageRoute ,
                 'fid' => $id ,
+                'basePath' => $base_path ,
                 'imageInfo' => $imageInfo ,
                 'fontsInfo' => array( 'family' => $fontFamily , 'src' => $fontSrc )
             ));
@@ -342,7 +355,6 @@ function imageFactory_imageEdit( $id )
 
 function imageFactory_ResizeAjax()
 {
-
   $_POST[ 'src' ] = imageFactory_webUrlToSer($_POST[ 'src' ]);
   try {
     $parms = array( 'width' , 'height' , 'top' , 'left' , 'src' , 'fid' );
@@ -385,7 +397,7 @@ function imageFactory_theme()
       'imageFactory' => array(
           'variables' => array(
               'image' => NULL , 'imageRoute' => NULL , 'fid' => NULL ,
-              'imageInfo' => NULL , 'fontsFamily' => NULL
+              'basePath' => '/' , 'imageInfo' => NULL , 'fontsFamily' => NULL
           ) ,
           'template' => 'imageFactoryResize' ,
           'path' => drupal_get_path('module' , 'imageFactory') ,
@@ -473,7 +485,12 @@ function imageFactory_pathSerToWeb( $serverPath )
 
 function imageFactory_webUrlToSer( $url )
 {
-  return preg_replace('|^http(s)?\:\/\/[^\/]+|i' , DRUPAL_ROOT , $url);
+  global $base_path;
+  $url = preg_replace('|^http(s)?\:\/\/[^\/]+|i' , '' , $url);
+  if ( $base_path != '/' ) {
+    $url = substr($url , strlen($base_path) - 1);
+  }
+  return DRUPAL_ROOT . $url;
 }
 
 function imageFactory_getDir( $dir = '' , $absolutePath = FALSE , $timeAndRandom = TRUE )
