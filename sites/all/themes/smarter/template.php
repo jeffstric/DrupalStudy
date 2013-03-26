@@ -150,13 +150,13 @@ function smarter_preprocess_page( &$variables , $hook )
 //  $variables['sample_variable'] = t('Lorem ipsum.');
     //delete defualt content for homepage
     if ( $variables[ 'is_front' ] ) {
-	unset($variables[ 'page' ][ 'content' ][ 'system_main' ]);
+        unset($variables[ 'page' ][ 'content' ][ 'system_main' ]);
     }
 
     //let page.tpl.php can adapt node content type
     if ( isset($variables[ 'node' ]) ) {
-	// If the node type is "blog" the template suggestion will be "page--blog.tpl.php".
-	$variables[ 'theme_hook_suggestions' ][ ] = 'page__' . $variables[ 'node' ]->type;
+        // If the node type is "blog" the template suggestion will be "page--blog.tpl.php".
+        $variables[ 'theme_hook_suggestions' ][ ] = 'page__' . $variables[ 'node' ]->type;
     }
 }
 
@@ -175,13 +175,14 @@ function smarter_preprocess_node( &$variables , $hook )
     // smarter_preprocess_node_page() or smarter_preprocess_node_story().
     $function = __FUNCTION__ . '_' . $variables[ 'node' ]->type;
     if ( function_exists($function) ) {
-	$function($variables , $hook);
+        $function($variables , $hook);
     }
 }
 
 function smarter_preprocess_node_shop_guide_slide_show( &$variables , $hook )
 {
     //change theme 
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
     $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
 
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/slideshow.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
@@ -192,6 +193,7 @@ function smarter_preprocess_node_shop_guide_slide_show( &$variables , $hook )
 function smarter_preprocess_node_shop_guide_denim( &$variables , $hook )
 {
     //change theme
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
     $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
 
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/denim.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
@@ -202,6 +204,7 @@ function smarter_preprocess_node_shop_guide_denim( &$variables , $hook )
 function smarter_preprocess_node_shop_guide_eco_friendly( &$variables , $hook )
 {
     //change theme
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
     $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
 
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/ecofriendly.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
@@ -211,6 +214,7 @@ function smarter_preprocess_node_shop_guide_eco_friendly( &$variables , $hook )
 function smarter_preprocess_node_shop_guide_fall_fashion( &$variables , $hook )
 {
     //change theme
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
     $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
 
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/fallfashionguide.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
@@ -220,6 +224,7 @@ function smarter_preprocess_node_shop_guide_fall_fashion( &$variables , $hook )
 function smarter_preprocess_node_shop_guide_get_look( &$variables , $hook )
 {
     //change theme
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
     $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
 
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/getthelook.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
@@ -229,6 +234,7 @@ function smarter_preprocess_node_shop_guide_get_look( &$variables , $hook )
 function smarter_preprocess_node_shop_guide_women_essential( &$variables , $hook )
 {
     //change theme
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
     $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
 
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/women_on_the_go_essentials.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
@@ -237,12 +243,18 @@ function smarter_preprocess_node_shop_guide_women_essential( &$variables , $hook
 
 function smarter_preprocess_node_shop_guide_chic_geek( &$variables , $hook )
 {
+    //change theme
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
+    
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/chicgeek.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
 }
 
 function smarter_preprocess_node_shop_guide_man_tripping( &$variables , $hook )
 {
+    //change theme
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
+
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/mantripping.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/smarter/v6.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
 }
@@ -250,6 +262,7 @@ function smarter_preprocess_node_shop_guide_man_tripping( &$variables , $hook )
 function smarter_preprocess_node_shop_guide_thanksgiving( &$variables , $hook )
 {
     //change theme
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
     $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
 
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/thanksgiving.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
@@ -259,6 +272,7 @@ function smarter_preprocess_node_shop_guide_thanksgiving( &$variables , $hook )
 function smarter_preprocess_node_shop_guide_ten_stuffer( &$variables , $hook )
 {
     //change theme
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
     $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
 
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/stuffers.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
@@ -269,6 +283,7 @@ function smarter_preprocess_node_shop_guide_ten_stuffer( &$variables , $hook )
 function smarter_preprocess_node_shop_guide_want_it_now( &$variables , $hook )
 {
     //change theme
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
     $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
 
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/iwantitnow.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));
@@ -278,6 +293,7 @@ function smarter_preprocess_node_shop_guide_want_it_now( &$variables , $hook )
 function smarter_preprocess_node_shop_guide_sale_module_b( &$variables , $hook )
 {
     //change theme
+    $variables[ 'content' ][ 'field_shop_guide_author' ][ '#theme' ] = 'shopguide_author';
     $variables[ 'content' ][ 'body' ][ '#theme' ] = 'shopguide_des';
 
     drupal_add_css(drupal_get_path('theme' , 'smarter') . '/css/shopping_guide/salemodule2.css' , array( 'type' => 'file' , 'group' => CSS_THEME ));

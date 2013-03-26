@@ -100,66 +100,67 @@ $items = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 ?>
 <div class="main">
     <div class="maincontent">
-	<div class="guidewrapper">
-	    <div class="introimg"><img src="<?php echo $coverSrc ?>" /></div>								
-	    <div class="intro">
-		<h1><?php echo $title ?></h1>
-		<div class="desc">
-		    <p><?php echo render($content[ 'body' ]) ?></p>				
-		</div>
-	    </div>
+        <div class="guidewrapper">
+            <div class="introimg"><img src="<?php echo $coverSrc ?>" /></div>								
+            <div class="intro">
+                <h1><?php echo $content[ 'field_shop_guide_title' ][ '#items' ][ 0 ][ 'value' ] ?></h1>
+                <div class="desc">
+                    <p><?php echo render($content[ 'body' ]) ?></p>				
+                </div>
+            </div>
 
 
-	    <?php foreach ( $items as $key => $value ): ?>
-		<?php if ( $key > 5 ) break; ?>
-    	    <div class="guide<?php echo $key + 1 ?>">
-    		<div class="imgbox">
-			<?php if ( $value[ 'url' ] ): ?>
-			    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><img src="<?php echo image_style_url( $imageSize[ $key ][ 0 ] .'_'. $imageSize[ $key ][ 1 ],$value[ 'image' ] ); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/></a>
-			<?php else: ?>
-			    <img src="<?php echo image_style_url( $imageSize[ $key ][ 0 ] .'_'. $imageSize[ $key ][ 1 ],$value[ 'image' ] ); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
-			<?php endif; ?>
-    		</div>
-    		<div class="contentbg"></div>
-    		<div class="content">
+            <?php foreach ( $items as $key => $value ): ?>
+                <?php if ( $key > 5 ) break; ?>
+                <div class="guide<?php echo $key + 1 ?>">
+                    <div class="imgbox">
+                        <?php if ( $value[ 'url' ] ): ?>
+                            <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><img src="<?php echo image_style_url($imageSize[ $key ][ 0 ] . '_' . $imageSize[ $key ][ 1 ] , $value[ 'image' ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/></a>
+                        <?php else: ?>
+                            <img src="<?php echo image_style_url($imageSize[ $key ][ 0 ] . '_' . $imageSize[ $key ][ 1 ] , $value[ 'image' ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
+                        <?php endif; ?>
+                    </div>
+                    <div class="contentbg"></div>
+                    <div class="content">
 
-			<?php if ( $value[ 'url' ] ): ?>
-			    <h3>
-				<?php if ( $value[ 'product_name' ] ) : ?>
-	    			<a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow" >
-	    			    <strong><?php echo $value[ 'product_name' ] ?></strong><br />
-	    			</a>
-				<?php endif; ?>
-				<?php if ( $value[ 'store' ] ) : ?>
-	    			<a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow" class="mname"><?php echo $value[ 'store' ] ?></a>
-				<?php endif; ?>
-				<?php if ( $value[ 'price' ] ) : ?>
-	    			<span><a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow" class="pprice">$<?php echo $value[ 'price' ] ?></a></span>
-				<?php endif; ?>
-			    </h3>
-			<?php else: ?>
-			    <h3>
-				<?php if ( $value[ 'product_name' ] ) : ?>
-	    			<strong><?php echo $value[ 'product_name' ] ?></strong><br />
-				<?php endif; ?>
-				<?php if ( $value[ 'store' ] ) : ?>
-				    <?php echo $value[ 'store' ] ?>
-				<?php endif; ?>
-				<?php if ( $value[ 'price' ] ) : ?>
-	    			<span>$<?php echo $value[ 'price' ] ?></span>
-				<?php endif; ?>
-			    </h3>
-			<?php endif; ?>
+                        <?php if ( $value[ 'url' ] ): ?>
+                            <h3>
+                                <?php if ( $value[ 'product_name' ] ) : ?>
+                                    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow" >
+                                        <strong><?php echo $value[ 'product_name' ] ?></strong><br />
+                                    </a>
+                                <?php endif; ?>
+                                <?php if ( $value[ 'store' ] ) : ?>
+                                    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow" class="mname"><?php echo $value[ 'store' ] ?></a>
+                                <?php endif; ?>
+                                <?php if ( $value[ 'price' ] ) : ?>
+                                    <span><a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow" class="pprice">$<?php echo $value[ 'price' ] ?></a></span>
+                                <?php endif; ?>
+                            </h3>
+                        <?php else: ?>
+                            <h3>
+                                <?php if ( $value[ 'product_name' ] ) : ?>
+                                    <strong><?php echo $value[ 'product_name' ] ?></strong><br />
+                                <?php endif; ?>
+                                <?php if ( $value[ 'store' ] ) : ?>
+                                    <?php echo $value[ 'store' ] ?>
+                                <?php endif; ?>
+                                <?php if ( $value[ 'price' ] ) : ?>
+                                    <span>$<?php echo $value[ 'price' ] ?></span>
+                                <?php endif; ?>
+                            </h3>
+                        <?php endif; ?>
 
-    		</div>
-    	    </div>
-	    <?php endforeach; ?>
-	    <div class="baseinfo">
-		<?php echo $submitted ?>
-	    </div>
-	</div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            <div class="baseinfo">
+                <?php echo $date; ?>&nbsp;by&nbsp;
+                <?php echo render($content[ 'field_shop_guide_author' ]) ?>
+            </div>
+        </div>
 
-	<div class="cl"></div>
+        <div class="cl"></div>
     </div>
     <!--end maincontent -->	
 </div>

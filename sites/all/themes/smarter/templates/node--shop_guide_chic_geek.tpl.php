@@ -100,51 +100,52 @@ $items = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 ?>
 <div class="main">
     <div class="maincontent">
-	<div class="guidewrapper">
-	    <div class="baseinfo">
-		<?php echo $submitted ?>
-	    </div>
+        <div class="guidewrapper">
+            <div class="baseinfo">
+                <?php echo $date; ?>&nbsp;by&nbsp;
+                <?php echo render($content[ 'field_shop_guide_author' ]) ?>
+            </div>
 
-	    <div class="intro">
-		<h1><?php echo $title ?></h1>
-		<div class="introimg"><img src="<?php echo $coverSrc ?>" /></div>														
-	    </div>
+            <div class="intro">
+                <h1><?php echo $content[ 'field_shop_guide_title' ][ '#items' ][ 0 ][ 'value' ] ?></h1>
+                <div class="introimg"><img src="<?php echo $coverSrc ?>" /></div>														
+            </div>
 
-	    <?php foreach ( $items as $key => $value ): ?>
-		<?php if ( $key > 5 ) break; ?>
-    	    <div class="guide<?php echo $key + 1 ?>"> 
-    		<div class="imgbox">
-			<?php if ( $value[ 'url' ] ): ?>
-			    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><img src="<?php echo image_style_url( $imageSize[ $key ][ 0 ] .'_'. $imageSize[ $key ][ 1 ],$value[ 'image' ] ); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/></a>
-			<?php else: ?>
-			    <img src="<?php echo image_style_url( $imageSize[ $key ][ 0 ] .'_'. $imageSize[ $key ][ 1 ],$value[ 'image' ] ); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
-			<?php endif; ?>
-    		</div>
-    		<div class="contentbg"></div> 
-    		<div class="content"> 
-			<?php if ( $value[ 'url' ] ): ?>
-			    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow" >
-				<h3><?php echo $value[ 'product_name' ] ?></h3>
-			    </a> 
-			    <p class="desc"><?php echo truncate_utf8($value[ 'body' ] , 80); ?>
-				<?php if ( $value[ 'price' ] ): ?>
-	    			<a  href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow" >$<?php echo $value[ 'price' ] ?></a>
-				<?php endif; ?>
-			    </p> 
-			<?php else: ?>
-			    <h3><?php echo $value[ 'product_name' ] ?></h3>
-			    <p class="desc"><?php echo truncate_utf8($value[ 'body' ] , 80); ?>
-				<?php if ( $value[ 'price' ] ): ?>
-	    			$<?php echo $value[ 'price' ] ?>
-				<?php endif; ?>
-			    </p> 
-			<?php endif; ?>
-    		</div> 
-    	    </div>
-	    <?php endforeach; ?>
-	</div>
+            <?php foreach ( $items as $key => $value ): ?>
+                <?php if ( $key > 5 ) break; ?>
+                <div class="guide<?php echo $key + 1 ?>"> 
+                    <div class="imgbox">
+                        <?php if ( $value[ 'url' ] ): ?>
+                            <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><img src="<?php echo image_style_url($imageSize[ $key ][ 0 ] . '_' . $imageSize[ $key ][ 1 ] , $value[ 'image' ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/></a>
+                        <?php else: ?>
+                            <img src="<?php echo image_style_url($imageSize[ $key ][ 0 ] . '_' . $imageSize[ $key ][ 1 ] , $value[ 'image' ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
+                        <?php endif; ?>
+                    </div>
+                    <div class="contentbg"></div> 
+                    <div class="content"> 
+                        <?php if ( $value[ 'url' ] ): ?>
+                            <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow" >
+                                <h3><?php echo $value[ 'product_name' ] ?></h3>
+                            </a> 
+                            <p class="desc"><?php echo truncate_utf8($value[ 'body' ] , 80); ?>
+                                <?php if ( $value[ 'price' ] ): ?>
+                                    <a  href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>"  target="<?php echo $value[ 'target' ] ?>"  rel="nofollow" >$<?php echo $value[ 'price' ] ?></a>
+                                <?php endif; ?>
+                            </p> 
+                        <?php else: ?>
+                            <h3><?php echo $value[ 'product_name' ] ?></h3>
+                            <p class="desc"><?php echo truncate_utf8($value[ 'body' ] , 80); ?>
+                                <?php if ( $value[ 'price' ] ): ?>
+                                    $<?php echo $value[ 'price' ] ?>
+                                <?php endif; ?>
+                            </p> 
+                        <?php endif; ?>
+                    </div> 
+                </div>
+            <?php endforeach; ?>
+        </div>
 
-	<div class="cl"></div>
+        <div class="cl"></div>
     </div>
     <!--end maincontent -->	
 </div>

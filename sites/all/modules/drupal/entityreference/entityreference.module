@@ -1255,7 +1255,7 @@ function entityreference_field_formatter_view( $entity_type , $entity , $field ,
 {
     $result = array( );
     $settings = $display[ 'settings' ];
-
+    
     // Rebuild the items list to contain only those with access.
     foreach ( $items as $key => $item ) {
 	if ( empty($item[ 'access' ]) ) {
@@ -1278,7 +1278,7 @@ function entityreference_field_formatter_view( $entity_type , $entity , $field ,
 		}
 	    }
 	    break;
-	// this is for smarter 
+	// this is for smarter  shopping guide
 	//begin
 	case 'entityreference_smarter_shopguide':
 	    if ( function_exists('shoppingGuide_getItemInfo') && defined('SHOP_ITEM_KEY') ) {
@@ -1289,7 +1289,6 @@ function entityreference_field_formatter_view( $entity_type , $entity , $field ,
 
 	    break;
 	//end
-	//this is for smarter 
 	case 'entityreference_entity_id':
 	    foreach ( $items as $delta => $item ) {
 		$result[ $delta ] = array( '#markup' => check_plain($item[ 'target_id' ]) );

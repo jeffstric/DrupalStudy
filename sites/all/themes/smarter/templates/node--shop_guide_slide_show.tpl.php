@@ -85,105 +85,108 @@
 ?>
 <?php
 //map
-$coverUrl = file_create_url($content[ SHOP_GUIDE_COVER_FIELD_NAME ][ '#items' ][ 0 ][ 'uri' ]);
+$coverUrl = $content[ SHOP_GUIDE_COVER_FIELD_NAME ][ '#items' ][ 0 ][ 'uri' ];
 $items_info = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 //dpm($content);
 ?>
 <div class="main">
     <div class="maincontent">
-	<div class="slidewrapper">
-	    <div class="coll">
-		<div class="slidebox">
-		    <div class="slidebut">
-			<a class="prevnone" href="#" ><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/slide_but.png') ?>" /></a>
-			<a class="next" href="#slide-1" ><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/slide_but.png') ?>" /></a>
-		    </div>
-		    <h1><?php echo $title ?></h1>
-		    <div class="author"><?php echo $submitted ?></div>
+        <div class="slidewrapper">
+            <div class="coll">
+                <div class="slidebox">
+                    <div class="slidebut">
+                        <a class="prevnone" href="#" ><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/slide_but.png') ?>" /></a>
+                        <a class="next" href="#slide-1" ><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/slide_but.png') ?>" /></a>
+                    </div>
+                    <h1><?php echo $content[ 'field_shop_guide_title' ][ '#items' ][ 0 ][ 'value' ] ?></h1>
+                    <div class="author">
+                        <?php echo $date; ?>&nbsp;by&nbsp;
+                        <?php echo render($content[ 'field_shop_guide_author' ]) ?>
+                    </div>
 
-		    <div class="productcontent" name="main">
-			<div class="intro"><?php echo render($content[ 'body' ]); ?></div>
-			<div class="imgbox">
-			    <a href="#slide-1" title="<?php echo $title ?>">
-				<img src="<?php echo $coverUrl; ?>" alt="<?php echo $title ?>" width="614" />
-			    </a>
-			</div>
-		    </div>
-		    <?php $count = 0 ?>
-		    <?php foreach ( $items_info as $key => $value ): ?>
-			<?php
-			$count++;
-			$outUrl = $value[ 'outUrl' ];
-			$url = $value[ 'url' ];
-			$target = $value[ 'target' ];
-			$imageSrc = image_style_url( 293 .'_'. 506,$value[ 'image' ] );
-			if ( !isset($value[ 'product_name' ]) )
-			    $value[ 'product_name' ] = '';
-			?>
-    		    <div class="productcontent disn" name="<?php echo $count ?>">
-    			<div class="imgbox">
-				<?php if ( $url ): ?>
-				    <a href="<?php echo $url ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $target ?>" rel="nofollow">
-					<img src="<?php echo $imageSrc ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
-				    </a>
-				<?php else: ?>
-				    <img src="<?php echo $imageSrc ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
-				<?php endif; ?>
-    			</div>
-    			<div class="productinfo">
-				<?php if ( $url ): ?>
-				    <a href="<?php echo $url ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $target ?>" rel="nofollow">
-					<h3><?php echo $value[ 'product_name' ] ?></h3>
-				    </a>
-				    <?php if ( $value[ 'price' ] ): ?>
-	    			    <a href="<?php echo $url ?>"  target="<?php echo $target ?>" rel="nofollow">
-	    				<p class="price"><?php echo $value[ 'price' ] ?></p>
-	    			    </a>
-				    <?php endif; ?>
-				<?php else: ?>
-				    <h3><?php echo $value[ 'product_name' ] ?></h3>
-				    <?php if ( $value[ 'price' ] ): ?>
-	    			    <p class="price"><?php echo $value[ 'price' ] ?></p>
-				    <?php endif; ?>
-				<?php endif; ?>
-    			    <p class="desc"><?php echo $value[ 'body' ] ?></p>
-    			</div>
-    			<div class="cl"></div>
-    		    </div>
-		    <?php endforeach; ?>
+                    <div class="productcontent" name="main">
+                        <div class="intro"><?php echo render($content[ 'body' ]); ?></div>
+                        <div class="imgbox">
+                            <a href="#slide-1" title="<?php echo $content[ 'field_shop_guide_title' ][ '#items' ][ 0 ][ 'value' ] ?>">
+                                <img src="<?php echo image_style_url('614_614' , $coverUrl); ?>" alt="<?php echo $title ?>" width="614" />
+                            </a>
+                        </div>
+                    </div>
+                    <?php $count = 0 ?>
+                    <?php foreach ( $items_info as $key => $value ): ?>
+                        <?php
+                        $count++;
+                        $outUrl = $value[ 'outUrl' ];
+                        $url = $value[ 'url' ];
+                        $target = $value[ 'target' ];
+                        $imageSrc = image_style_url(293 . '_' . 506 , $value[ 'image' ]);
+                        if ( !isset($value[ 'product_name' ]) )
+                            $value[ 'product_name' ] = '';
+                        ?>
+                        <div class="productcontent disn" name="<?php echo $count ?>">
+                            <div class="imgbox">
+                                <?php if ( $url ): ?>
+                                    <a href="<?php echo $url ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $target ?>" rel="nofollow">
+                                        <img src="<?php echo $imageSrc ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
+                                    </a>
+                                <?php else: ?>
+                                    <img src="<?php echo $imageSrc ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
+                                <?php endif; ?>
+                            </div>
+                            <div class="productinfo">
+                                <?php if ( $url ): ?>
+                                    <a href="<?php echo $url ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $target ?>" rel="nofollow">
+                                        <h3><?php echo $value[ 'product_name' ] ?></h3>
+                                    </a>
+                                    <?php if ( $value[ 'price' ] ): ?>
+                                        <a href="<?php echo $url ?>"  target="<?php echo $target ?>" rel="nofollow">
+                                            <p class="price"><?php echo $value[ 'price' ] ?></p>
+                                        </a>
+                                    <?php endif; ?>
+                                <?php else: ?>
+                                    <h3><?php echo $value[ 'product_name' ] ?></h3>
+                                    <?php if ( $value[ 'price' ] ): ?>
+                                        <p class="price"><?php echo $value[ 'price' ] ?></p>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                <p class="desc"><?php echo $value[ 'body' ] ?></p>
+                            </div>
+                            <div class="cl"></div>
+                        </div>
+                    <?php endforeach; ?>
 
-		    <div class="slideselect">
-			<div class="prev"><a href="#"><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/slideprev.gif') ?>" width="11" height="22" /></a></div>
-			<div class="slidecontent">	
-			    <ul>
-				<li>
-				    <a href="#" name="main" class="selected" title="<?php echo $title ?>">
-					<img src="<?php echo image_style_url( 100 .'_'. 100,$coverUrl ) ?>" alt="<?php echo $title ?>" width="108" height="108" />
-				    </a>
-				</li>
-				<?php $count = 0; ?>
-				<?php foreach ( $items_info as $key => $value ): ?>
-				    <?php
-				    $count++;
-				    if ( !isset($value[ 'product_name' ]) )
-					$value[ 'product_name' ] = '';
-				    ?>
-    				<li>
-    				    <a href="#slide-<?php echo $count ?>" name="<?php echo $count ?>" class="normal" title="<?php echo $value[ 'product_name' ]; ?>">
-    					<img src="<?php echo image_style_url( 100 .'_'. 100,$value[ 'image' ] ) ?>" alt="<?php echo $value[ 'product_name' ] ?>" width="108" height="108" />
-    				    </a>
-    				</li>
-				<?php endforeach; ?>
-			    </ul>
-			</div>
-			<div class="next"><a href="#slide-1"><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/slidenext.gif') ?>" width="11" height="22" /></a></div>                        
-			<div class="cl"></div>
-		    </div>
+                    <div class="slideselect">
+                        <div class="prev"><a href="#"><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/slideprev.gif') ?>" width="11" height="22" /></a></div>
+                        <div class="slidecontent">	
+                            <ul>
+                                <li>
+                                    <a href="#" name="main" class="selected" title="<?php echo $content[ 'field_shop_guide_title' ][ '#items' ][ 0 ][ 'value' ] ?>">
+                                        <img src="<?php echo image_style_url(100 . '_' . 100 , $coverUrl) ?>" alt="<?php echo $content[ 'field_shop_guide_title' ][ '#items' ][ 0 ][ 'value' ] ?>" width="108" height="108" />
+                                    </a>
+                                </li>
+                                <?php $count = 0; ?>
+                                <?php foreach ( $items_info as $key => $value ): ?>
+                                    <?php
+                                    $count++;
+                                    if ( !isset($value[ 'product_name' ]) )
+                                        $value[ 'product_name' ] = '';
+                                    ?>
+                                    <li>
+                                        <a href="#slide-<?php echo $count ?>" name="<?php echo $count ?>" class="normal" title="<?php echo $value[ 'product_name' ]; ?>">
+                                            <img src="<?php echo image_style_url(100 . '_' . 100 , $value[ 'image' ]) ?>" alt="<?php echo $value[ 'product_name' ] ?>" width="108" height="108" />
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                        <div class="next"><a href="#slide-1"><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/slidenext.gif') ?>" width="11" height="22" /></a></div>                        
+                        <div class="cl"></div>
+                    </div>
 
-		</div>
-	    </div>
-	</div>
-	<div class="cl"></div>
+                </div>
+            </div>
+        </div>
+        <div class="cl"></div>
     </div>	
     <!--end maincontent -->	
 </div>

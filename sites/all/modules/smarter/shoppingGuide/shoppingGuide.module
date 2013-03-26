@@ -19,26 +19,12 @@ define('SHOP_ITEM_KEY' , 'shop_guide_item');
 
 define('SHOP_GUIDE_COVER_FIELD_NAME' , 'field_slide_show_cover');
 
-function shoppingGuide_menu()
-{
-    $items[ 'add_image_style' ] = array(
-        'page callback' => 'shopguide_add_image_style' ,
-        'access callback' => TRUE ,
-        'type' => MENU_SUGGESTED_ITEM ,
-    );
-    return $items;
-}
-function shoppingGuide_transferImageUrl( $url , $width , $height )
-{
-    $url = str_replace($_SERVER[ 'HTTP_HOST' ] , $_SERVER[ 'HTTP_HOST' ] . '/imagesi' , $url);
-    $fileArr = explode('.' , $url);
-    $extent = array_pop($fileArr);
-    return join('.' , $fileArr) . '___s_' . $width . 'x' . $height . '.' . $extent;
-}
-
 function shoppingGuide_theme()
 {
     return array(
+        'shopguide_author' => array(
+            'variables' => array( 'items' => NULL ) ,
+        ) ,
         'shopguide_des' => array(
             'variables' => array( 'items' => NULL , 'title' => NULL ) ,
         ) ,
@@ -51,9 +37,14 @@ function theme_shopguide_des( $info )
     return '<div id="' . $info[ 'title' ] . '">' . $item[ 'safe_value' ] . '</div>';
 }
 
+function theme_shopguide_author( $info )
+{
+    return '<span id="shopguide_author">' . $info[ 'items' ][ 0 ][ 'taxonomy_term' ]->name . '</span>';
+}
+
 function shoppingGuide_getItemInfo( stdClass $info )
 {
-    $product_name = shoppingGuide_getValue($info , 'field_product_name' , 'safe_value');
+    $product_name = shoppingGuide_getValue($info , 'field_product_name' , 'value');
 
     $body = shoppingGuide_getValue($info , 'body' , 'value');
 

@@ -86,65 +86,66 @@
 <?php
 //map
 $coverSrc = file_create_url($content[ SHOP_GUIDE_COVER_FIELD_NAME ][ '#items' ][ 0 ][ 'uri' ]);
-$slogon_pre = $content[ 'field_shop_guide_slogon_pre' ][ '#items' ][ 0 ][ 'safe_value' ];
-$slogon = $content[ 'field_shop_guide_slogon' ][ '#items' ][ 0 ][ 'safe_value' ];
+$slogon_pre = $content[ 'field_shop_guide_slogon_pre' ][ '#items' ][ 0 ][ 'value' ];
+$slogon = $content[ 'field_shop_guide_slogon' ][ '#items' ][ 0 ][ 'value' ];
 $items = $content[ SHOP_ITEM_FIELD_NAME ][ SHOP_ITEM_KEY ];
 //dpm($content);
 ?>
 <div class="main">
     <div class="maincontent">
-	<div class="guidewrapper">
-	    <div class="topimg">
-		<img src="<?php echo $coverSrc ?>" />
-		<p><strong><?php echo $slogon_pre ?></strong><?php echo $slogon ?></p>
-	    </div>
-	    <div class="intro">
-		<h1><?php echo $title ?></h1>
-		<div class="desc">
-		    <?php echo render($content[ 'body' ]) ?>
-		</div>
-	    </div>
-	    <?php foreach ( $items as $key => $value ): ?>
-		<?php if ( $key > 7 ) break; ?>
+        <div class="guidewrapper">
+            <div class="topimg">
+                <img src="<?php echo $coverSrc ?>" />
+                <p><strong><?php echo $slogon_pre ?>&nbsp;►&nbsp;</strong><?php echo $slogon ?></p>
+            </div>
+            <div class="intro">
+                <h1><?php echo $title ?></h1>
+                <div class="desc">
+                    <?php echo render($content[ 'body' ]) ?>
+                </div>
+            </div>
+            <?php foreach ( $items as $key => $value ): ?>
+                <?php if ( $key > 7 ) break; ?>
 
-    	    <div class="guide<?php echo $key + 1 ?>">
-    		<div class="imgbox">
-			<?php if ( $value[ 'url' ] ): ?>
-			    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><img src="<?php echo image_style_url( 195 .'_'. 217,$value[ 'image' ] ); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/></a>
-			<?php else: ?>
-			    <img src="<?php echo image_style_url( 195 .'_'. 217,$value[ 'image' ] ); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
-			<?php endif; ?>
-    		</div>
-    		<div class="content">
-			<?php if ( $value[ 'url' ] ): ?>
-			    <?php if ( $value[ 'product_name' ] ): ?>
-	    		    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><h3 name="has"><?php echo $value[ 'product_name' ] ?></h3></a>
-			    <?php endif; ?>
-			    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" class="pprice"><?php echo $value[ 'store' ]; ?>&nbsp;<?php if ( $value[ 'price' ] ) echo '$' . $value[ 'price' ]; ?> </a>
-			<?php else: ?>
-			    <?php if ( $value[ 'product_name' ] ): ?>
-	    		    <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><h3 name="has"><?php echo $value[ 'product_name' ] ?></h3></a>
-			    <?php endif; ?>
-			    <?php echo $value[ 'store' ]; ?>&nbsp;<?php if ( $value[ 'price' ] ) echo '$' . $value[ 'price' ]; ?> 
-			<?php endif; ?>
-    		</div>
-		    <?php if ( $value[ 'body' ] ): ?>
-			<a href="javascript:;" class="linkdot"><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/denim_linkdot.gif') ?>" /></a>
-			<div class="popup disn">
-			    <div class="arrow">
-				<img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/v6/stuffers_pop_arrow.gif') ?>" />
-			    </div>
-			    <?php echo truncate_utf8($value[ 'body' ] , 440); ?>
-			</div>
-		    <?php endif; ?>
-    	    </div>
-	    <?php endforeach; ?>
-	    <div class="baseinfo">
-		<?php echo $submitted ?>
-	    </div>
-	</div>
-	<!--end guidewrapper -->
-	<div class="cl"></div>
+                <div class="guide<?php echo $key + 1 ?>">
+                    <div class="imgbox">
+                        <?php if ( $value[ 'url' ] ): ?>
+                            <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><img src="<?php echo image_style_url(195 . '_' . 217 , $value[ 'image' ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/></a>
+                        <?php else: ?>
+                            <img src="<?php echo image_style_url(195 . '_' . 217 , $value[ 'image' ]); ?>" alt="<?php echo $value[ 'product_name' ] ?>"/>
+                        <?php endif; ?>
+                    </div>
+                    <div class="content">
+                        <?php if ( $value[ 'url' ] ): ?>
+                            <?php if ( $value[ 'product_name' ] ): ?>
+                                <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><h3 name="has"><?php echo $value[ 'product_name' ] ?></h3></a>
+                            <?php endif; ?>
+                            <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" class="pprice"><?php echo $value[ 'store' ]; ?>&nbsp;<?php if ( $value[ 'price' ] ) echo '$' . $value[ 'price' ]; ?> </a>
+                        <?php else: ?>
+                            <?php if ( $value[ 'product_name' ] ): ?>
+                                <a href="<?php echo $value[ 'url' ] ?>" title="<?php echo $value[ 'product_name' ] ?>" target="<?php echo $value[ 'target' ] ?>" rel="nofollow"><h3 name="has"><?php echo $value[ 'product_name' ] ?></h3></a>
+                            <?php endif; ?>
+                                <?php echo $value[ 'store' ]; ?>&nbsp;<?php if ( $value[ 'price' ] ) echo '$' . $value[ 'price' ]; ?> 
+                            <?php endif; ?>
+                    </div>
+                    <?php if ( $value[ 'body' ] ): ?>
+                        <a href="javascript:;" class="linkdot"><img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/denim_linkdot.gif') ?>" /></a>
+                        <div class="popup disn">
+                            <div class="arrow">
+                                <img src="<?php echo file_create_url(drupal_get_path('theme' , 'smarter') . '/images/special/v6/stuffers_pop_arrow.gif') ?>" />
+                            </div>
+                            <?php echo truncate_utf8($value[ 'body' ] , 440); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+            <div class="baseinfo">
+                <?php echo $date; ?>&nbsp;by&nbsp;
+                <?php echo render($content[ 'field_shop_guide_author' ]) ?>
+            </div>
+        </div>
+        <!--end guidewrapper -->
+        <div class="cl"></div>
     </div>
     <!--end maincontent -->
 </div>

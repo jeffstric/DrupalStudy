@@ -1,5 +1,5 @@
 name = Entity Reference
-description = Provides a field that can reference other entities.
+description = (be changed,do not update!)Provides a field that can reference other entities.
 core = 7.x
 package = Fields
 dependencies[] = entity
