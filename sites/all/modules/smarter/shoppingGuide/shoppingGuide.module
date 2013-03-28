@@ -12,75 +12,130 @@
  * 
  */
 //This is the shop guide item's field machine name in shop guide show
-define('SHOP_ITEM_FIELD_NAME' , 'field_shop_guide_item');
+define('SHOP_ITEM_FIELD_NAME', 'field_shop_guide_item');
 
 //this is key of shop guide item info
-define('SHOP_ITEM_KEY' , 'shop_guide_item');
+define('SHOP_ITEM_KEY', 'shop_guide_item');
 
-define('SHOP_GUIDE_COVER_FIELD_NAME' , 'field_slide_show_cover');
+define('SHOP_GUIDE_COVER_FIELD_NAME', 'field_slide_show_cover');
 
-function shoppingGuide_theme()
-{
-    return array(
-        'shopguide_author' => array(
-            'variables' => array( 'items' => NULL ) ,
-        ) ,
-        'shopguide_des' => array(
-            'variables' => array( 'items' => NULL , 'title' => NULL ) ,
-        ) ,
-    );
+function shoppingGuide_menu() {
+  $items['shopping-guides'] = array(
+    'title' => 'shopguide',
+    'page callback' => 'shoppingGuide_show',
+    'page arguments' => array('1'),
+    'access callback' => TRUE,
+    'type' => MENU_SUGGESTED_ITEM,
+    'weight' => 1
+  );
+  $items['shopping-guides/%'] = array(
+    'title' => 'shopguide',
+    'page callback' => 'shoppingGuide_show',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_SUGGESTED_ITEM,
+    'weight' => 1
+  );
+  return $items;
 }
 
-function theme_shopguide_des( $info )
-{
-    $item = $info[ 'items' ][ 0 ];
-    return '<div id="' . $info[ 'title' ] . '">' . $item[ 'safe_value' ] . '</div>';
+function shoppingGuide_theme() {
+  return array(
+    'shopguide_author' => array(
+      'variables' => array('items' => NULL),
+    ),
+    'shopguide_des' => array(
+      'variables' => array('items' => NULL, 'title' => NULL),
+    ),
+    'shopguide_list' => array(
+      'variables' => array('items' => NULL, 'pager' => NULL, 'page_num' => 1),
+      'template' => 'shoppingGuideList',
+      'path' => drupal_get_path('module', 'shoppingGuide'),
+    ),
+  );
 }
 
-function theme_shopguide_author( $info )
-{
-    return '<span id="shopguide_author">' . $info[ 'items' ][ 0 ][ 'taxonomy_term' ]->name . '</span>';
+/**
+ *  Show shopping guide.
+ * 
+ * @param str $page
+ * 
+ *    The page of shopping guide.
+ */
+function shoppingGuide_show($page) {
+  $page = intval($page);
+  if (!function_exists('shoppingGuide_list')) {
+    require dirname(__FILE__) . DIRECTORY_SEPARATOR . 'shoppingGuide_attach.inc';
+  }
+  return shoppingGuide_list($page);
 }
 
-function shoppingGuide_getItemInfo( stdClass $info )
-{
-    $product_name = shoppingGuide_getValue($info , 'field_product_name' , 'value');
-
-    $body = shoppingGuide_getValue($info , 'body' , 'value');
-
-    $storeId = shoppingGuide_getValue($info , 'field_store' , 'tid');
-    $store = taxonomy_term_load($storeId);
-    $store = (isset($store->name)) ? $store->name : '';
-
-    $price = shoppingGuide_getValue($info , 'field_price' , 'value');
-
-    $image = shoppingGuide_getValue($info , 'field_shop_guide_item_img' , 'uri');
-    $image = ($image) ? $image : FALSE;
-
-    $url = shoppingGuide_getValue($info , 'field_url' , 'safe_value');
-    $outUrl = FALSE;
-    $url = trackUrl_convert($url , $outUrl);
-
-    $target = ($outUrl) ? '_blank' : '_self';
-
-    return compact('product_name' , 'body' , 'store' , 'price' , 'image' , 'url' , 'outUrl' , 'target');
+/**
+ * Implementation of theme_hook() 
+ */
+function theme_shopguide_des($info) {
+  $item = $info['items'][0];
+  return '<div id="' . $info['title'] . '">' . $item['safe_value'] . '</div>';
 }
 
-function shoppingGuide_getValue( $info , $filedName , $column = FALSE )
-{
-    $fieldI = field_get_items('node' , $info , $filedName);
-    if ( !$fieldI ) {
-        if ( isset($info->$filedName) )
-            $fieldI = $info->$filedName;
+/**
+ * Implementation of theme_hook() 
+ */
+function theme_shopguide_author($info) {
+  return '<span id="shopguide_author">' . $info['items'][0]['taxonomy_term']->name . '</span>';
+}
+
+/**
+ *  Transfer shopguide item info to tpl info.
+ * 
+ * @param stdClass $info
+ * @return array
+ */
+function shoppingGuide_getItemInfo(stdClass $info) {
+  $product_name = shoppingGuide_getValue($info, 'field_product_name', 'value');
+
+  $body = shoppingGuide_getValue($info, 'body', 'value');
+
+  $storeId = shoppingGuide_getValue($info, 'field_store', 'tid');
+  $store = taxonomy_term_load($storeId);
+  $store = (isset($store->name)) ? $store->name : '';
+
+  $price = shoppingGuide_getValue($info, 'field_price', 'value');
+
+  $image = shoppingGuide_getValue($info, 'field_shop_guide_item_img', 'uri');
+  $image = ($image) ? $image : FALSE;
+
+  $url = shoppingGuide_getValue($info, 'field_url', 'safe_value');
+  $outUrl = FALSE;
+  $url = trackUrl_convert($url, $outUrl);
+
+  $target = ($outUrl) ? '_blank' : '_self';
+
+  return compact('product_name', 'body', 'store', 'price', 'image', 'url', 'outUrl', 'target');
+}
+
+/**
+ *  Get node field info from complex input.
+ * 
+ * @param std $info
+ * @param str $field_name
+ * @param str $column
+ *    
+ * @return boolean
+ */
+function shoppingGuide_getValue($info, $field_name, $column = FALSE) {
+  $fieldI = field_get_items('node', $info, $field_name);
+  if (!$fieldI) {
+    if (isset($info->$field_name))
+      $fieldI = $info->$field_name;
+  }
+  if ($column) {
+    if (is_array($fieldI) && count($fieldI)) {
+      if (isset($fieldI[0][$column]))
+        return $fieldI[0][$column];
     }
-    if ( $column ) {
-        if ( is_array($fieldI) && count($fieldI) ) {
-            if ( isset($fieldI[ 0 ][ $column ]) )
-                return $fieldI[ 0 ][ $column ];
-        }
-        return FALSE;
-    } else {
-        return $fieldI;
-    }
+    return FALSE;
+  } else {
+    return $fieldI;
+  }
 }
-
